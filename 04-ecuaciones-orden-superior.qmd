@@ -1,0 +1,293 @@
+---
+title: Ecuaciones lineales de orden superior al primero
+lang: es
+#jupyter: julia-1.11
+---
+
+Una ecuación diferencial lineal de orden $n$ con coeficientes constantes,
+
+$$
+a_n y^{(n)} + \dots + a_1 y' + a_0 y = b(t),
+$$
+
+se resuelve hallando la solución general de la homogénea a partir de las raíces del **polinomio característico** $a_n\lambda^n + \dots + a_1\lambda + a_0 = 0$, y sumándole una solución particular de la completa (por coeficientes indeterminados o variación de las constantes). Toda ecuación de orden $n$ equivale a un sistema de $n$ ecuaciones de primer orden.
+
+## Ejercicios resueltos
+
+Para la realización de esta práctica se requieren los siguientes paquetes:
+
+```{julia}
+using SymPy                  # Cálculo simbólico.
+using Plots                  # Dibujo de gráficas.
+using DifferentialEquations  # Resolución numérica.
+using LaTeXStrings           # Código LaTeX en los gráficos.
+using LinearAlgebra
+```
+
+:::{#exr-amortiguacion-coche}
+**Suspensión de un automóvil.** El sistema de suspensión de la rueda de un coche se modela como un sistema masa–muelle–amortiguador
+
+$$
+m\,y'' + c\,y' + k\,y = 0,
+$$
+
+con masa $m = 250$ kg y rigidez del muelle $k = 10^4$ N/m. La constante de amortiguación $c$ del amortiguador (en N·s/m) puede elegirse en el diseño.
+
+a.  Calcular el valor crítico $c^* = 2\sqrt{mk}$ y resolver simbólicamente la ecuación en los tres regímenes: subamortiguado ($c = 1000$), crítico ($c = c^*$) y sobreamortiguado ($c = 6000$), con condiciones iniciales $y(0) = 0.1$ m, $y'(0)=0$ (bache inicial).
+
+    :::{.callout-note collapse="true"}
+    ## Ayuda
+    Las raíces del polinomio característico $m\lambda^2 + c\lambda + k = 0$ determinan el régimen: complejas (subamortiguado), doble (crítico) o reales distintas (sobreamortiguado). Usar `dsolve` con `ics = Dict(y(0) => ..., diff(y(t),t)(0) => ...)` (en SymPy, la derivada inicial se impone con `Derivative(y(t),t)(0)`; en `SymPy.jl` puede escribirse `diff(y(t), t) => ...` evaluada en 0 mediante `subs`). Alternativamente resolver cada caso con `dsolve` sin condiciones y determinar las constantes con `solve`.
+    :::
+
+    :::{.callout-tip collapse="true"}
+    ## Solución
+    ```{julia}
+    m, k = 250, 10^4
+    ccrit = 2 * sqrt(m * k)
+    ```
+
+    El amortiguamiento crítico es $c^* = 2\sqrt{250\cdot 10^4} \approx 3162$ N·s/m. Raíces características en cada caso:
+
+    ```{julia}
+    @syms λ
+    [solve(m * λ^2 + c * λ + k, λ) for c in (1000, ccrit, 6000)]
+    ```
+
+    Resolución simbólica con condiciones iniciales:
+
+    ```{julia}
+    @syms t y()
+    soluciones = Dict()
+    for c in (1000, round(ccrit), 6000)
+        eq = Eq(m * diff(y(t), t, 2) + c * diff(y(t), t) + k * y(t), 0)
+        sol = dsolve(eq, y(t), ics = Dict(y(0) => Sym(1)/10,
+                                          diff(y(t), t)(0) => 0))
+        soluciones[c] = rhs(sol)
+    end
+    soluciones[1000]
+    ```
+
+    En el caso subamortiguado la solución es de la forma $e^{-2t}(A\cos\omega t + B\sin\omega t)$ con $\omega=6$ rad/s: la rueda oscila mientras decae. En los otros dos casos la solución es suma de exponenciales reales decrecientes y no oscila.
+    :::
+
+a.  Dibujar las tres soluciones. ¿Por qué los fabricantes ajustan la suspensión cerca del amortiguamiento crítico?
+
+    :::{.callout-tip collapse="true"}
+    ## Solución
+    ```{julia}
+    plt = plot(xlab = L"t \; (s)", ylab = L"y \; (m)")
+    etiquetas = Dict(1000 => "Subamortiguado", round(ccrit) => "Crítico",
+                     6000 => "Sobreamortiguado")
+    for (c, expr) in sort(collect(soluciones), by = first)
+        plot!(plt, lambdify(expr, (t,)), 0, 3, lw = 2, label = etiquetas[c])
+    end
+    plt
+    ```
+
+    Con poco amortiguamiento el coche rebota varias veces (incómodo e inseguro); con demasiado, tarda mucho en volver a la posición de equilibrio. El amortiguamiento crítico devuelve la rueda al equilibrio **lo más rápido posible sin oscilar**, que es el compromiso óptimo.
+    :::
+:::
+
+:::{#exr-resonancia-puente}
+**Resonancia: pasarela peatonal.** Una pasarela peatonal se comporta como un oscilador
+
+$$
+y'' + 2\beta\, y' + \omega_0^2\, y = F_0 \cos(\omega t),
+$$
+
+con frecuencia natural $\omega_0 = 6$ rad/s, amortiguamiento $\beta = 0.3$ s$^{-1}$ y forzamiento $F_0 = 1$ m/s² producido por los pasos de los peatones con frecuencia $\omega$.
+
+a.  Calcular por coeficientes indeterminados la solución particular estacionaria $y_p = R\cos(\omega t - \varphi)$ y obtener la amplitud $R(\omega)$.
+
+    :::{.callout-note collapse="true"}
+    ## Ayuda
+    Sustituir $y_p = a\cos\omega t + b\sin\omega t$ en la ecuación e igualar coeficientes con `solve`. La amplitud es $R = \sqrt{a^2+b^2} = \dfrac{F_0}{\sqrt{(\omega_0^2-\omega^2)^2 + 4\beta^2\omega^2}}$.
+    :::
+
+    :::{.callout-tip collapse="true"}
+    ## Solución
+    ```{julia}
+    @syms t ω::positive a b
+    β, ω0, F0 = Sym(3)/10, 6, 1
+    yp = a * cos(ω * t) + b * sin(ω * t)
+    resto = expand(diff(yp, t, 2) + 2β * diff(yp, t) + ω0^2 * yp - F0 * cos(ω * t))
+    coefs = solve([resto.coeff(cos(ω * t)), resto.coeff(sin(ω * t))], [a, b])
+    R = simplify(sqrt(coefs[a]^2 + coefs[b]^2))
+    ```
+
+    Se obtiene $R(\omega) = \dfrac{1}{\sqrt{(36-\omega^2)^2 + 0.36\,\omega^2}}$.
+    :::
+
+a.  Dibujar la curva de resonancia $R(\omega)$ para $\omega\in(0, 12)$, localizar la frecuencia de máxima amplitud y comparar la amplitud resonante con la estática $R(0)$. ¿Qué implicaciones tiene para el diseño?
+
+    :::{.callout-tip collapse="true"}
+    ## Solución
+    ```{julia}
+    Rnum = lambdify(R, (ω,))
+    plot(Rnum, 0.01, 12, lw = 2, label = L"R(\omega)",
+        xlab = L"\omega \; (rad/s)", ylab = "Amplitud (m)")
+    ωres = sqrt(36 - 2 * 0.3^2)
+    vline!([ωres], ls = :dash, label = "Resonancia")
+    (ω_resonancia = ωres, amplificación = Rnum(ωres) / Rnum(0.01))
+    ```
+
+    La amplitud máxima se alcanza en $\omega_{res}=\sqrt{\omega_0^2 - 2\beta^2}\approx 5.98$ rad/s y es unas **10 veces** la respuesta estática. Si la cadencia de los peatones (≈ 2 pasos/s, $\omega\approx 12$ rad/s, o su subarmónico lateral ≈ 6 rad/s) coincide con la frecuencia natural, las oscilaciones se amplifican peligrosamente; es el fenómeno que obligó a cerrar el Millennium Bridge de Londres en 2000 y que se corrige añadiendo amortiguadores (aumentar $\beta$ aplana la curva).
+    :::
+
+a.  Resolver numéricamente la ecuación completa con $\omega = \omega_{res}$, $y(0)=y'(0)=0$, y comprobar que la solución transitoria da paso a la oscilación estacionaria de amplitud $R(\omega_{res})$.
+
+    :::{.callout-tip collapse="true"}
+    ## Solución
+    ```{julia}
+    function pasarela!(du, u, p, t)
+        du[1] = u[2]
+        du[2] = -2 * 0.3 * u[2] - 36 * u[1] + cos(ωres * t)
+    end
+    sol = solve(ODEProblem(pasarela!, [0.0, 0.0], (0.0, 40.0)), saveat = 0.02)
+    plot(sol, idxs = 1, lw = 1.5, label = L"y(t)", xlab = L"t\;(s)")
+    hline!([Rnum(ωres), -Rnum(ωres)], ls = :dash, color = :red,
+           label = L"\pm R(\omega_{res})")
+    ```
+
+    Tras un transitorio de unos $1/\beta \approx 3$–10 s, la pasarela oscila con la amplitud estacionaria prevista.
+    :::
+:::
+
+:::{#exr-rlc}
+**Circuito RLC en serie.** La carga $q(t)$ de un circuito RLC en serie con $L = 1$ H, $R = 2\ \Omega$, $C = 0.25$ F y fuente $E(t) = 50\cos t$ V satisface
+
+$$
+q'' + 2q' + 4q = 50\cos t, \qquad q(0) = 0,\; q'(0) = 0.
+$$
+
+Resolver simbólicamente, identificar transitorio y régimen permanente, y calcular la amplitud de la corriente estacionaria $i(t) = q'(t)$.
+
+:::{.callout-note collapse="true"}
+## Ayuda
+Resolver con `dsolve`; los términos con $e^{-t}$ forman el transitorio. Derivar la parte estacionaria y calcular su amplitud como $\sqrt{a^2+b^2}$.
+:::
+
+:::{.callout-tip collapse="true"}
+## Solución
+```{julia}
+@syms t q()
+eq = Eq(diff(q(t), t, 2) + 2diff(q(t), t) + 4q(t), 50cos(t))
+sol = dsolve(eq, q(t), ics = Dict(q(0) => 0, diff(q(t), t)(0) => 0))
+qsol = expand(simplify(rhs(sol)))
+```
+
+La parte que no contiene $e^{-t}$ es el régimen permanente $q_p = \frac{150}{13}\cos t + \frac{100}{13}\sin t$. La corriente estacionaria y su amplitud:
+
+```{julia}
+qp = Sym(150)/13 * cos(t) + Sym(100)/13 * sin(t)
+ip = diff(qp, t)
+amplitud = sqrt(ip.coeff(cos(t))^2 + ip.coeff(sin(t))^2) |> simplify
+```
+
+```{julia}
+plot(lambdify(rhs(sol), (t,)), 0, 15, lw = 2, label = L"q(t)")
+plot!(lambdify(qp, (t,)), 0, 15, ls = :dash, lw = 2, label = "Permanente",
+      xlab = L"t \; (s)", ylab = L"q \; (C)")
+```
+
+La amplitud de la corriente es $\frac{50}{\sqrt{13}} \approx 13.9$ A. Nótese la analogía completa con el oscilador mecánico: $L \leftrightarrow m$, $R \leftrightarrow c$, $1/C \leftrightarrow k$.
+:::
+:::
+
+:::{#exr-viga}
+**Ecuación de cuarto orden: flexión de una viga (ingeniería civil).** La deformación $y(x)$ de una viga uniforme de longitud $L = 4$ m sometida a una carga distribuida constante $w$ satisface la ecuación de Euler–Bernoulli
+
+$$
+EI\,y^{(4)} = w,
+$$
+
+con $EI = 2\times 10^6$ N·m² y $w = 5000$ N/m. La viga está **biapoyada**: $y(0)=y(L)=0$ (apoyos) e $y''(0)=y''(L)=0$ (momento nulo en los extremos).
+
+Resolver el problema de contorno, dibujar la deformada y calcular la flecha máxima, comparándola con la fórmula clásica $y_{max} = \dfrac{5wL^4}{384\,EI}$.
+
+:::{.callout-note collapse="true"}
+## Ayuda
+Integrar cuatro veces la ecuación (o usar `dsolve`), obtener un polinomio de grado 4 con cuatro constantes y determinarlas imponiendo las cuatro condiciones de contorno con `solve`.
+:::
+
+:::{.callout-tip collapse="true"}
+## Solución
+```{julia}
+@syms x y() C1 C2 C3 C4
+EI, w, L = Sym(2 * 10^6), 5000, 4
+sol = dsolve(Eq(EI * diff(y(x), x, 4), w), y(x))
+yg = rhs(sol)
+```
+
+`dsolve` da $y = \frac{w}{24EI}x^4 + C_1 + C_2x + C_3x^2 + C_4x^3$. Imponemos las condiciones de contorno:
+
+```{julia}
+consts = free_symbols(yg - w/(24EI) * x^4)   # Las cuatro constantes
+condiciones = [yg(x => 0), yg(x => L),
+               diff(yg, x, 2)(x => 0), diff(yg, x, 2)(x => L)]
+csol = solve(condiciones, consts)
+ydef = simplify(yg.subs(csol))
+```
+
+La deformada es $y(x) = \frac{w}{24EI}\left(x^4 - 2Lx^3 + L^3 x\right)$. La flecha máxima está en el centro:
+
+```{julia}
+flecha = ydef(x => L/2)
+formula = 5 * w * L^4 / (384 * EI)
+(flecha_calculada = N(flecha), formula_clasica = N(formula))
+```
+
+```{julia}
+plot(lambdify(-ydef, (x,)), 0, 4, lw = 3, legend = false,
+    xlab = L"x \; (m)", ylab = "Deformada (m)", yflip = false)
+```
+
+Ambos valores coinciden: la flecha máxima es de unos $8.3$ mm, aceptable frente al límite habitual de servicio $L/300 \approx 13$ mm.
+:::
+:::
+
+:::{#exr-orden-superior-sistema}
+**Reducción a un sistema de primer orden.** Escribir la ecuación de la pasarela del @exr-resonancia-puente como un sistema $\mathbf{x}'=A\mathbf{x}+\mathbf{b}(t)$ con $\mathbf{x}=(y, y')$, comprobar que los autovalores de $A$ coinciden con las raíces del polinomio característico y que la solución numérica del sistema coincide con la de la ecuación de segundo orden.
+
+:::{.callout-tip collapse="true"}
+## Solución
+Con $x_1=y$, $x_2=y'$:
+
+$$
+A = \begin{pmatrix} 0 & 1 \\ -\omega_0^2 & -2\beta \end{pmatrix}
+  = \begin{pmatrix} 0 & 1 \\ -36 & -0.6 \end{pmatrix},
+\qquad \mathbf{b}(t) = \begin{pmatrix} 0 \\ \cos\omega t\end{pmatrix}.
+$$
+
+```{julia}
+A = [0 1.0; -36 -0.6]
+eigvals(A)
+```
+
+```{julia}
+@syms λ
+solve(λ^2 + Sym(6)/10 * λ + 36, λ)
+```
+
+Los autovalores de $A$, $-0.3 \pm 5.99i$, son exactamente las raíces del polinomio característico $\lambda^2 + 2\beta\lambda + \omega_0^2$: la teoría de sistemas lineales del capítulo anterior contiene como caso particular a las ecuaciones de orden superior.
+:::
+:::
+
+## Ejercicios propuestos
+
+:::{#exr-propuesto-sismo}
+**Ingeniería sísmica.** Un edificio de un piso se modela como $y'' + 2\cdot 0.05\cdot 4\, y' + 16 y = -a(t)$, donde $a(t) = 3\sin(4.2t)e^{-0.1t}$ m/s² es la aceleración del suelo. Resolver numéricamente y calcular el desplazamiento máximo del edificio.
+:::
+
+:::{#exr-propuesto-tercera}
+Resolver simbólicamente $y''' - 3y'' + 3y' - y = e^t$ (raíz triple) y comprobar que la solución particular requiere un factor $t^3$.
+:::
+
+:::{#exr-propuesto-voladizo}
+**Ingeniería.** Repetir el @exr-viga para una viga en voladizo ($y(0)=y'(0)=0$, $y''(L)=y'''(L)=0$) y comprobar que la flecha en el extremo libre es $wL^4/(8EI)$.
+:::
+
+:::{#exr-propuesto-euler}
+Resolver la ecuación de Euler–Cauchy $x^2y'' + xy' - y = 0$, que aparece en problemas de potencial con simetría radial, mediante el cambio $x=e^s$ y con `dsolve`.
+:::

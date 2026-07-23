@@ -1,0 +1,1981 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>1&nbsp; Ecuaciones diferenciales de primer orden – Prácticas de Ecuaciones Diferenciales y Ecuaciones en Derivadas Parciales con Julia</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./index.html" rel="prev">
+<link href="./img/logos/favicon.ico" rel="icon">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-33269adcf1721b81efc5ea7fcfe7f0ee.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-5a2acb6f4ed5aeb23a104ba421924b87.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-3401a95b39ddee773afad36d04e16f62.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-acd2f942bef30007f70c13ca6b9aeec6.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No se han encontrado resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<meta property="og:title" content="1&nbsp; Ecuaciones diferenciales de primer orden – Prácticas de Ecuaciones Diferenciales y Ecuaciones en Derivadas Parciales con Julia">
+<meta property="og:description" content="">
+<meta property="og:image" content="01-edos-primer-orden_files/figure-html/cell-12-output-1.svg">
+<meta property="og:site_name" content="Prácticas de Ecuaciones Diferenciales y Ecuaciones en Derivadas Parciales con Julia">
+</head>
+
+<body class="nav-sidebar floating fullcontent quarto-dark"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = true;
+    const darkModeDefault = authorPrefersDark;
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./01-edos-primer-orden.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Ecuaciones diferenciales de primer orden</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Buscar" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="./index.html" class="sidebar-logo-link">
+      <img src="./img/logos/aprendeconalf.png" alt="" class="sidebar-logo light-content py-0 d-lg-inline d-none">
+      <img src="./img/logos/aprendeconalf.png" alt="" class="sidebar-logo dark-content py-0 d-lg-inline d-none">
+      </a>
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Prácticas de Ecuaciones Diferenciales y Ecuaciones en Derivadas Parciales con Julia</a> 
+        <div class="sidebar-tools-main tools-wide">
+    <a href="https://aprendeconalf.es" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-house-fill"></i></a>
+    <div class="dropdown">
+      <a href="" title="Download" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" role="link" aria-label="Download"><i class="bi bi-download"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="./practicas-ecuaciones-diferenciales-derivadas-parciales-julia.pdf">
+              <i class="bi bi-file-pdf pe-1"></i>
+            Download PDF
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="./practicas-ecuaciones-diferenciales-derivadas-parciales-julia.epub">
+              <i class="bi bi-journal pe-1"></i>
+            Download ePub
+            </a>
+          </li>
+      </ul>
+    </div>
+    <a href="https://www.linkedin.com/sharing/share-offsite/?url=|url|" title="LinkedIn" class="quarto-navigation-tool px-1" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Alternar modo oscuro"><i class="bi"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Buscar"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Prefacio</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-edos-primer-orden.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Ecuaciones diferenciales de primer orden</span></span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Ecuaciones diferenciales de primer orden</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Una <em>ecuación diferencial ordinaria de primer orden</em> es una ecuación de la forma</p>
+<p><span class="math display">\[
+y' = f(t, y),
+\]</span></p>
+<p>donde <span class="math inline">\(y(t)\)</span> es una función desconocida de la variable independiente <span class="math inline">\(t\)</span>. En este capítulo se estudia la geometría de estas ecuaciones (campos de direcciones, puntos de equilibrio, líneas de fases, curvas integrales y bifurcaciones) y los métodos analíticos clásicos de resolución (variables separables, homogéneas, exactas, factores integrantes, lineales y de Bernoulli), con aplicaciones geométricas, físicas y de finanzas.</p>
+<section id="ejercicios-resueltos" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="ejercicios-resueltos"><span class="header-section-number">1.1</span> Ejercicios resueltos</h2>
+<p>Para la realización de esta práctica se requieren los siguientes paquetes:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">SymPyPythonCall</span>         <span class="co"># Cálculo simbólico y resolución exacta de EDOs.</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Plots</span>                  <span class="co"># Dibujo de gráficas.</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CairoMakie</span>             <span class="co"># Dibujo de gráficas.</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">DifferentialEquations</span>  <span class="co"># Resolución numérica de EDOs.</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">LaTeXStrings</span>           <span class="co"># Código LaTeX en los gráficos.</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Roots</span>                  <span class="co"># Cálculo de raíces (puntos de equilibrio).</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Versiones de Julia y de los paquetes utilizados
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div id="115b6b88" class="cell" data-execution_count="4">
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="73">
+<div>
+<figure class="figure">
+<p><img src="https://img.shields.io/badge/Julia-1.12.6-9558B2?logo=julia" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="06e74eaf" class="cell" data-execution_count="7">
+<div class="cell-output cell-output-stdout">
+<div class="ansi-escaped-output">
+<pre><span class="ansi-green-fg ansi-bold">Status</span> `~/.julia/environments/v1.12/Project.toml`
+
+<span class="ansi-green-fg">⌃</span> <span class="ansi-bright-black-fg">[13f3f980] </span>CairoMakie v0.15.9
+
+  <span class="ansi-bright-black-fg">[0c46a032] </span>DifferentialEquations v8.0.2
+
+  <span class="ansi-bright-black-fg">[b964fa9f] </span>LaTeXStrings v1.4.0
+
+  <span class="ansi-bright-black-fg">[91a5bcdd] </span>Plots v1.41.6
+
+  <span class="ansi-bright-black-fg">[f2b01f46] </span>Roots v3.0.6
+
+  <span class="ansi-bright-black-fg">[bc8888f7] </span>SymPyPythonCall v0.5.1
+
+<span class="ansi-cyan-fg ansi-bold">Info</span> Packages marked with <span class="ansi-green-fg">⌃</span> have new versions available and may be upgradable.
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>A lo largo del capítulo usaremos las siguientes funciones auxiliares para dibujar campos de direcciones de la ecuación <span class="math inline">\(y'=f(t,y)\)</span>:</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="" aria-current="page">Plots</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">Makie</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<div id="37e099fd" class="cell" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">campo_direcciones_plot</span>(f, ts, ys; escala <span class="op">=</span> <span class="fl">0.4</span>, kwargs<span class="op">...</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    T <span class="op">=</span> [t for y <span class="kw">in</span> ys for t <span class="kw">in</span> ts]</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    Y <span class="op">=</span> [y for y <span class="kw">in</span> ys for t <span class="kw">in</span> ts]</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    V <span class="op">=</span> <span class="fu">f</span>.(T, Y)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> (<span class="fu">maximum</span>(ts) <span class="op">-</span> <span class="fu">minimum</span>(ts)) <span class="op">/</span> (<span class="fu">maximum</span>(ys) <span class="op">-</span> <span class="fu">minimum</span>(ys))  <span class="co"># Relación entre los rangos de los ejes.</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    dx <span class="op">=</span> escala <span class="op">/</span> <span class="fl">2</span> <span class="op">./</span> <span class="fu">sqrt</span>.(<span class="fl">1</span> <span class="op">.+</span> (V <span class="op">.*</span> r) <span class="op">.^</span> <span class="fl">2</span>)  <span class="co"># Corregimos la pendiente con r para que todos los</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    dy <span class="op">=</span> V <span class="op">.*</span> dx                                  <span class="co"># segmentos se vean del mismo tamaño en el gráfico.</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    Xs <span class="op">=</span> <span class="fu">reduce</span>(vcat, [[t <span class="op">-</span> dxi, t <span class="op">+</span> dxi, <span class="cn">NaN</span>] for (t, dxi) <span class="kw">in</span> <span class="fu">zip</span>(T, dx)])</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    Ys <span class="op">=</span> <span class="fu">reduce</span>(vcat, [[y <span class="op">-</span> dyi, y <span class="op">+</span> dyi, <span class="cn">NaN</span>] for (y, dyi) <span class="kw">in</span> <span class="fu">zip</span>(Y, dy)])</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    Plots.<span class="fu">plot</span>(Xs, Ys, color <span class="op">=</span> <span class="op">:</span>gray, alpha <span class="op">=</span> <span class="fl">0.7</span>, label <span class="op">=</span> <span class="st">""</span>; kwargs<span class="op">...</span>)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span>;</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<div id="8782b440" class="cell" data-execution_count="10">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CairoMakie</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">campo_direcciones_makie!</span>(ax, f, ts, ys; escala <span class="op">=</span> <span class="fl">0.4</span>, kwargs<span class="op">...</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    T <span class="op">=</span> [t for y <span class="kw">in</span> ys for t <span class="kw">in</span> ts]</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    Y <span class="op">=</span> [y for y <span class="kw">in</span> ys for t <span class="kw">in</span> ts]</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    V <span class="op">=</span> <span class="fu">f</span>.(T, Y)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> (<span class="fu">maximum</span>(ts) <span class="op">-</span> <span class="fu">minimum</span>(ts)) <span class="op">/</span> (<span class="fu">maximum</span>(ys) <span class="op">-</span> <span class="fu">minimum</span>(ys))  <span class="co"># Relación entre los rangos de los ejes.</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    dx <span class="op">=</span> escala <span class="op">/</span> <span class="fl">2</span> <span class="op">./</span> <span class="fu">sqrt</span>.(<span class="fl">1</span> <span class="op">.+</span> (V <span class="op">.*</span> r) <span class="op">.^</span> <span class="fl">2</span>)  <span class="co"># Corregimos la pendiente con r para que todos los</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    dy <span class="op">=</span> V <span class="op">.*</span> dx                                  <span class="co"># segmentos se vean del mismo tamaño en el gráfico.</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    segs <span class="op">=</span> <span class="fu">reduce</span>(vcat, [[<span class="fu">Point2f</span>(t <span class="op">-</span> dxi, y <span class="op">-</span> dyi), <span class="fu">Point2f</span>(t <span class="op">+</span> dxi, y <span class="op">+</span> dyi)]</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>                          for (t, y, dxi, dyi) <span class="kw">in</span> <span class="fu">zip</span>(T, Y, dx, dy)])</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    Makie.<span class="fu">linesegments!</span>(ax, segs; color <span class="op">=</span> (<span class="op">:</span>gray, <span class="fl">0.7</span>), kwargs<span class="op">...</span>)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span>;</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+</div>
+<div id="exr-campo-direcciones-enfriamiento" class="theorem exercise">
+<p><span class="theorem-title"><strong>Ejercicio 1.1</strong></span> <strong>Enfriamiento de un café (ley de Newton).</strong> La temperatura <span class="math inline">\(y(t)\)</span> (en °C) de una taza de café en una habitación a <span class="math inline">\(20\)</span> °C obedece la ley de enfriamiento de Newton</p>
+<p><span class="math display">\[
+y' = -0.5\,(y - 20),
+\]</span></p>
+<p>con el tiempo <span class="math inline">\(t\)</span> medido en minutos.</p>
+<ol type="a">
+<li><p>Resolver simbólicamente la ecuación con la condición inicial <span class="math inline">\(y(0)=90\)</span>.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Ayuda
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Usar la función <a href="https://docs.juliahub.com/SymPyPythonCall/"><code>dsolve</code></a> del paquete <code>SymPyPythonCall</code> con el argumento <code>ics</code> para imponer la condición inicial, y la función <code>solve</code> para despejar el instante pedido.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>La ecuación es lineal (y separable).</p>
+<div id="eebbf023" class="cell" data-execution_count="11">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">SymPyPythonCall</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="pp">@syms</span> t <span class="fu">y</span>()</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>eq <span class="op">=</span> <span class="fu">Eq</span>(<span class="fu">diff</span>(<span class="fu">y</span>(t), t), <span class="op">-</span><span class="fl">1</span><span class="op">//</span><span class="fl">2</span> <span class="op">*</span> (<span class="fu">y</span>(t) <span class="op">-</span> <span class="fl">20</span>))</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>sol <span class="op">=</span> <span class="fu">dsolve</span>(eq, <span class="fu">y</span>(t), ics <span class="op">=</span> <span class="fu">Dict</span>(<span class="fu">y</span>(<span class="fl">0</span>) <span class="op">=&gt;</span> <span class="fl">90</span>))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="80">
+<p><span class="math inline">\(y{\left(t \right)} = 20 + 70 e^{- \frac{t}{2}}\)</span></p>
+</div>
+</div>
+</div>
+</div>
+</div></li>
+<li><p>Resolver numéricamente la ecuación con la condición inicial <span class="math inline">\(y(0)=90\)</span>, para valores de <span class="math inline">\(t\)</span> entre <span class="math inline">\(0\)</span> y <span class="math inline">\(10\)</span> minutos y dibujar la solución.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Ayuda
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Usar la función <a href="https://docs.sciml.ai/DiffEqDocs/stable/types/ode_types/"><code>ODEProblem</code></a> del paquete <code>DifferentialEquations</code> para definir un problema del valor inicial y la función <code>solve</code> para obtener la solución numérica.</p>
+<p>La función <code>ODEProblem</code> recibe como primer argumento una función <code>f(y, p, t)</code> que define la ecuación <span class="math inline">\(y' = f(y, p, t)\)</span>, donde <code>y</code> es la variable dependiente (la incógnita), <code>t</code> es la variable independiente y <code>p</code> es un vector de parámetros. El segundo argumento es el valor inicial <code>y0</code>, y el tercer argumento es el intervalo de integración <code>(t0, tf)</code>.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div id="ce515f8c" class="cell" data-execution_count="12">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">DifferentialEquations</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">f</span>(t, y) <span class="op">=</span> <span class="op">-</span><span class="fl">0.5</span> <span class="op">*</span> (y <span class="op">-</span> <span class="fl">20</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>prob <span class="op">=</span> <span class="fu">ODEProblem</span>((y, p, t) <span class="op">-&gt;</span> <span class="fu">f</span>(t, y), <span class="fl">90.0</span>, (<span class="fl">0.0</span>, <span class="fl">10.0</span>))</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>sol2 <span class="op">=</span> <span class="fu">solve</span>(prob)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>Plots.<span class="fu">plot</span>(sol2, lw <span class="op">=</span> <span class="fl">2</span>, xlab <span class="op">=</span> <span class="st">"Tiempo (min)"</span>, ylab <span class="op">=</span> <span class="st">"Temperatura (°C)"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="81">
+<div>
+<figure class="figure">
+<p><img src="01-edos-primer-orden_files/figure-html/cell-12-output-1.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div></li>
+<li><p>¿Qué temperatura tendrá el café a los 2 minutos?</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div id="258b462f" class="cell" data-execution_count="13">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">N</span>(<span class="fu">rhs</span>(sol)(<span class="fl">2</span>))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="82">
+<p><span class="math inline">\(- y e^{y} + 40 + \frac{140}{e}\)</span></p>
+</div>
+</div>
+<p>A los 2 minutos, la temperatura del café será de aproximadamente 45.8 °C.</p>
+</div>
+</div>
+</div></li>
+<li><p>¿Cuánto tarda el café en alcanzar los 30 ºC?</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div id="fe376abd" class="cell" data-execution_count="14">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">N</span>(<span class="fu">solve</span>(<span class="fu">rhs</span>(sol) <span class="op">-</span> <span class="fl">30</span>)[<span class="fl">1</span>])</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="83">
+<p><span class="math inline">\(- y e^{y} + 2 \log{\left(49 \right)}\)</span></p>
+</div>
+</div>
+</div>
+</div>
+</div></li>
+<li><p>Dibujar el campo de direcciones de la ecuación en la región <span class="math inline">\([0,10]\times[0,100]\)</span> junto con las curvas integrales correspondientes a <span class="math inline">\(y(0)=90\)</span>, <span class="math inline">\(y(0)=60\)</span>, <span class="math inline">\(y(0)=35\)</span>, <span class="math inline">\(y(0)=20\)</span> e <span class="math inline">\(y(0)=5\)</span>. ¿Qué se observa?</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Ayuda
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-8" class="callout-8-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Usar la función <code>campo_direcciones</code> definida al principio de la práctica y superponer las soluciones numéricas de varios problemas de valor inicial obtenidas con <a href="https://docs.sciml.ai/DiffEqDocs/stable/types/ode_types/"><code>ODEProblem</code></a> y <code>solve</code> del paquete <code>DifferentialEquations</code>.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-9" class="callout-9-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">Plots</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">Makie</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
+<div id="9ee4488d" class="cell" data-fig-format="png" data-execution_count="15">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Plots</span>, <span class="bu">DifferentialEquations</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">f</span>(t, y) <span class="op">=</span> <span class="op">-</span><span class="fl">0.5</span> <span class="op">*</span> (y <span class="op">-</span> <span class="fl">20</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>plt <span class="op">=</span> <span class="fu">campo_direcciones_plot</span>(f, <span class="fl">0</span><span class="op">:</span><span class="fl">0.5</span><span class="op">:</span><span class="fl">10</span>, <span class="fl">0</span><span class="op">:</span><span class="fl">5</span><span class="op">:</span><span class="fl">100</span>,</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    xlab <span class="op">=</span> <span class="st">"Tiempo (min)"</span>, ylab <span class="op">=</span> <span class="st">"Temperatura (°C)"</span>, legend <span class="op">=</span> <span class="cn">true</span>, size <span class="op">=</span> (<span class="fl">600</span>, <span class="fl">450</span>))</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Curvas integrales para distintas temperaturas iniciales.</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> y0 <span class="kw">in</span> [<span class="fl">90</span>, <span class="fl">60</span>, <span class="fl">35</span>, <span class="fl">20</span>, <span class="fl">5</span>]</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    prob <span class="op">=</span> <span class="fu">ODEProblem</span>((y, p, t) <span class="op">-&gt;</span> <span class="fu">f</span>(t, y), <span class="fu">float</span>(y0), (<span class="fl">0.0</span>, <span class="fl">10.0</span>))</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    sol <span class="op">=</span> <span class="fu">solve</span>(prob)</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    Plots.<span class="fu">plot!</span>(plt, sol, lw <span class="op">=</span> <span class="fl">2</span>, label <span class="op">=</span> L<span class="st">"y(0)=%</span><span class="sc">$</span>y0<span class="st">"</span>)</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>plt</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="84">
+<div>
+<figure class="figure">
+<p><img src="01-edos-primer-orden_files/figure-html/cell-15-output-1.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<div id="47afbce5" class="cell" data-fig-format="png" data-execution_count="16">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CairoMakie</span>, <span class="bu">DifferentialEquations</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">f</span>(t, y) <span class="op">=</span> <span class="op">-</span><span class="fl">0.5</span> <span class="op">*</span> (y <span class="op">-</span> <span class="fl">20</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> <span class="fu">Figure</span>()</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> <span class="fu">Axis</span>(fig[<span class="fl">1</span>, <span class="fl">1</span>], xlabel <span class="op">=</span> <span class="st">"Tiempo (min)"</span>, ylabel <span class="op">=</span> <span class="st">"Temperatura (°C)"</span>, limits <span class="op">=</span> ((<span class="fl">0</span>, <span class="fl">10</span>), (<span class="fl">0</span>, <span class="fl">100</span>)))</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="fu">campo_direcciones_makie!</span>(ax, f, <span class="fl">0</span><span class="op">:</span><span class="fl">0.5</span><span class="op">:</span><span class="fl">10</span>, <span class="fl">0</span><span class="op">:</span><span class="fl">5</span><span class="op">:</span><span class="fl">100</span>, escala <span class="op">=</span> <span class="fl">0.4</span>)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Curvas integrales para distintas temperaturas iniciales.</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> y0 <span class="kw">in</span> [<span class="fl">90</span>, <span class="fl">60</span>, <span class="fl">35</span>, <span class="fl">20</span>, <span class="fl">5</span>]</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>prob <span class="op">=</span> <span class="fu">ODEProblem</span>((y, p, t) <span class="op">-&gt;</span> <span class="fu">f</span>(t, y), <span class="fu">float</span>(y0), (<span class="fl">0.0</span>, <span class="fl">10.0</span>))</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>sol <span class="op">=</span> <span class="fu">solve</span>(prob)</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>Makie.<span class="fu">lines!</span>(ax, sol.t, sol.u, linewidth <span class="op">=</span> <span class="fl">2</span>, label <span class="op">=</span> L<span class="st">"y(0)=%</span><span class="sc">$</span>y0<span class="st">"</span>)</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>fig</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<div class="ansi-escaped-output">
+<pre><span class="ansi-yellow-fg ansi-bold">┌ </span><span class="ansi-yellow-fg ansi-bold">Warning: </span>Found `resolution` in the theme when creating a `Scene`. The `resolution` keyword for `Scene`s and `Figure`s has been deprecated. Use `Figure(; size = ...` or `Scene(; size = ...)` instead, which better reflects that this is a unitless size and not a pixel resolution. The key could also come from `set_theme!` calls or related theming functions.
+
+<span class="ansi-yellow-fg ansi-bold">└ </span><span class="ansi-bright-black-fg">@ Makie ~/.julia/packages/Makie/kJl0u/src/scenes.jl:264</span>
+</pre>
+</div>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="85">
+<div>
+<figure class="figure">
+<p><img src="01-edos-primer-orden_files/figure-html/cell-16-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Todas las curvas integrales tienden a la temperatura ambiente <span class="math inline">\(y=20\)</span>: el campo de direcciones “empuja” cualquier solución hacia la recta horizontal <span class="math inline">\(y=20\)</span>, que es un punto de equilibrio estable.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div></li>
+</ol>
+</div>
+<div id="exr-linea-fases-pesqueria" class="theorem exercise">
+<p><span class="theorem-title"><strong>Ejercicio 1.2</strong></span> <strong>Dinámica de una población de peces.</strong> La biomasa <span class="math inline">\(y(t)\)</span> (en miles de toneladas) de una población de atunes sigue el modelo logístico</p>
+<p><span class="math display">\[
+y' = 0.4\, y\left(1 - \frac{y}{10}\right),
+\]</span></p>
+<p>con <span class="math inline">\(t\)</span> en años.</p>
+<ol type="a">
+<li><p>Calcular los puntos de equilibrio, clasificar su estabilidad y dibujar la línea de fases.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Ayuda
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-10" class="callout-10-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Los puntos de equilibrio son las raíces de <span class="math inline">\(f(y)=0.4y(1-y/10)\)</span>. Un equilibrio <span class="math inline">\(y^*\)</span> es estable si <span class="math inline">\(f'(y^*)&lt;0\)</span> e inestable si <span class="math inline">\(f'(y^*)&gt;0\)</span>. La línea de fases puede representarse dibujando <span class="math inline">\(f(y)\)</span> frente a <span class="math inline">\(y\)</span> y marcando el signo de <span class="math inline">\(f\)</span>.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-11-contents" aria-controls="callout-11" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-11" class="callout-11-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div id="48ea9919" class="cell" data-execution_count="17">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">SymPyPythonCall</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="pp">@syms</span> u</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>fexpr <span class="op">=</span> <span class="fl">0.4</span> <span class="op">*</span> u <span class="op">*</span> (<span class="fl">1</span> <span class="op">-</span> u <span class="op">/</span> <span class="fl">10</span>)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>equilibrios <span class="op">=</span> <span class="fu">solve</span>(fexpr, u)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="86">
+<p><span class="math inline">\(\left[\begin{smallmatrix}0.0\\10.0\end{smallmatrix}\right]\)</span></p>
+</div>
+</div>
+<div id="aa727017" class="cell" data-execution_count="18">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>dfdu <span class="op">=</span> <span class="fu">diff</span>(fexpr, u)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>[(y0, <span class="fu">dfdu</span>(u <span class="op">=&gt;</span> y0)) for y0 <span class="kw">in</span> equilibrios]</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="87">
+<pre><code>2-element Vector{Tuple{Sym{PythonCall.Py}, Sym{PythonCall.Py}}}:
+ (0.0, 0.400000000000000)
+ (10.0000000000000, -0.400000000000000)</code></pre>
+</div>
+</div>
+<p>Como <span class="math inline">\(f'(0)=0.4&gt;0\)</span>, el equilibrio <span class="math inline">\(y^*=0\)</span> es <strong>inestable</strong> (extinción repulsora), y como <span class="math inline">\(f'(10)=-0.4&lt;0\)</span>, el equilibrio <span class="math inline">\(y^*=10\)</span> (la capacidad de carga) es <strong>estable</strong>. Dibujamos <span class="math inline">\(f(y)\)</span> y la línea de fases:</p>
+<div id="69ca8ec5" class="cell" data-execution_count="19">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Plots</span>, <span class="bu">LaTeXStrings</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">fnum</span>(y) <span class="op">=</span> <span class="fl">0.4</span>y <span class="op">*</span> (<span class="fl">1</span> <span class="op">-</span> y <span class="op">/</span> <span class="fl">10</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>Plots.<span class="fu">plot</span>(fnum, <span class="op">-</span><span class="fl">1</span>, <span class="fl">12</span>, lw <span class="op">=</span> <span class="fl">2</span>, label <span class="op">=</span> L<span class="st">"f(y)"</span>, xlab <span class="op">=</span> L<span class="st">"y"</span>, ylab <span class="op">=</span> L<span class="st">"y'"</span>)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="fu">hline!</span>([<span class="fl">0</span>], color <span class="op">=</span> <span class="op">:</span>black, label <span class="op">=</span> <span class="st">""</span>)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>Plots.<span class="fu">scatter!</span>([<span class="fl">0</span>], [<span class="fl">0</span>], color <span class="op">=</span> <span class="op">:</span>red, ms <span class="op">=</span> <span class="fl">6</span>, label <span class="op">=</span> <span class="st">"Inestable"</span>)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>Plots.<span class="fu">scatter!</span>([<span class="fl">10</span>], [<span class="fl">0</span>], color <span class="op">=</span> <span class="op">:</span>green, ms <span class="op">=</span> <span class="fl">6</span>, label <span class="op">=</span> <span class="st">"Estable"</span>)</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Flechas de la línea de fases sobre el eje horizontal.</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>Plots.<span class="fu">plot!</span>([<span class="fl">2</span>, <span class="fl">4</span>], [<span class="fl">0</span>, <span class="fl">0</span>], arrow <span class="op">=</span> <span class="cn">true</span>, lw <span class="op">=</span> <span class="fl">3</span>, color <span class="op">=</span> <span class="op">:</span>blue, label <span class="op">=</span> <span class="st">""</span>)</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>Plots.<span class="fu">plot!</span>([<span class="fl">12</span>, <span class="fl">11</span>], [<span class="fl">0</span>, <span class="fl">0</span>], arrow <span class="op">=</span> <span class="cn">true</span>, lw <span class="op">=</span> <span class="fl">3</span>, color <span class="op">=</span> <span class="op">:</span>blue, label <span class="op">=</span> <span class="st">""</span>)</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>Plots.<span class="fu">plot!</span>([<span class="op">-</span><span class="fl">1</span>, <span class="op">-</span><span class="fl">0.5</span>], [<span class="fl">0</span>, <span class="fl">0</span>], arrow <span class="op">=</span> <span class="op">:</span>head, lw <span class="op">=</span> <span class="fl">3</span>, color <span class="op">=</span> <span class="op">:</span>blue, label <span class="op">=</span> <span class="st">""</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="88">
+<div>
+<figure class="figure">
+<p><img src="01-edos-primer-orden_files/figure-html/cell-19-output-1.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>En <span class="math inline">\(0&lt;y&lt;10\)</span> se tiene <span class="math inline">\(f(y)&gt;0\)</span> y la biomasa crece hacia 10; en <span class="math inline">\(y&gt;10\)</span>, <span class="math inline">\(f(y)&lt;0\)</span> y decrece hacia 10. Cualquier población inicial positiva tiende a las 10 mil toneladas.</p>
+</div>
+</div>
+</div></li>
+<li><p>Comprobar la conclusión anterior dibujando las soluciones numéricas con condiciones iniciales <span class="math inline">\(y(0)=0.5, 2, 12\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-12-contents" aria-controls="callout-12" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-12" class="callout-12-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div id="0945d4cb" class="cell" data-execution_count="20">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">DifferentialEquations</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>plt <span class="op">=</span> Plots.<span class="fu">plot</span>(xlab <span class="op">=</span> <span class="st">"Tiempo"</span>, ylab <span class="op">=</span> <span class="st">"Biomasa (miles de toneladas)"</span>, legend <span class="op">=</span> <span class="op">:</span>right)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> y0 <span class="kw">in</span> [<span class="fl">0.5</span>, <span class="fl">2.0</span>, <span class="fl">12.0</span>]</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    prob <span class="op">=</span> <span class="fu">ODEProblem</span>((y, p, t) <span class="op">-&gt;</span> <span class="fu">fnum</span>(y), y0, (<span class="fl">0.0</span>, <span class="fl">25.0</span>))</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    Plots.<span class="fu">plot!</span>(plt, <span class="fu">solve</span>(prob), lw <span class="op">=</span> <span class="fl">2</span>, label <span class="op">=</span> L<span class="st">"y(0)=%</span><span class="sc">$</span>y0<span class="st">"</span>)</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="fu">hline!</span>(plt, [<span class="fl">10</span>], ls <span class="op">=</span> <span class="op">:</span>dash, color <span class="op">=</span> <span class="op">:</span>green, label <span class="op">=</span> <span class="st">"Capacidad de carga"</span>)</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>plt</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="89">
+<div>
+<figure class="figure">
+<p><img src="01-edos-primer-orden_files/figure-html/cell-20-output-1.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Las tres soluciones convergen a <span class="math inline">\(y=10\)</span>, como predice la línea de fases.</p>
+</div>
+</div>
+</div></li>
+</ol>
+</div>
+<div id="exr-bifurcacion-pesca" class="theorem exercise">
+<p><span class="theorem-title"><strong>Ejercicio 1.3</strong></span> <strong>Bifurcación en una pesquería con capturas.</strong> Si sobre la población del ejercicio anterior se pesca a un ritmo constante de <span class="math inline">\(h\)</span> miles de toneladas al año, el modelo pasa a ser</p>
+<p><span class="math display">\[
+y' = 0.4\,y\left(1-\frac{y}{10}\right) - h.
+\]</span></p>
+<ol type="a">
+<li><p>Calcular los puntos de equilibrio en función de <span class="math inline">\(h\)</span> y determinar el valor crítico <span class="math inline">\(h^*\)</span> a partir del cual la población colapsa (bifurcación silla-nodo).</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-13-contents" aria-controls="callout-13" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Ayuda
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-13" class="callout-13-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Resolver simbólicamente <span class="math inline">\(0.4y(1-y/10)-h=0\)</span> con <code>solve</code> de <code>SymPy</code>. Los equilibrios existen mientras el discriminante sea no negativo.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-14-contents" aria-controls="callout-14" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-14" class="callout-14-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div id="eb7decb1" class="cell" data-execution_count="21">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">SymPyPythonCall</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="pp">@syms</span> u h<span class="op">::</span><span class="dt">positive</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>equilibrios <span class="op">=</span> <span class="fu">solve</span>(<span class="fl">0.4</span> <span class="op">*</span> u <span class="op">*</span> (<span class="fl">1</span> <span class="op">-</span> u <span class="op">/</span> <span class="fl">10</span>) <span class="op">-</span> h, u)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="90">
+<p><span class="math inline">\(\left[\begin{smallmatrix}5.0 - 5.0 \sqrt{1.0 - h}\\5.0 \sqrt{1.0 - h} + 5.0\end{smallmatrix}\right]\)</span></p>
+</div>
+</div>
+<p>Los equilibrios son <span class="math inline">\(y^*_\pm = 5 \pm 5\sqrt{1 - h}\)</span>. Existen dos equilibrios (uno estable, <span class="math inline">\(y^*_+\)</span>, y otro inestable, <span class="math inline">\(y^*_-\)</span>) si <span class="math inline">\(h&lt;1\)</span>, se funden en uno solo si <span class="math inline">\(h=1\)</span> y desaparecen si <span class="math inline">\(h&gt;1\)</span>:</p>
+<div id="8fa257cd" class="cell" data-execution_count="22">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>hcrit <span class="op">=</span> <span class="fu">solve</span>(<span class="fl">1</span> <span class="op">-</span> h, h)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="91">
+<p><span class="math inline">\(\left[\begin{smallmatrix}1\end{smallmatrix}\right]\)</span></p>
+</div>
+</div>
+<p>El valor crítico es <span class="math inline">\(h^*=1\)</span> (mil toneladas/año), que coincide con el máximo de la producción logística <span class="math inline">\(\max_y 0.4y(1-y/10) = 0.4\cdot 10/4 = 1\)</span>. Si se pesca por encima del <em>rendimiento máximo sostenible</em>, <span class="math inline">\(y'&lt;0\)</span> para todo <span class="math inline">\(y\)</span> y la población se extingue en tiempo finito.</p>
+</div>
+</div>
+</div></li>
+<li><p>Dibujar el diagrama de bifurcación (equilibrios <span class="math inline">\(y^*\)</span> frente al parámetro <span class="math inline">\(h\)</span>).</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-15-contents" aria-controls="callout-15" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-15" class="callout-15-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div id="0cd33820" class="cell" data-execution_count="23">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>hs <span class="op">=</span> <span class="fl">0</span><span class="op">:</span><span class="fl">0.01</span><span class="op">:</span><span class="fl">1</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>yplus  <span class="op">=</span> <span class="fl">5</span> <span class="op">.+</span> <span class="fl">5</span> <span class="op">.*</span> <span class="fu">sqrt</span>.(<span class="fl">1</span> <span class="op">.-</span> hs)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>yminus <span class="op">=</span> <span class="fl">5</span> <span class="op">.-</span> <span class="fl">5</span> <span class="op">.*</span> <span class="fu">sqrt</span>.(<span class="fl">1</span> <span class="op">.-</span> hs)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>Plots.<span class="fu">plot</span>(hs, yplus, lw <span class="op">=</span> <span class="fl">2</span>, color <span class="op">=</span> <span class="op">:</span>green, label <span class="op">=</span> <span class="st">"Equilibrio estable"</span>, xlab <span class="op">=</span> L<span class="st">"h"</span>, ylab <span class="op">=</span> L<span class="st">"y^*"</span>)</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>Plots.<span class="fu">plot!</span>(hs, yminus, lw <span class="op">=</span> <span class="fl">2</span>, ls <span class="op">=</span> <span class="op">:</span>dash, color <span class="op">=</span> <span class="op">:</span>red, label <span class="op">=</span> <span class="st">"Equilibrio inestable"</span>)</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>Plots.<span class="fu">scatter!</span>([<span class="fl">1</span>], [<span class="fl">5</span>], color <span class="op">=</span> <span class="op">:</span>black, ms <span class="op">=</span> <span class="fl">6</span>, label <span class="op">=</span> <span class="st">"Bifurcación silla-nodo"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="92">
+<div>
+<figure class="figure">
+<p><img src="01-edos-primer-orden_files/figure-html/cell-23-output-1.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Las dos ramas de equilibrios se unen en <span class="math inline">\((h^*, y^*)=(1,5)\)</span> y desaparecen: es una <strong>bifurcación silla-nodo</strong>. Este diagrama muestra por qué las cuotas de pesca deben fijarse con margen de seguridad respecto a <span class="math inline">\(h^*\)</span>.</p>
+</div>
+</div>
+</div></li>
+</ol>
+</div>
+<div id="exr-separables-carbono" class="theorem exercise">
+<p><span class="theorem-title"><strong>Ejercicio 1.4</strong></span> <strong>Variables separables: datación por carbono-14.</strong> La cantidad <span class="math inline">\(y(t)\)</span> de <span class="math inline">\(^{14}\)</span>C en un resto orgánico satisface <span class="math inline">\(y' = -\lambda y\)</span> con <span class="math inline">\(\lambda = \ln 2/5730\)</span> años<span class="math inline">\(^{-1}\)</span> (semivida de 5730 años).</p>
+<p>En 1991 se descubrió en los Alpes la momia de Ötzi, cuyos tejidos conservaban aproximadamente el <span class="math inline">\(53\%\)</span> del <span class="math inline">\(^{14}\)</span>C original. Resolver la ecuación por separación de variables y estimar la antigüedad de la momia.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-16-contents" aria-controls="callout-16" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Ayuda
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-16" class="callout-16-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Separar variables: <span class="math inline">\(\frac{dy}{y} = -\lambda\, dt\)</span>, integrar ambos miembros con <code>integrate</code> de <code>SymPy</code> y despejar. Comprobar el resultado con <code>dsolve</code>.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-17-contents" aria-controls="callout-17" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-17" class="callout-17-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Separando variables e integrando, <span class="math inline">\(\ln y = -\lambda t + C\)</span>, luego <span class="math inline">\(y(t)=y_0 e^{-\lambda t}\)</span>. Reproducimos el proceso simbólicamente:</p>
+<div id="50168eb2" class="cell" data-execution_count="24">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@syms</span> t <span class="fu">y</span>() λ<span class="op">::</span><span class="dt">positive </span>y0<span class="op">::</span><span class="dt">positive</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Comprobación directa con dsolve:</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>sol <span class="op">=</span> <span class="fu">dsolve</span>(<span class="fu">Eq</span>(<span class="fu">diff</span>(<span class="fu">y</span>(t), t), <span class="op">-</span>λ <span class="op">*</span> <span class="fu">y</span>(t)), <span class="fu">y</span>(t), ics <span class="op">=</span> <span class="fu">Dict</span>(<span class="fu">y</span>(<span class="fl">0</span>) <span class="op">=&gt;</span> y0))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="93">
+<p><span class="math inline">\(y{\left(t \right)} = y_{0} e^{- t λ}\)</span></p>
+</div>
+</div>
+<p>Imponemos <span class="math inline">\(y(t)/y_0 = 0.53\)</span> con <span class="math inline">\(\lambda = \ln 2/5730\)</span>:</p>
+<div id="ebd5e767" class="cell" data-execution_count="25">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>λv <span class="op">=</span> <span class="fu">log</span>(<span class="fu">Sym</span>(<span class="fl">2</span>)) <span class="op">/</span> <span class="fl">5730</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>edad <span class="op">=</span> <span class="fu">solve</span>(<span class="fu">Eq</span>(<span class="fu">exp</span>(<span class="op">-</span>λv <span class="op">*</span> t), <span class="fu">Sym</span>(<span class="fl">53</span>) <span class="op">/</span> <span class="fl">100</span>), t)[<span class="fl">1</span>]</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="fu">N</span>(edad)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="94">
+<p><span class="math inline">\(- y e^{y} + 2 \log{\left(\left(\frac{100}{53}\right)^{\frac{5730}{\log{\left(2 \right)}}} \right)}\)</span></p>
+</div>
+</div>
+<p>La momia tiene una antigüedad de unos <strong>5250 años</strong>, en excelente acuerdo con la datación arqueológica de Ötzi (≈ 5300 años).</p>
+</div>
+</div>
+</div>
+</div>
+<div id="exr-homogenea-avion" class="theorem exercise">
+<p><span class="theorem-title"><strong>Ejercicio 1.5</strong></span> <strong>Ecuación homogénea: trayectoria de un avión con viento.</strong> Un avión parte del punto <span class="math inline">\((a, 0) = (200, 0)\)</span> km y vuela siempre apuntando hacia el aeropuerto situado en el origen con velocidad <span class="math inline">\(v_0=250\)</span> km/h, mientras sopla un viento hacia el norte de velocidad <span class="math inline">\(w=50\)</span> km/h. Su trayectoria <span class="math inline">\(y(x)\)</span> satisface la ecuación homogénea</p>
+<p><span class="math display">\[
+y' = \frac{y - k\sqrt{x^2+y^2}}{x}, \qquad k = \frac{w}{v_0} = 0.2.
+\]</span></p>
+<ol type="a">
+<li><p>Comprobar que la ecuación es homogénea y resolverla con el cambio <span class="math inline">\(y = ux\)</span>.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-18-contents" aria-controls="callout-18" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Ayuda
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-18" class="callout-18-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Una ecuación <span class="math inline">\(y'=f(x,y)\)</span> es homogénea si <span class="math inline">\(f(\lambda x,\lambda y) = f(x, y)\)</span>. Con el cambio <span class="math inline">\(y=ux\)</span> se obtiene una ecuación de variables separables en <span class="math inline">\(u\)</span> y <span class="math inline">\(x\)</span>. Puede resolverse directamente con <code>dsolve</code> y comprobar que la solución es <span class="math inline">\(y = \frac{a}{2}\left[\left(\frac{x}{a}\right)^{1-k} - \left(\frac{x}{a}\right)^{1+k}\right]\)</span>.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-19-contents" aria-controls="callout-19" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-19" class="callout-19-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Con <span class="math inline">\(x&gt;0\)</span>, <span class="math inline">\(f(\lambda x, \lambda y) = \frac{\lambda y - k\lambda\sqrt{x^2+y^2}}{\lambda x} = f(x,y)\)</span>, luego es homogénea. Con <span class="math inline">\(y=ux\)</span>, <span class="math inline">\(y'=u+xu'\)</span> y la ecuación queda <span class="math inline">\(x u' = -k\sqrt{1+u^2}\)</span>, separable:</p>
+<p><span class="math display">\[
+\int \frac{du}{\sqrt{1+u^2}} = -k \int \frac{dx}{x}
+\;\Rightarrow\;
+\operatorname{arcsinh}(u) = -k \ln x + C.
+\]</span></p>
+<p>Resolvemos simbólicamente y aplicamos la condición inicial <span class="math inline">\(y(200)=0\)</span>:</p>
+<div id="623b95ff" class="cell" data-execution_count="26">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">SymPyPythonCall</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="pp">@syms</span> x<span class="op">::</span><span class="dt">positive </span><span class="fu">y</span>()</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>k, a <span class="op">=</span> <span class="fu">Sym</span>(<span class="fl">1</span>)<span class="op">/</span><span class="fl">5</span>, <span class="fl">200</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>eq <span class="op">=</span> <span class="fu">Eq</span>(<span class="fu">diff</span>(<span class="fu">y</span>(x), x), (<span class="fu">y</span>(x) <span class="op">-</span> k <span class="op">*</span> <span class="fu">sqrt</span>(x<span class="op">^</span><span class="fl">2</span> <span class="op">+</span> <span class="fu">y</span>(x)<span class="op">^</span><span class="fl">2</span>)) <span class="op">/</span> x)</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>sol <span class="op">=</span> <span class="fu">dsolve</span>(eq, <span class="fu">y</span>(x), ics <span class="op">=</span> <span class="fu">Dict</span>(<span class="fu">y</span>(a) <span class="op">=&gt;</span> <span class="fl">0</span>))</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="fu">simplify</span>(<span class="fu">rhs</span>(sol))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="95">
+<p><span class="math inline">\(- x \sinh{\left(\frac{\log{\left(x \right)}}{5} - \frac{\log{\left(200 \right)}}{5} \right)}\)</span></p>
+</div>
+</div>
+<p>La trayectoria es <span class="math inline">\(y(x) = \frac{a}{2}\left[\left(\frac{x}{a}\right)^{1-k} - \left(\frac{x}{a}\right)^{1+k}\right] = 100\left[\left(\frac{x}{200}\right)^{0.8} - \left(\frac{x}{200}\right)^{1.2}\right]\)</span>.</p>
+</div>
+</div>
+</div></li>
+<li><p>Dibujar la trayectoria. ¿Llega el avión al aeropuerto? ¿Cuál es la máxima desviación hacia el norte?</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-20-contents" aria-controls="callout-20" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-20" class="callout-20-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div id="3cc8ed28" class="cell" data-execution_count="27">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">traj</span>(x) <span class="op">=</span> <span class="fl">100</span> <span class="op">*</span> ((x <span class="op">/</span> <span class="fl">200</span>)<span class="op">^</span><span class="fl">0.8</span> <span class="op">-</span> (x <span class="op">/</span> <span class="fl">200</span>)<span class="op">^</span><span class="fl">1.2</span>)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>Plots.<span class="fu">plot</span>(traj, <span class="fl">0</span>, <span class="fl">200</span>, lw <span class="op">=</span> <span class="fl">2</span>, label <span class="op">=</span> <span class="st">"Trayectoria"</span>, aspect_ratio <span class="op">=</span> <span class="op">:</span>equal, xlab <span class="op">=</span> L<span class="st">"x \; (km)"</span>, ylab <span class="op">=</span> L<span class="st">"y \; (km)"</span>)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>Plots.<span class="fu">scatter!</span>([<span class="fl">200</span>], [<span class="fl">0</span>], label <span class="op">=</span> <span class="st">"Salida"</span>); Plots.<span class="fu">scatter!</span>([<span class="fl">0</span>], [<span class="fl">0</span>], label <span class="op">=</span> <span class="st">"Aeropuerto"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="96">
+<div>
+<figure class="figure">
+<p><img src="01-edos-primer-orden_files/figure-html/cell-27-output-1.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="d9b2471a" class="cell" data-execution_count="28">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Roots</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Máxima desviación:</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>xmax <span class="op">=</span> <span class="fu">find_zero</span>(x <span class="op">-&gt;</span> <span class="fl">0.8</span> <span class="op">*</span> (x<span class="op">/</span><span class="fl">200</span>)<span class="op">^</span>(<span class="op">-</span><span class="fl">0.2</span>) <span class="op">-</span> <span class="fl">1.2</span> <span class="op">*</span> (x<span class="op">/</span><span class="fl">200</span>)<span class="op">^</span><span class="fl">0.2</span>, <span class="fl">100</span>) <span class="op">/</span> <span class="fl">200</span> <span class="op">|&gt;</span> </span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>        u <span class="op">-&gt;</span> <span class="fl">200</span>u</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>(xmax, <span class="fu">traj</span>(xmax))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="97">
+<pre><code>(72.57747386024232, 14.814814814814808)</code></pre>
+</div>
+</div>
+<p>Como <span class="math inline">\(k&lt;1\)</span>, <span class="math inline">\(y(x)\to 0\)</span> cuando <span class="math inline">\(x\to 0^+\)</span>: el avión <strong>sí llega</strong> al origen (si fuera <span class="math inline">\(k\ge 1\)</span>, el viento le impediría llegar). La desviación máxima es de unos <span class="math inline">\(27\)</span> km hacia el norte, alcanzada en <span class="math inline">\(x \approx 73\)</span> km.</p>
+</div>
+</div>
+</div></li>
+</ol>
+</div>
+<div id="exr-exacta-termodinamica" class="theorem exercise">
+<p><span class="theorem-title"><strong>Ejercicio 1.6</strong></span> <strong>Ecuación exacta: curvas de energía en mecánica.</strong> Las órbitas de un oscilador no lineal en el plano <span class="math inline">\((x, y)\)</span> (posición–velocidad) satisfacen</p>
+<p><span class="math display">\[
+(x^3 - 2xy)\,dx + (y - x^2)\,dy = 0.
+\]</span></p>
+<ol type="a">
+<li><p>Comprobar que la ecuación es exacta y hallar la familia de curvas integrales <span class="math inline">\(F(x,y)=C\)</span>.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-21-contents" aria-controls="callout-21" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Ayuda
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-21" class="callout-21-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>La ecuación <span class="math inline">\(M\,dx + N\,dy = 0\)</span> es exacta si <span class="math inline">\(\partial M/\partial y = \partial N/\partial x\)</span>. En tal caso <span class="math inline">\(F(x, y) = \int M\, dx + g(y)\)</span>, donde <span class="math inline">\(g\)</span> se determina imponiendo <span class="math inline">\(\partial F/\partial y = N\)</span>. Usar <code>diff</code> e <code>integrate</code> de <code>SymPy</code>.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-22-contents" aria-controls="callout-22" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-22" class="callout-22-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div id="f081e996" class="cell" data-execution_count="29">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">SymPyPythonCall</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="pp">@syms</span> x y</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>M <span class="op">=</span> x<span class="op">^</span><span class="fl">3</span> <span class="op">-</span> <span class="fl">2</span>x <span class="op">*</span> y</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>N <span class="op">=</span> y <span class="op">-</span> x<span class="op">^</span><span class="fl">2</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="fu">diff</span>(M, y) <span class="op">==</span> <span class="fu">diff</span>(N, x)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="98">
+<pre><code>true</code></pre>
+</div>
+</div>
+<p>Ambas derivadas cruzadas valen <span class="math inline">\(-2x\)</span>: la ecuación es <strong>exacta</strong>. Construimos el potencial:</p>
+<div id="2a61e977" class="cell" data-execution_count="30">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>F <span class="op">=</span> <span class="fu">integrate</span>(M, x)          <span class="co"># F = x⁴/4 − x²y + g(y)</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>g <span class="op">=</span> <span class="fu">integrate</span>(N <span class="op">-</span> <span class="fu">diff</span>(F, y), y)</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>F <span class="op">=</span> F <span class="op">+</span> g</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="99">
+<p><span class="math inline">\(\frac{x^{4}}{4} - x^{2} y + \frac{y^{2}}{2}\)</span></p>
+</div>
+</div>
+<p>Las curvas integrales son</p>
+<p><span class="math display">\[
+F(x, y) = \frac{x^4}{4} - x^2 y + \frac{y^2}{2} = C.
+\]</span></p>
+</div>
+</div>
+</div></li>
+<li><p>Dibujar varias curvas de nivel de <span class="math inline">\(F\)</span> en <span class="math inline">\([-2,2]\times[-2,2]\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-23-contents" aria-controls="callout-23" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-23" class="callout-23-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div id="ff272e61" class="cell" data-execution_count="31">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Fnum</span>(x, y) <span class="op">=</span> x<span class="op">^</span><span class="fl">4</span> <span class="op">/</span> <span class="fl">4</span> <span class="op">-</span> x<span class="op">^</span><span class="fl">2</span> <span class="op">*</span> y <span class="op">+</span> y<span class="op">^</span><span class="fl">2</span> <span class="op">/</span> <span class="fl">2</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> ys <span class="op">=</span> <span class="fu">range</span>(<span class="op">-</span><span class="fl">2</span>, <span class="fl">2</span>, length <span class="op">=</span> <span class="fl">300</span>)</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>Plots.<span class="fu">contour</span>(xs, ys, Fnum, levels <span class="op">=</span> <span class="fl">20</span>, xlab <span class="op">=</span> L<span class="st">"x"</span>, ylab <span class="op">=</span> L<span class="st">"y"</span>,</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>        color <span class="op">=</span> <span class="op">:</span>viridis, cbar <span class="op">=</span> <span class="cn">true</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="100">
+<div>
+<figure class="figure">
+<p><img src="01-edos-primer-orden_files/figure-html/cell-31-output-1.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Las curvas de nivel de <span class="math inline">\(F\)</span> (la “energía” del sistema) son las curvas integrales de la ecuación: la solución que pasa por cada punto es la curva de nivel que lo contiene.</p>
+</div>
+</div>
+</div></li>
+</ol>
+</div>
+<div id="exr-factor-integrante" class="theorem exercise">
+<p><span class="theorem-title"><strong>Ejercicio 1.7</strong></span> <strong>Factor integrante.</strong> La ecuación</p>
+<p><span class="math display">\[
+y\,dx + (2x - y e^{y})\,dy = 0
+\]</span></p>
+<p>no es exacta. Hallar un factor integrante de la forma <span class="math inline">\(\mu(y)\)</span>, resolver la ecuación y comprobar el resultado con <code>dsolve</code>.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-24-contents" aria-controls="callout-24" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Ayuda
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-24" class="callout-24-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Si <span class="math inline">\(\dfrac{\partial N/\partial x - \partial M/\partial y}{M}\)</span> depende solo de <span class="math inline">\(y\)</span>, entonces <span class="math inline">\(\mu(y) = e^{\int \frac{N_x - M_y}{M}\,dy}\)</span> es un factor integrante.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-25-contents" aria-controls="callout-25" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-25" class="callout-25-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div id="95f9fc04" class="cell" data-execution_count="32">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@syms</span> x y</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>M <span class="op">=</span> y</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>N <span class="op">=</span> <span class="fl">2</span>x <span class="op">-</span> y <span class="op">*</span> <span class="fu">exp</span>(y)</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>cociente <span class="op">=</span> <span class="fu">simplify</span>((<span class="fu">diff</span>(N, x) <span class="op">-</span> <span class="fu">diff</span>(M, y)) <span class="op">/</span> M)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="101">
+<p><span class="math inline">\(\frac{1}{y}\)</span></p>
+</div>
+</div>
+<p>El cociente vale <span class="math inline">\(1/y\)</span>, que depende solo de <span class="math inline">\(y\)</span>, luego</p>
+<div id="69bf914b" class="cell" data-execution_count="33">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>μ <span class="op">=</span> <span class="fu">exp</span>(<span class="fu">integrate</span>(cociente, y))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="102">
+<p><span class="math inline">\(y\)</span></p>
+</div>
+</div>
+<p>es decir, <span class="math inline">\(\mu(y)=y\)</span>. Multiplicando la ecuación por <span class="math inline">\(\mu\)</span>, queda <span class="math inline">\(y^2\,dx + (2xy - y^2 e^y)\,dy = 0\)</span>, que ya es exacta:</p>
+<div id="731dca3e" class="cell" data-execution_count="34">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>M2, N2 <span class="op">=</span> μ <span class="op">*</span> M, μ <span class="op">*</span> N</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">diff</span>(M2, y) <span class="op">==</span> <span class="fu">diff</span>(N2, x)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="103">
+<pre><code>true</code></pre>
+</div>
+</div>
+<div id="80489958" class="cell" data-execution_count="35">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>F <span class="op">=</span> <span class="fu">integrate</span>(M2, x)</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>F <span class="op">=</span> F <span class="op">+</span> <span class="fu">integrate</span>(N2 <span class="op">-</span> <span class="fu">diff</span>(F, y), y) <span class="op">|&gt;</span> simplify</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="104">
+<p><span class="math inline">\(x y^{2} + \left(- y^{2} + 2 y - 2\right) e^{y}\)</span></p>
+</div>
+</div>
+<p>La solución general es <span class="math inline">\(x y^2 - (y^2 - 2y + 2)e^y = C\)</span>. Comprobación con <code>dsolve</code> (tratando <span class="math inline">\(x\)</span> como función de <span class="math inline">\(y\)</span>, pues la ecuación es lineal en <span class="math inline">\(x\)</span>):</p>
+<div id="7674f16c" class="cell" data-execution_count="36">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@syms</span> t <span class="fu">x</span>()</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>sol <span class="op">=</span> <span class="fu">dsolve</span>(<span class="fu">Eq</span>(<span class="fu">diff</span>(<span class="fu">x</span>(t), t), (t <span class="op">*</span> <span class="fu">exp</span>(t) <span class="op">-</span> <span class="fl">2</span><span class="fu">x</span>(t)) <span class="op">/</span> t), <span class="fu">x</span>(t))</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="fu">simplify</span>(<span class="fu">rhs</span>(sol))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="105">
+<p><span class="math inline">\(\frac{C_{1} + t^{2} e^{t} - 2 t e^{t} + 2 e^{t}}{t^{2}}\)</span></p>
+</div>
+</div>
+<p>Despejando se recupera la misma familia de curvas.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="exr-lineal-circuito" class="theorem exercise">
+<p><span class="theorem-title"><strong>Ejercicio 1.8</strong></span> <strong>Ecuación lineal: circuito RC.</strong> En un circuito RC en serie con resistencia <span class="math inline">\(R = 1000\ \Omega\)</span>, condensador de capacidad <span class="math inline">\(C=10^{-4}\)</span> F y fuente de tensión alterna <span class="math inline">\(E(t) = 12\cos(10 t)\)</span> V, la carga <span class="math inline">\(q(t)\)</span> del condensador satisface la ecuación lineal</p>
+<p><span class="math display">\[
+R\,q' + \frac{q}{C} = E(t)
+\quad\Longleftrightarrow\quad
+q' + 10\,q = 0.012\cos(10 t).
+\]</span></p>
+<ol type="a">
+<li><p>Resolver la ecuación con <span class="math inline">\(q(0)=0\)</span> usando el método del factor integrante y separar la solución en régimen transitorio y régimen permanente.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-26-contents" aria-controls="callout-26" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Ayuda
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-26" class="callout-26-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Para la ecuación lineal <span class="math inline">\(q' + a q = b(t)\)</span>, el factor integrante es <span class="math inline">\(\mu(t)=e^{at}\)</span> y la solución es <span class="math inline">\(q(t)=e^{-at}\left(\int e^{at} b(t)\,dt + C\right)\)</span>. Resolver con <code>dsolve</code> y usar <code>expand</code> y <code>collect</code> para identificar los términos que decaen.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-27-contents" aria-controls="callout-27" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-27" class="callout-27-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div id="111aee3b" class="cell" data-execution_count="37">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">SymPyPythonCall</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="pp">@syms</span> t <span class="fu">q</span>()</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>eq <span class="op">=</span> <span class="fu">Eq</span>(<span class="fu">diff</span>(<span class="fu">q</span>(t), t) <span class="op">+</span> <span class="fl">10</span> <span class="op">*</span> <span class="fu">q</span>(t), <span class="fu">Sym</span>(<span class="fl">12</span>)<span class="op">/</span><span class="fl">1000</span> <span class="op">*</span> <span class="fu">cos</span>(<span class="fl">10</span>t))</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>sol <span class="op">=</span> <span class="fu">dsolve</span>(eq, <span class="fu">q</span>(t), ics <span class="op">=</span> <span class="fu">Dict</span>(<span class="fu">q</span>(<span class="fl">0</span>) <span class="op">=&gt;</span> <span class="fl">0</span>))</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>qsol <span class="op">=</span> <span class="fu">simplify</span>(<span class="fu">rhs</span>(sol))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="106">
+<p><span class="math inline">\(\frac{3 \sqrt{2} \sin{\left(10 t + \frac{\pi}{4} \right)}}{5000} - \frac{3 e^{- 10 t}}{5000}\)</span></p>
+</div>
+</div>
+<p>La solución es</p>
+<p><span class="math display">\[
+q(t) = \underbrace{-\,0.0006\, e^{-10 t}}_{\text{transitorio}} \;+\; \underbrace{0.0006\left(\cos 10t + \sin 10t\right)}_{\text{permanente}},
+\]</span></p>
+<p>donde el término exponencial (la solución de la homogénea) se extingue con constante de tiempo <span class="math inline">\(\tau = RC = 0.1\)</span> s, y el término oscilante es la respuesta forzada por la fuente.</p>
+</div>
+</div>
+</div></li>
+<li><p>Dibujar la solución junto con el régimen permanente y comprobar gráficamente que el transitorio desaparece en unas pocas constantes de tiempo.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-28-contents" aria-controls="callout-28" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-28" class="callout-28-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div id="d8d3f1fa" class="cell" data-execution_count="38">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>qnum <span class="op">=</span> <span class="fu">lambdify</span>(qsol, (t,))</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="fu">qperm</span>(t) <span class="op">=</span> <span class="fl">0.0006</span> <span class="op">*</span> (<span class="fu">cos</span>(<span class="fl">10</span>t) <span class="op">+</span> <span class="fu">sin</span>(<span class="fl">10</span>t))</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>Plots.<span class="fu">plot</span>(qnum, <span class="fl">0</span>, <span class="fl">1.5</span>, lw <span class="op">=</span> <span class="fl">2</span>, label <span class="op">=</span> <span class="st">"Solución completa"</span>,</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>    xlab <span class="op">=</span> L<span class="st">"t \; (s)"</span>, ylab <span class="op">=</span> L<span class="st">"q \; (C)"</span>)</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>Plots.<span class="fu">plot!</span>(qperm, <span class="fl">0</span>, <span class="fl">1.5</span>, ls <span class="op">=</span> <span class="op">:</span>dash, lw <span class="op">=</span> <span class="fl">2</span>, label <span class="op">=</span> <span class="st">"Régimen permanente"</span>)</span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a><span class="fu">vline!</span>([<span class="fl">0.1</span>, <span class="fl">0.3</span>], color <span class="op">=</span> <span class="op">:</span>gray, ls <span class="op">=</span> <span class="op">:</span>dot, label <span class="op">=</span> L<span class="st">"</span><span class="sc">\t</span><span class="st">au, 3</span><span class="sc">\t</span><span class="st">au"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="107">
+<div>
+<figure class="figure">
+<p><img src="01-edos-primer-orden_files/figure-html/cell-38-output-1.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>A partir de <span class="math inline">\(t \approx 3\tau = 0.3\)</span> s ambas curvas son indistinguibles: el condensador “olvida” su condición inicial.</p>
+</div>
+</div>
+</div></li>
+</ol>
+</div>
+<div id="exr-bernoulli-mercado" class="theorem exercise">
+<p><span class="theorem-title"><strong>Ejercicio 1.9</strong></span> <strong>Ecuación de Bernoulli: difusión de un producto en un mercado.</strong> La cuota de mercado <span class="math inline">\(y(t)\in(0,1)\)</span> de un nuevo producto tecnológico evoluciona según el modelo logístico</p>
+<p><span class="math display">\[
+y' = 0.8\,y - 0.8\,y^2,
+\]</span></p>
+<p>que es una ecuación de Bernoulli con <span class="math inline">\(n=2\)</span>.</p>
+<p>Resolverla mediante el cambio de variable <span class="math inline">\(v = y^{1-n} = 1/y\)</span>, con la condición inicial <span class="math inline">\(y(0) = 0.05\)</span> (un 5 % de cuota inicial), y calcular en qué instante el producto alcanza el 50 % del mercado.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-29-contents" aria-controls="callout-29" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Ayuda
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-29" class="callout-29-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Con <span class="math inline">\(v = 1/y\)</span> se tiene <span class="math inline">\(v' = -y'/y^2\)</span>, y la ecuación se transforma en la lineal <span class="math inline">\(v' + 0.8v = 0.8\)</span>. Resolverla y deshacer el cambio. Comprobar con <code>dsolve</code> aplicado a la ecuación original.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="exr-finanzas-plan-pensiones" class="theorem exercise">
+<p><span class="theorem-title"><strong>Ejercicio 1.10</strong></span> <strong>Aplicación financiera: plan de ahorro con capitalización continua.</strong> Un inversor abre un plan de pensiones con una aportación inicial de <span class="math inline">\(A(0) = 10\,000\)</span> € y aporta de forma continua <span class="math inline">\(d = 6\,000\)</span> €/año. El fondo se revaloriza a un tipo de interés continuo del <span class="math inline">\(r = 5\%\)</span> anual, de modo que</p>
+<p><span class="math display">\[
+A' = 0.05\,A + 6000.
+\]</span></p>
+<ol type="a">
+<li><p>Resolver la ecuación y calcular el capital acumulado a los 30 años. ¿Qué parte procede de las aportaciones y qué parte de los intereses?</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-30-contents" aria-controls="callout-30" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Ayuda
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-30" class="callout-30-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Es una ecuación lineal con coeficientes constantes; resolver con <code>dsolve</code> y evaluar en <span class="math inline">\(t=30\)</span>. Las aportaciones totales son <span class="math inline">\(A(0) + 30d\)</span>.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-31-contents" aria-controls="callout-31" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-31" class="callout-31-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div id="0e802877" class="cell" data-execution_count="39">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">SymPyPythonCall</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="pp">@syms</span> t <span class="fu">A</span>()</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>sol <span class="op">=</span> <span class="fu">dsolve</span>(<span class="fu">Eq</span>(<span class="fu">diff</span>(<span class="fu">A</span>(t), t), <span class="fu">Sym</span>(<span class="fl">5</span>)<span class="op">/</span><span class="fl">100</span> <span class="op">*</span> <span class="fu">A</span>(t) <span class="op">+</span> <span class="fl">6000</span>), <span class="fu">A</span>(t), ics <span class="op">=</span> <span class="fu">Dict</span>(<span class="fu">A</span>(<span class="fl">0</span>) <span class="op">=&gt;</span> <span class="fl">10000</span>))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="108">
+<p><span class="math inline">\(A{\left(t \right)} = 130000 e^{\frac{t}{20}} - 120000\)</span></p>
+</div>
+</div>
+<p>Es decir, <span class="math inline">\(A(t) = 130\,000\,e^{0.05t} - 120\,000\)</span>. A los 30 años:</p>
+<div id="76ee063d" class="cell" data-execution_count="40">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>A30 <span class="op">=</span> <span class="fu">N</span>(<span class="fu">rhs</span>(sol)(t <span class="op">=&gt;</span> <span class="fl">30</span>))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="109">
+<p><span class="math inline">\(- y e^{y} - 240000 + 260000 e^{\frac{3}{2}}\)</span></p>
+</div>
+</div>
+<p>El capital final es de unos <strong>462 600 €</strong>, de los que 190 000 € son aportaciones y unos <strong>272 600 €</strong> son intereses: más de la mitad del capital procede de la capitalización compuesta.</p>
+</div>
+</div>
+</div></li>
+<li><p>¿Qué aportación anual <span class="math inline">\(d\)</span> sería necesaria para alcanzar un millón de euros en 30 años?</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-32-contents" aria-controls="callout-32" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-32" class="callout-32-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div id="343afd4b" class="cell" data-execution_count="41">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@syms</span> d<span class="op">::</span><span class="dt">positive</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>solA <span class="op">=</span> <span class="fu">dsolve</span>(<span class="fu">Eq</span>(<span class="fu">diff</span>(<span class="fu">A</span>(t), t), <span class="fu">Sym</span>(<span class="fl">5</span>)<span class="op">/</span><span class="fl">100</span> <span class="op">*</span> <span class="fu">A</span>(t) <span class="op">+</span> d), <span class="fu">A</span>(t), ics <span class="op">=</span> <span class="fu">Dict</span>(<span class="fu">A</span>(<span class="fl">0</span>) <span class="op">=&gt;</span> <span class="fl">10000</span>))</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>dreq <span class="op">=</span> <span class="fu">solve</span>(<span class="fu">Eq</span>(<span class="fu">rhs</span>(solA)(t <span class="op">=&gt;</span> <span class="fl">30</span>), <span class="fl">1000000</span>), d)[<span class="fl">1</span>]</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="110">
+<p><span class="math inline">\(\frac{500 \left(-100 + e^{\frac{3}{2}}\right)}{1 - e^{\frac{3}{2}}}\)</span></p>
+</div>
+</div>
+<p>Haría falta aportar unos <strong>14 100 €/año</strong> (unos 1175 €/mes).</p>
+</div>
+</div>
+</div></li>
+</ol>
+</div>
+<div id="exr-trayectorias-ortogonales" class="theorem exercise">
+<p><span class="theorem-title"><strong>Ejercicio 1.11</strong></span> <strong>Aplicación geométrica: trayectorias ortogonales.</strong> En electrostática, las líneas de campo de una carga puntual son ortogonales a las curvas equipotenciales. Las equipotenciales de un dipolo bidimensional simplificado forman la familia de circunferencias</p>
+<p><span class="math display">\[
+x^2 + y^2 = 2Cx.
+\]</span></p>
+<p>Hallar la familia de trayectorias ortogonales (las líneas de campo) y dibujar ambas familias.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-33-contents" aria-controls="callout-33" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Ayuda
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-33" class="callout-33-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Derivar implícitamente la familia y eliminar la constante <span class="math inline">\(C\)</span> para obtener la EDO <span class="math inline">\(y' = f(x,y)\)</span> de la familia. La familia ortogonal satisface <span class="math inline">\(y' = -1/f(x,y)\)</span>. La ecuación resultante es homogénea.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-34-contents" aria-controls="callout-34" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-34" class="callout-34-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>De <span class="math inline">\(x^2+y^2 = 2Cx\)</span> se obtiene <span class="math inline">\(C = \frac{x^2+y^2}{2x}\)</span>, y derivando implícitamente, <span class="math inline">\(2x + 2yy' = 2C\)</span>, luego</p>
+<p><span class="math display">\[
+y' = \frac{y^2 - x^2}{2xy}.
+\]</span></p>
+<p>La familia ortogonal satisface la ecuación homogénea <span class="math inline">\(y' = \dfrac{2xy}{x^2 - y^2}\)</span>:</p>
+<div id="acbc0a83" class="cell" data-execution_count="42">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@syms</span> x <span class="fu">y</span>()</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>sol <span class="op">=</span> <span class="fu">dsolve</span>(<span class="fu">Eq</span>(<span class="fu">diff</span>(<span class="fu">y</span>(x), x), <span class="fl">2</span>x <span class="op">*</span> <span class="fu">y</span>(x) <span class="op">/</span> (x<span class="op">^</span><span class="fl">2</span> <span class="op">-</span> <span class="fu">y</span>(x)<span class="op">^</span><span class="fl">2</span>)), <span class="fu">y</span>(x))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="111">
+<p><span class="math inline">\(\left[\begin{smallmatrix}y{\left(x \right)} = - \frac{\sqrt{- 4 x^{2} + e^{2 C_{1}}}}{2} + \frac{e^{C_{1}}}{2}\\y{\left(x \right)} = \frac{\sqrt{- 4 x^{2} + e^{2 C_{1}}}}{2} + \frac{e^{C_{1}}}{2}\end{smallmatrix}\right]\)</span></p>
+</div>
+</div>
+<p>Reordenando la solución implícita se obtiene <span class="math inline">\(x^2 + y^2 = 2Ky\)</span>: las líneas de campo son <strong>circunferencias centradas en el eje <span class="math inline">\(y\)</span> y que pasan por el origen</strong>, ortogonales a las equipotenciales (circunferencias centradas en el eje <span class="math inline">\(x\)</span> por el origen). Dibujamos ambas familias:</p>
+<div id="75c9a5e2" class="cell" data-execution_count="43">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>plt <span class="op">=</span> Plots.<span class="fu">plot</span>(aspect_ratio <span class="op">=</span> <span class="op">:</span>equal, legend <span class="op">=</span> <span class="cn">false</span>, xlab <span class="op">=</span> L<span class="st">"x"</span>, ylab <span class="op">=</span> L<span class="st">"y"</span>, xlims <span class="op">=</span> (<span class="op">-</span><span class="fl">3</span>, <span class="fl">3</span>), ylims <span class="op">=</span> (<span class="op">-</span><span class="fl">3</span>, <span class="fl">3</span>))</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>θ <span class="op">=</span> <span class="fu">range</span>(<span class="fl">0</span>, <span class="fl">2</span>π, length <span class="op">=</span> <span class="fl">200</span>)</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> c <span class="kw">in</span> [<span class="fl">0.5</span>, <span class="fl">1</span>, <span class="fl">1.5</span>]</span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>    Plots.<span class="fu">plot!</span>(plt, c <span class="op">.+</span> c <span class="op">.*</span> <span class="fu">cos</span>.(θ),  c <span class="op">.*</span> <span class="fu">sin</span>.(θ), color <span class="op">=</span> <span class="op">:</span>blue)   <span class="co"># Equipotenciales</span></span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>    Plots.<span class="fu">plot!</span>(plt, <span class="op">-</span>c <span class="op">.+</span> c <span class="op">.*</span> <span class="fu">cos</span>.(θ), c <span class="op">.*</span> <span class="fu">sin</span>.(θ), color <span class="op">=</span> <span class="op">:</span>blue)</span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>    Plots.<span class="fu">plot!</span>(plt, c <span class="op">.*</span> <span class="fu">cos</span>.(θ),  c <span class="op">.+</span> c <span class="op">.*</span> <span class="fu">sin</span>.(θ), color <span class="op">=</span> <span class="op">:</span>red)    <span class="co"># Líneas de campo</span></span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>    Plots.<span class="fu">plot!</span>(plt, c <span class="op">.*</span> <span class="fu">cos</span>.(θ), <span class="op">-</span>c <span class="op">.+</span> c <span class="op">.*</span> <span class="fu">sin</span>.(θ), color <span class="op">=</span> <span class="op">:</span>red)</span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>plt</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="112">
+<div>
+<figure class="figure">
+<p><img src="01-edos-primer-orden_files/figure-html/cell-43-output-1.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>En cada intersección, una circunferencia azul y una roja se cortan en ángulo recto.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="ejercicios-propuestos" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="ejercicios-propuestos"><span class="header-section-number">1.2</span> Ejercicios propuestos</h2>
+<div id="exr-propuesto-forense" class="theorem exercise">
+<p><span class="theorem-title"><strong>Ejercicio 1.12</strong></span> <strong>Medicina forense.</strong> Un cadáver se encuentra a 30 °C en una habitación a 21 °C; una hora más tarde su temperatura es de 28 °C. Suponiendo la ley de enfriamiento de Newton y temperatura corporal normal de 36.5 °C, estimar la hora de la muerte.</p>
+</div>
+<div id="exr-propuesto-mezclas" class="theorem exercise">
+<p><span class="theorem-title"><strong>Ejercicio 1.13</strong></span> <strong>Ingeniería química.</strong> Un tanque contiene 500 L de salmuera con 5 kg de sal. Entra agua con 0.02 kg/L de sal a 10 L/min y la mezcla sale al mismo ritmo. Plantear y resolver la EDO de la cantidad de sal <span class="math inline">\(y(t)\)</span>, y calcular la concentración a largo plazo.</p>
+</div>
+<div id="exr-propuesto-hipoteca" class="theorem exercise">
+<p><span class="theorem-title"><strong>Ejercicio 1.14</strong></span> <strong>Finanzas.</strong> Una hipoteca de 250 000 € a tipo continuo del 3.5 % se amortiza con pagos continuos de <span class="math inline">\(p\)</span> €/año: <span class="math inline">\(D' = 0.035D - p\)</span>. Calcular el pago <span class="math inline">\(p\)</span> necesario para cancelar la deuda en 25 años y el interés total pagado.</p>
+</div>
+<div id="exr-propuesto-paracaidista" class="theorem exercise">
+<p><span class="theorem-title"><strong>Ejercicio 1.15</strong></span> <strong>Física.</strong> Un paracaidista de 80 kg cae con rozamiento proporcional al cuadrado de la velocidad, <span class="math inline">\(mv' = mg - kv^2\)</span> con <span class="math inline">\(k=0.27\)</span> kg/m. Calcular la velocidad límite, resolver la ecuación (separable) y dibujar la línea de fases.</p>
+</div>
+<div id="exr-propuesto-bifurcacion" class="theorem exercise">
+<p><span class="theorem-title"><strong>Ejercicio 1.16</strong></span> <strong>Ecología.</strong> Estudiar las bifurcaciones del modelo de un insecto plaga <span class="math inline">\(y' = ry\left(1-\frac{y}{K}\right) - \frac{y^2}{1+y^2}\)</span> con <span class="math inline">\(K=10\)</span> fijo, en función de <span class="math inline">\(r&gt;0\)</span>, localizando numéricamente los valores de <span class="math inline">\(r\)</span> donde cambia el número de equilibrios.</p>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiado");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiado");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./index.html" class="pagination-link" aria-label="Prefacio">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Prefacio</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

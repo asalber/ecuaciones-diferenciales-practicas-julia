@@ -1,0 +1,212 @@
+---
+title: "Dependencia de los datos. Introducción a la Teoría del caos"
+lang: es
+#jupyter: julia-1.11
+---
+
+Los sistemas dinámicos pueden presentar **dependencia sensible de las condiciones iniciales**: dos trayectorias que parten de puntos muy próximos se separan exponencialmente en el tiempo, de modo que a largo plazo el comportamiento resulta impredecible pese a ser completamente determinista. Esta es la esencia del **caos**. La tasa de separación se cuantifica con el **exponente de Lyapunov** $\lambda$: si $\delta(t)\approx \delta_0\,e^{\lambda t}$ con $\lambda > 0$, el sistema es caótico. Los atractores caóticos suelen tener estructura fractal (**atractores extraños**).
+
+## Ejercicios resueltos
+
+Para la realización de esta práctica se requieren los siguientes paquetes:
+
+```{julia}
+using Plots                  # Dibujo de gráficas.
+using DifferentialEquations  # Resolución numérica.
+using LinearAlgebra          # Normas de vectores.
+using LaTeXStrings           # Código LaTeX en los gráficos.
+using Statistics             # Medias y ajustes.
+```
+
+:::{#exr-lorenz}
+**El atractor de Lorenz (meteorología).** En 1963 Edward Lorenz obtuvo, al simplificar un modelo de convección atmosférica, el sistema
+
+$$
+\begin{cases}
+x' = \sigma(y - x) \\
+y' = x(\rho - z) - y \\
+z' = xy - \beta z
+\end{cases}
+$$
+
+con los parámetros clásicos $\sigma = 10$, $\rho = 28$, $\beta = 8/3$.
+
+a.  Resolver el sistema y dibujar el atractor de Lorenz en el espacio de fases tridimensional.
+
+    :::{.callout-tip collapse="true"}
+    ## Solución
+    ```{julia}
+    function lorenz!(du, u, p, t)
+        σ, ρ, β = p
+        du[1] = σ*(u[2] - u[1])
+        du[2] = u[1]*(ρ - u[3]) - u[2]
+        du[3] = u[1]*u[2] - β*u[3]
+    end
+    p = (10.0, 28.0, 8/3)
+    sol = solve(ODEProblem(lorenz!, [1.0, 1.0, 1.0], (0.0, 60.0), p),
+                saveat = 0.005)
+    plot(sol[1, :], sol[2, :], sol[3, :], lw = 0.6, legend = false,
+        xlab = L"x", ylab = L"y", zlab = L"z", camera = (30, 20),
+        title = "Atractor de Lorenz")
+    ```
+
+    La trayectoria nunca se repite ni se cruza, pero permanece confinada en una región acotada con la característica forma de "alas de mariposa": es un **atractor extraño**, de dimensión fractal.
+    :::
+
+a.  Ilustrar la dependencia sensible: resolver dos veces con condiciones iniciales que difieren en $10^{-8}$ y dibujar $x(t)$ para ambas.
+
+    :::{.callout-note collapse="true"}
+    ## Ayuda
+    Resolver desde $(1,1,1)$ y desde $(1+10^{-8}, 1, 1)$ y superponer las series temporales de $x(t)$.
+    :::
+
+    :::{.callout-tip collapse="true"}
+    ## Solución
+    ```{julia}
+    sol1 = solve(ODEProblem(lorenz!, [1.0, 1.0, 1.0], (0.0, 40.0), p), saveat = 0.01)
+    sol2 = solve(ODEProblem(lorenz!, [1.0 + 1e-8, 1.0, 1.0], (0.0, 40.0), p), saveat = 0.01)
+    plot(sol1.t, sol1[1, :], lw = 1, label = "x(0)=1", xlab = L"t", ylab = L"x")
+    plot!(sol2.t, sol2[1, :], lw = 1, label = "x(0)=1+10⁻⁸")
+    ```
+
+    Durante unos 25 s ambas curvas son indistinguibles, pero después divergen por completo: un error de una parte en cien millones en el dato inicial hace la predicción a largo plazo imposible. Es el **"efecto mariposa"**.
+    :::
+
+a.  Estimar el **exponente de Lyapunov** dominante midiendo cómo crece la separación $\delta(t)$ entre ambas trayectorias mientras es pequeña.
+
+    :::{.callout-note collapse="true"}
+    ## Ayuda
+    Calcular $\delta(t) = \|\mathbf{u}_2(t) - \mathbf{u}_1(t)\|$ y ajustar una recta a $\ln\delta(t)$ en la fase de crecimiento exponencial inicial; su pendiente es $\lambda$.
+    :::
+
+    :::{.callout-tip collapse="true"}
+    ## Solución
+    ```{julia}
+    δ = [norm(sol2.u[i] - sol1.u[i]) for i in eachindex(sol1.t)]
+    ventana = findall(t -> 2 < t < 20, sol1.t)   # fase de crecimiento exponencial
+    ts = sol1.t[ventana]; logδ = log.(δ[ventana])
+    # Ajuste lineal por mínimos cuadrados:
+    A = [ts ones(length(ts))]
+    λ, b = A \ logδ
+    plot(sol1.t, log.(δ), lw = 1.5, label = L"\ln \delta(t)", xlab = L"t")
+    plot!(ts, λ .* ts .+ b, lw = 2, ls = :dash, label = "Ajuste λ=$(round(λ,digits=3))")
+    ```
+
+    El exponente de Lyapunov estimado, $\lambda \approx 0.9$, es positivo y próximo al valor de referencia del sistema de Lorenz ($\approx 0.906$): confirma cuantitativamente el caos y da el "horizonte de predicción" $\sim 1/\lambda \approx 1$ unidad de tiempo.
+    :::
+:::
+
+:::{#exr-lyapunov-logistico}
+**Exponente de Lyapunov del mapa logístico.** Para un sistema discreto $x_{n+1}=f(x_n)$, el exponente de Lyapunov es $\lambda = \lim_{N\to\infty}\frac1N\sum_{n=0}^{N-1}\ln|f'(x_n)|$. Calcularlo para el mapa logístico $f(x) = rx(1-x)$ en función de $r\in[2.8, 4]$ y superponerlo al diagrama de bifurcación.
+
+:::{.callout-note collapse="true"}
+## Ayuda
+Para cada $r$, iterar descartando el transitorio y acumular $\ln|f'(x_n)| = \ln|r(1-2x_n)|$. $\lambda<0$ indica órbita estable (periódica); $\lambda>0$ indica caos; $\lambda=0$ marca las bifurcaciones.
+:::
+
+:::{.callout-tip collapse="true"}
+## Solución
+```{julia}
+function lyapunov_log(r; ntrans = 1000, n = 10000)
+    x = 0.5
+    for _ in 1:ntrans; x = r*x*(1-x); end
+    s = 0.0
+    for _ in 1:n
+        s += log(abs(r*(1 - 2x)))
+        x = r*x*(1-x)
+    end
+    s / n
+end
+rs = range(2.8, 4.0, length = 1000)
+λs = lyapunov_log.(rs)
+plot(rs, λs, lw = 1, legend = false, xlab = L"r", ylab = L"\lambda",
+    title = "Exponente de Lyapunov del mapa logístico")
+hline!([0], color = :red, ls = :dash)
+```
+
+El exponente es negativo mientras la órbita es periódica y toca el cero en cada duplicación de periodo; a partir de $r\approx 3.57$ se vuelve mayormente positivo (caos), con inmersiones bruscas por debajo de cero en las **ventanas de periodicidad** (la más marcada, la ventana de periodo 3 cerca de $r=3.83$).
+:::
+:::
+
+:::{#exr-dependencia-datos-edo}
+**Dependencia continua frente a caótica.** El teorema de dependencia continua garantiza que, en un sistema con campo suave, la solución depende con continuidad del dato inicial en cada intervalo finito. Comparar un sistema lineal estable con el de Lorenz para ilustrar la diferencia entre "continua" y "predecible a largo plazo".
+
+:::{.callout-tip collapse="true"}
+## Solución
+```{julia}
+# Sistema lineal estable: las trayectorias vecinas se juntan.
+A = [-0.5 1.0; -1.0 -0.5]
+sol_a = solve(ODEProblem((u,p,t)->A*u, [1.0, 0.0], (0.0, 20.0)), saveat=0.05)
+sol_b = solve(ODEProblem((u,p,t)->A*u, [1.0 + 0.5, 0.0], (0.0, 20.0)), saveat=0.05)
+δlin = [norm(sol_b.u[i] - sol_a.u[i]) for i in eachindex(sol_a.t)]
+plot(sol_a.t, δlin, lw = 2, label = "Sistema lineal estable",
+    xlab = L"t", ylab = L"\delta(t)", yscale = :log10)
+```
+
+En el sistema lineal estable la distancia entre dos soluciones **decrece** con el tiempo: un error inicial se olvida. En el sistema de Lorenz (@exr-lorenz) la dependencia también es continua en cada instante finito, pero la separación **crece** exponencialmente, de modo que la constante de continuidad se dispara con el horizonte temporal. Caos no contradice determinismo ni continuidad: solo hace inútil la predicción a largo plazo con datos de precisión finita.
+:::
+:::
+
+:::{#exr-rossler}
+**El atractor de Rössler.** Otro sistema caótico clásico, más sencillo que el de Lorenz, es el de Rössler:
+
+$$
+x' = -y - z, \qquad y' = x + a y, \qquad z' = b + z(x - c),
+$$
+
+con $a = 0.2$, $b = 0.2$, $c = 5.7$. Dibujar su atractor y una sección de Poincaré (los puntos donde la trayectoria cruza el plano $y = 0$ con $y' > 0$) para visualizar su estructura.
+
+:::{.callout-note collapse="true"}
+## Ayuda
+Para la sección de Poincaré, recorrer la solución densamente muestreada y registrar los puntos $(x, z)$ en que la componente $y$ cambia de signo de negativo a positivo (interpolando).
+:::
+
+:::{.callout-tip collapse="true"}
+## Solución
+```{julia}
+function rossler!(du, u, p, t)
+    a, b, c = p
+    du[1] = -u[2] - u[3]
+    du[2] = u[1] + a*u[2]
+    du[3] = b + u[3]*(u[1] - c)
+end
+sol = solve(ODEProblem(rossler!, [1.0, 1.0, 1.0], (0.0, 400.0), (0.2, 0.2, 5.7)),
+            saveat = 0.02)
+p1 = plot(sol[1, :], sol[2, :], sol[3, :], lw = 0.4, legend = false,
+    xlab = L"x", ylab = L"y", zlab = L"z", title = "Atractor de Rössler")
+
+# Sección de Poincaré en y = 0 con y creciente:
+xs = Float64[]; zs = Float64[]
+for i in 2:length(sol.t)
+    if sol[2, i-1] < 0 <= sol[2, i]
+        frac = -sol[2, i-1] / (sol[2, i] - sol[2, i-1])
+        push!(xs, sol[1, i-1] + frac*(sol[1, i] - sol[1, i-1]))
+        push!(zs, sol[3, i-1] + frac*(sol[3, i] - sol[3, i-1]))
+    end
+end
+p2 = scatter(xs, zs, ms = 1.5, msw = 0, legend = false,
+    xlab = L"x", ylab = L"z", title = "Sección de Poincaré")
+plot(p1, p2, layout = (1, 2), size = (850, 380))
+```
+
+La sección de Poincaré reduce el atractor tridimensional a una curva casi unidimensional: revela que, pese a su aparente complejidad, la dinámica de Rössler está esencialmente gobernada por un mapa unidimensional similar al logístico, con su propia cascada de duplicaciones de periodo.
+:::
+:::
+
+## Ejercicios propuestos
+
+:::{#exr-propuesto-doble-pendulo}
+**Mecánica.** Simular el doble péndulo (sistema hamiltoniano caótico) desde dos condiciones iniciales casi idénticas y medir el tiempo hasta que las trayectorias divergen visiblemente.
+:::
+
+:::{#exr-propuesto-lorenz-rho}
+Explorar el sistema de Lorenz al variar $\rho$ desde 0.5 hasta 28 y describir la secuencia de transiciones (punto fijo estable → ciclo → caos).
+:::
+
+:::{#exr-propuesto-chua}
+**Ingeniería electrónica.** Simular el circuito de Chua, el primer sistema físico en el que se comprobó el caos en el laboratorio, y dibujar su atractor de doble espiral.
+:::
+
+:::{#exr-propuesto-prediccion-financiera}
+**Finanzas.** Discutir, con un modelo de crecimiento no lineal de un precio de activo, por qué la sensibilidad a las condiciones iniciales limita la predicción a largo plazo de los mercados, aun con modelos deterministas.
+:::

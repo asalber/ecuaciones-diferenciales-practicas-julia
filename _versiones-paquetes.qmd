@@ -1,0 +1,41 @@
+:::{.callout-note collapse="true"}
+## Versiones de Julia y de los paquetes utilizados
+
+::: {.content-visible unless-format="pdf"}
+```{julia}
+#| echo: false
+using Markdown
+v = string(VERSION)
+Markdown.parse("![](https://img.shields.io/badge/Julia-$(v)-9558B2?logo=julia)")
+```
+:::
+
+::: {.content-visible when-format="pdf"}
+```{julia}
+#| echo: false
+using Markdown
+v = string(VERSION)
+Markdown.parse("**Versión de Julia:** $(v)")
+```
+:::
+
+```{julia}
+#| echo: false
+#| include: false
+import Pkg
+active_project = Base.active_project()
+global_env = joinpath(homedir(), ".julia", "environments", "v$(VERSION.major).$(VERSION.minor)", "Project.toml")
+Pkg.activate(global_env)
+```
+
+```{julia}
+#| echo: false
+Pkg.status(packages)
+```
+
+```{julia}
+#| echo: false
+#| include: false
+#Pkg.activate(active_project)
+```
+:::

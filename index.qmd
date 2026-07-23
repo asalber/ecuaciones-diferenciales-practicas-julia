@@ -1,0 +1,39 @@
+---
+lang: es
+---
+
+# Prefacio {.unnumbered}
+
+¡Bienvenido a las Prácticas de Ecuaciones Diferenciales y Ecuaciones en Derivadas Parciales con Julia!
+
+Este libro presenta una recopilación de prácticas de Ecuaciones Diferenciales Ordinarias (EDO) y Ecuaciones en Derivadas Parciales (EDP) con el lenguaje de programación [Julia](https://julialang.org/), con problemas aplicados a las Ciencias, las Ingenierías y las Finanzas.
+
+No es un libro para aprender a programar en Julia, sino para aprender a utilizar el lenguaje y algunos de sus paquetes en la resolución simbólica, cualitativa y numérica de ecuaciones diferenciales. Para aprender a programar en Julia se recomienda el [manual de Julia](https://aprendeconalf.es/manual-julia/).
+
+## Estructura del libro
+
+Cada capítulo contiene:
+
+- Un breve resumen de los conceptos teóricos necesarios.
+- Una colección de **ejercicios resueltos**, la mayoría aplicados a problemas reales de Física, Química, Biología, Ingeniería, Economía y Finanzas. Cada ejercicio incluye una *Ayuda* plegable con indicaciones y una *Solución* plegable con el desarrollo analítico y el código Julia.
+- Una colección de **ejercicios propuestos** para que el lector practique por su cuenta.
+
+## Software necesario
+
+Para reproducir las prácticas se necesita [Julia](https://julialang.org/downloads/) (versión 1.9 o superior) y los siguientes paquetes, que pueden instalarse desde el REPL con `] add Paquete`:
+
+```julia
+using Pkg
+Pkg.add(["SymPy", "Plots", "DifferentialEquations", "LaTeXStrings",
+         "LinearAlgebra", "Roots", "NLsolve", "ForwardDiff"])
+```
+
+- [`SymPy`](https://github.com/JuliaPy/SymPy.jl): cálculo simbólico (resolución exacta de EDOs, transformadas, etc.).
+- [`DifferentialEquations`](https://docs.sciml.ai/DiffEqDocs/stable/): resolución numérica de EDOs, sistemas y EDPs semidiscretizadas.
+- [`Plots`](https://docs.juliaplots.org/): gráficas de soluciones, campos de direcciones y diagramas de fases.
+- [`LinearAlgebra`](https://docs.julialang.org/en/v1/stdlib/LinearAlgebra/): autovalores, autovectores y exponencial de matrices.
+- [`Roots`](https://github.com/JuliaMath/Roots.jl) y [`NLsolve`](https://github.com/JuliaNLSolvers/NLsolve.jl): cálculo de puntos de equilibrio.
+
+## Licencia
+
+Esta obra está bajo una licencia Reconocimiento – No comercial – Compartir bajo la misma licencia 3.0 España de Creative Commons ([https://creativecommons.org/licenses/by-nc-sa/3.0/es/](https://creativecommons.org/licenses/by-nc-sa/3.0/es/)).
