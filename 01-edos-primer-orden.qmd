@@ -320,7 +320,7 @@ a.  Dibujar el diagrama de bifurcación (equilibrios $y^*$ frente al parámetro 
 :::
 
 :::{#exr-separables-carbono}
-**Variables separables: datación por carbono-14.** La cantidad $y(t)$ de $^{14}$C en un resto orgánico satisface $y' = -\lambda y$ con $\lambda = \ln 2/5730$ años$^{-1}$ (semivida de 5730 años).
+**Variables separables: datación por carbono-14.** La cantidad $y(t)$ de $^{14}$C en un resto orgánico satisface $y' = -\lambda y$ con $\lambda = \ln(2)/5730$ años$^{-1}$ (semivida de 5730 años).
 
 En 1991 se descubrió en los Alpes la momia de Ötzi, cuyos tejidos conservaban aproximadamente el $53\%$ del $^{14}$C original. Resolver la ecuación por separación de variables y estimar la antigüedad de la momia.
 
@@ -334,12 +334,13 @@ Separar variables: $\frac{dy}{y} = -\lambda\, dt$, integrar ambos miembros con `
 Separando variables e integrando, $\ln y = -\lambda t + C$, luego $y(t)=y_0 e^{-\lambda t}$. Reproducimos el proceso simbólicamente:
 
 ```{julia}
+using SymPyPythonCall
 @syms t y() λ::positive y0::positive
 # Comprobación directa con dsolve:
 sol = dsolve(Eq(diff(y(t), t), -λ * y(t)), y(t), ics = Dict(y(0) => y0))
 ```
 
-Imponemos $y(t)/y_0 = 0.53$ con $\lambda = \ln 2/5730$:
+Imponemos $y(t)/y_0 = 0.53$ con $\lambda = \ln(2)/5730$:
 
 ```{julia}
 λv = log(Sym(2)) / 5730
@@ -347,7 +348,7 @@ edad = solve(Eq(exp(-λv * t), Sym(53) / 100), t)[1]
 N(edad)
 ```
 
-La momia tiene una antigüedad de unos **5250 años**, en excelente acuerdo con la datación arqueológica de Ötzi (≈ 5300 años).
+La momia tiene una antigüedad de unos **5248 años**, en excelente acuerdo con la datación arqueológica de Ötzi (≈ 5300 años).
 :::
 :::
 
@@ -394,6 +395,7 @@ a.  Dibujar la trayectoria. ¿Llega el avión al aeropuerto? ¿Cuál es la máxi
     :::{.callout-tip collapse="true"}
     ## Solución
     ```{julia}
+    using LaTeXStrings, Plots
     traj(x) = 100 * ((x / 200)^0.8 - (x / 200)^1.2)
     Plots.plot(traj, 0, 200, lw = 2, label = "Trayectoria", aspect_ratio = :equal, xlab = L"x \; (km)", ylab = L"y \; (km)")
     Plots.scatter!([200], [0], label = "Salida"); Plots.scatter!([0], [0], label = "Aeropuerto")
@@ -407,7 +409,7 @@ a.  Dibujar la trayectoria. ¿Llega el avión al aeropuerto? ¿Cuál es la máxi
     (xmax, traj(xmax))
     ```
 
-    Como $k<1$, $y(x)\to 0$ cuando $x\to 0^+$: el avión **sí llega** al origen (si fuera $k\ge 1$, el viento le impediría llegar). La desviación máxima es de unos $27$ km hacia el norte, alcanzada en $x \approx 73$ km.
+    Como $k<1$, $y(x)\to 0$ cuando $x\to 0^+$: el avión sí llega al origen (si fuera $k\ge 1$, el viento le impediría llegar). La desviación máxima es de unos $14.8$ km hacia el norte, alcanzada en $x \approx 73$ km.
     :::
 :::
 
@@ -585,6 +587,42 @@ Resolverla mediante el cambio de variable $v = y^{1-n} = 1/y$, con la condición
 ## Ayuda
 Con $v = 1/y$ se tiene $v' = -y'/y^2$, y la ecuación se transforma en la lineal $v' + 0.8v = 0.8$. Resolverla y deshacer el cambio. Comprobar con `dsolve` aplicado a la ecuación original.
 :::
+
+:::{.callout-tip collapse="true"}
+## Solución
+Con $v = 1/y$, la ecuación se transforma en la lineal $v' + 0.8v = 0.8$, con condición inicial $v(0) = 1/y(0) = 20$:
+
+```{julia}
+@syms t::real v()
+eq_v = Eq(diff(v(t), t) + Sym(4)//5 * v(t), Sym(4)//5)
+solv = dsolve(eq_v, v(t), ics = Dict(v(0) => 20))
+vsol = rhs(solv)
+```
+
+Deshaciendo el cambio, $y = 1/v$:
+
+```{julia}
+ysol = simplify(1 / vsol)
+```
+
+es decir, $y(t) = \dfrac{e^{0.8t}}{e^{0.8t}+19}$. Comprobación resolviendo directamente la ecuación de Bernoulli original con `dsolve`:
+
+```{julia}
+@syms y()
+eq_y = Eq(diff(y(t), t), Sym(4)//5 * y(t) - Sym(4)//5 * y(t)^2)
+soly = dsolve(eq_y, y(t), hint = "Bernoulli", ics = Dict(y(0) => Sym(1)//20))
+soly
+```
+
+Por último, el instante en que $y=0.5$:
+
+```{julia}
+tsol = solve(ysol - 0.5, t)[1]
+N(tsol)
+```
+
+El producto alcanza el 50 % de cuota de mercado a los $t = \frac{5}{4}\ln 19 \approx 3.68$ (unidades de tiempo del modelo).
+:::
 :::
 
 
@@ -613,10 +651,10 @@ a.  Resolver la ecuación y calcular el capital acumulado a los 30 años. ¿Qué
     Es decir, $A(t) = 130\,000\,e^{0.05t} - 120\,000$. A los 30 años:
 
     ```{julia}
-    A30 = N(rhs(sol)(t => 30))
+    N(rhs(sol)(30))
     ```
 
-    El capital final es de unos **462 600 €**, de los que 190 000 € son aportaciones y unos **272 600 €** son intereses: más de la mitad del capital procede de la capitalización compuesta.
+    El capital final es de unos 462.620 €, de los que 190.000 € son aportaciones y unos 272.600 € son intereses: más de la mitad del capital procede de la capitalización compuesta.
     :::
 
 a.  ¿Qué aportación anual $d$ sería necesaria para alcanzar un millón de euros en 30 años?
@@ -626,10 +664,10 @@ a.  ¿Qué aportación anual $d$ sería necesaria para alcanzar un millón de eu
     ```{julia}
     @syms d::positive
     solA = dsolve(Eq(diff(A(t), t), Sym(5)/100 * A(t) + d), A(t), ics = Dict(A(0) => 10000))
-    dreq = solve(Eq(rhs(solA)(t => 30), 1000000), d)[1]
+    N(solve(Eq(rhs(solA)(t => 30), 1000000), d)[1])
     ```
 
-    Haría falta aportar unos **14 100 €/año** (unos 1175 €/mes).
+    Haría falta aportar unos 13717 €/año.
     :::
 :::
 
