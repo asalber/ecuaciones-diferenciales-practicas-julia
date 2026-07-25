@@ -30,7 +30,7 @@ using NLsolve                # Puntos de equilibrio numéricos.
 ```{julia}
 #| echo: false
 #| include: false
-packages = ["SymPyPythonCall", "Plots", "CairoMakie", "DifferentialEquations", "LaTeXStrings", "Roots"]
+packages = ["SymPyPythonCall", "Plots", "DifferentialEquations", "LaTeXStrings", "NLSolve"]
 ```
 
 ```{julia}
@@ -45,7 +45,7 @@ Base.showable(::MIME"text/html", ::Plots.Plot) = false
 
 {{< include _versiones-paquetes.qmd >}}
 
-A lo largo de la esta práctica usaremos la siguiente función auxiliar para dibujar campos vectoriales normalizados:
+A lo largo de la esta práctica usaremos la siguiente función auxiliar para dibujar campos vectoriales normalizados.
 
 ```{julia}
 function campo_vectorial(f, g, xs, ys; escala = 0.35, kwargs...)

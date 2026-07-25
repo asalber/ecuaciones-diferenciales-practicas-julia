@@ -18,11 +18,29 @@ Para la realización de esta práctica se requieren los siguientes paquetes:
 
 ```julia
 using SymPyPythonCall        # Cálculo simbólico.
+using LinearAlgebra          # Cálculo de autovalores.
 using Plots                  # Dibujo de gráficas.
 using DifferentialEquations  # Resolución numérica.
 using LaTeXStrings           # Código LaTeX en los gráficos.
-using LinearAlgebra          # Operaciones con matrices.
 ```
+
+```{julia}
+#| echo: false
+#| include: false
+packages = ["SymPyPythonCall", "LinearAlgebra", "Plots", "DifferentialEquations", "LaTeXStrings"]
+```
+
+```{julia}
+#| echo: false
+#| include: false
+using Plots
+# Plots y Makie generan además una representación text/html con la imagen en base64
+# en una sola línea; con figuras grandes esa línea desborda la pila del conversor
+# de Quarto a Markdown. La desactivamos y dejamos solo image/png.
+Base.showable(::MIME"text/html", ::Plots.Plot) = false
+```
+
+{{< include _versiones-paquetes.qmd >}}
 
 :::{#exr-amortiguacion-coche}
 **Suspensión de un automóvil.** El sistema de suspensión de la rueda de un coche se modela como un sistema masa–muelle–amortiguador

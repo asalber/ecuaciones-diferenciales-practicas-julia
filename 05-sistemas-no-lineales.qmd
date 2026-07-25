@@ -10,8 +10,8 @@ En un sistema autónomo no lineal $\mathbf{x}' = F(\mathbf{x})$ el comportamient
 
 Para la realización de esta práctica se requieren los siguientes paquetes:
 
-```{julia}
-using SymPy                  # Cálculo simbólico y jacobianas.
+```julia
+using SymPyPythonCall        # Cálculo simbólico y jacobianas.
 using LinearAlgebra          # Autovalores de la linealización.
 using Plots                  # Dibujo de gráficas.
 using DifferentialEquations  # Resolución numérica.
@@ -19,16 +19,35 @@ using LaTeXStrings           # Código LaTeX en los gráficos.
 using NLsolve                # Puntos de equilibrio.
 ```
 
-Reutilizamos la función de campo vectorial del capítulo 2:
+```{julia}
+#| echo: false
+#| include: false
+packages = ["SymPyPythonCall", "LinearAlgebra", "Plots", "DifferentialEquations", "LaTeXStrings", "NLSolve"]
+```
+
+```{julia}
+#| echo: false
+#| include: false
+using Plots
+# Plots y Makie generan además una representación text/html con la imagen en base64
+# en una sola línea; con figuras grandes esa línea desborda la pila del conversor
+# de Quarto a Markdown. La desactivamos y dejamos solo image/png.
+Base.showable(::MIME"text/html", ::Plots.Plot) = false
+```
+
+{{< include _versiones-paquetes.qmd >}}
+
+A lo largo de la esta práctica usaremos la siguiente función auxiliar para dibujar campos vectoriales normalizados.
 
 ```{julia}
 function campo_vectorial(f, g, xs, ys; escala = 0.35, kwargs...)
     X = [x for y in ys for x in xs]
     Y = [y for y in ys for x in xs]
-    U = f.(X, Y); V = g.(X, Y)
+    U = f.(X, Y)
+    V = g.(X, Y)
     N = sqrt.(U .^ 2 .+ V .^ 2) .+ 1e-12
     quiver(X, Y, quiver = (escala * U ./ N, escala * V ./ N),
-           color = :gray, alpha = 0.6; kwargs...)
+           color = :gray, alpha = 0.7; kwargs...)
 end;
 ```
 
@@ -52,6 +71,7 @@ a.  Hallar los puntos de equilibrio y la matriz jacobiana del sistema.
     :::{.callout-tip collapse="true"}
     ## Solución
     ```{julia}
+    using SymPyPythonCall
     @syms x y
     f = x * (3 - x - 2y)
     g = y * (2 - x - y)
@@ -70,6 +90,7 @@ a.  Clasificar cada equilibrio evaluando los autovalores de la jacobiana. ¿Exis
     :::{.callout-tip collapse="true"}
     ## Solución
     ```{julia}
+    using LinearAlgebra
     for eq in equilibrios
         Je = J.subs(Dict(x => eq[1], y => eq[2]))
         vals = eigvals(Float64.(Je))
@@ -89,6 +110,7 @@ a.  Dibujar el diagrama de fases con las órbitas y comprobar la clasificación 
     :::{.callout-tip collapse="true"}
     ## Solución
     ```{julia}
+    using Plots, LaTeXStrings, DifferentialEquations
     fn(x, y) = x * (3 - x - 2y)
     gn(x, y) = y * (2 - x - y)
     plt = campo_vectorial(fn, gn, 0:0.25:3.5, 0:0.2:2.5, escala = 0.25,
@@ -124,6 +146,7 @@ a.  Comprobar que el único equilibrio $(0,0)$ es un foco inestable, de modo que
     :::{.callout-tip collapse="true"}
     ## Solución
     ```{julia}
+    using LinearAlgebra
     μ = 1.5
     J0 = [0 1.0; -1 μ]      # Jacobiana en (0,0)
     eigvals(J0)
@@ -142,6 +165,7 @@ a.  Resolver el sistema desde una condición inicial cercana al origen y otra le
     :::{.callout-tip collapse="true"}
     ## Solución
     ```{julia}
+    using Plots, LaTeXStrings, DifferentialEquations
     function vdp!(du, u, p, t)
         du[1] = u[2]
         du[2] = 1.5 * (1 - u[1]^2) * u[2] - u[1]
@@ -189,12 +213,14 @@ a.  Para $I = 0$, dibujar las **nulclinas** ($v'=0$ y $w'=0$), localizar el punt
     :::{.callout-tip collapse="true"}
     ## Solución
     ```{julia}
+    using NLsolve
     I = 0.0
     F(u) = [u[1] - u[1]^3/3 - u[2] + I, 0.08*(u[1] + 0.7 - 0.8u[2])]
     eq = nlsolve(F, [-1.2, -0.6]).zero
     ```
 
     ```{julia}
+    using SymPyPythonCall, LinearAlgebra
     @syms v w
     fv = v - v^3/3 - w + I
     gw = Sym(8)/100 * (v + Sym(7)/10 - Sym(8)/10 * w)
@@ -204,6 +230,7 @@ a.  Para $I = 0$, dibujar las **nulclinas** ($v'=0$ y $w'=0$), localizar el punt
     ```
 
     ```{julia}
+    using Plots, LaTeXStrings
     nv(v) = v - v^3/3 + I     # nulclina de v
     nw(v) = (v + 0.7) / 0.8    # nulclina de w
     plot(nv, -2.5, 2.5, lw = 2, label = L"v'=0", xlab = L"v", ylab = L"w")
@@ -219,6 +246,7 @@ a.  Comprobar que un estímulo $I = 0.5$ desestabiliza el equilibrio y hace que 
     :::{.callout-tip collapse="true"}
     ## Solución
     ```{julia}
+    using DifferentialEquations
     function fhn!(du, u, p, t)
         I = p
         du[1] = u[1] - u[1]^3/3 - u[2] + I
@@ -245,6 +273,7 @@ Comprobar que $H$ es constante a lo largo de las órbitas (calculando $\frac{d}{
 :::{.callout-tip collapse="true"}
 ## Solución
 ```{julia}
+using SymPyPythonCall
 @syms x y
 H = Sym(1)/2 * (x - log(x)) + (y - log(y))
 dHdt = diff(H, x) * (x * (1 - y)) + diff(H, y) * (Sym(1)/2 * y * (x - 1))
@@ -254,6 +283,7 @@ simplify(dHdt)
 La derivada total es idénticamente nula, luego $H$ se conserva. Sus curvas de nivel:
 
 ```{julia}
+using Plots, LaTeXStrings
 Hnum(x, y) = 0.5*(x - log(x)) + (y - log(y))
 xs = ys = range(0.1, 4, length = 300)
 contour(xs, ys, Hnum, levels = 15, xlab = L"x", ylab = L"y",

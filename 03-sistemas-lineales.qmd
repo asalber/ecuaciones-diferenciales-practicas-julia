@@ -31,6 +31,24 @@ using DifferentialEquations  # Resolución numérica.
 using LaTeXStrings           # Código LaTeX en los gráficos.
 ```
 
+```{julia}
+#| echo: false
+#| include: false
+packages = ["SymPyPythonCall", "LinearAlgebra", "Plots", "DifferentialEquations", "LaTeXStrings"]
+```
+
+```{julia}
+#| echo: false
+#| include: false
+using Plots
+# Plots y Makie generan además una representación text/html con la imagen en base64
+# en una sola línea; con figuras grandes esa línea desborda la pila del conversor
+# de Quarto a Markdown. La desactivamos y dejamos solo image/png.
+Base.showable(::MIME"text/html", ::Plots.Plot) = false
+```
+
+{{< include _versiones-paquetes.qmd >}}
+
 :::{#exr-tanques-acoplados}
 **Dos tanques de salmuera acoplados (ingeniería química).** Dos tanques de 100 L están conectados: del tanque 1 pasan al 2 un caudal de 4 L/min, del 2 al 1 vuelven 1 L/min, al tanque 1 entra agua pura a 3 L/min y del tanque 2 se extraen 3 L/min. Si $x_1, x_2$ son los kg de sal en cada tanque,
 

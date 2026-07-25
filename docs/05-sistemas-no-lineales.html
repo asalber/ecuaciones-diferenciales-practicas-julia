@@ -1,0 +1,1360 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>5&nbsp; Sistemas de ecuaciones diferenciales no lineales – Prácticas de Ecuaciones Diferenciales y Ecuaciones en Derivadas Parciales con Julia</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./04-ecuaciones-orden-superior.html" rel="prev">
+<link href="./img/logos/favicon.ico" rel="icon">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-33269adcf1721b81efc5ea7fcfe7f0ee.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-5a2acb6f4ed5aeb23a104ba421924b87.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-3401a95b39ddee773afad36d04e16f62.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-acd2f942bef30007f70c13ca6b9aeec6.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No se han encontrado resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<meta property="og:title" content="5&nbsp; Sistemas de ecuaciones diferenciales no lineales – Prácticas de Ecuaciones Diferenciales y Ecuaciones en Derivadas Parciales con Julia">
+<meta property="og:description" content="">
+<meta property="og:image" content="05-sistemas-no-lineales_files/figure-html/cell-13-output-1.svg">
+<meta property="og:site_name" content="Prácticas de Ecuaciones Diferenciales y Ecuaciones en Derivadas Parciales con Julia">
+</head>
+
+<body class="nav-sidebar floating fullcontent quarto-dark"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = true;
+    const darkModeDefault = authorPrefersDark;
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./05-sistemas-no-lineales.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Sistemas de ecuaciones diferenciales no lineales</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Buscar" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="./index.html" class="sidebar-logo-link">
+      <img src="./img/logos/aprendeconalf.png" alt="" class="sidebar-logo light-content py-0 d-lg-inline d-none">
+      <img src="./img/logos/aprendeconalf.png" alt="" class="sidebar-logo dark-content py-0 d-lg-inline d-none">
+      </a>
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Prácticas de Ecuaciones Diferenciales y Ecuaciones en Derivadas Parciales con Julia</a> 
+        <div class="sidebar-tools-main tools-wide">
+    <a href="https://aprendeconalf.es" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-house-fill"></i></a>
+    <div class="dropdown">
+      <a href="" title="Download" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" role="link" aria-label="Download"><i class="bi bi-download"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="./practicas-ecuaciones-diferenciales-derivadas-parciales-julia.pdf">
+              <i class="bi bi-file-pdf pe-1"></i>
+            Download PDF
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="./practicas-ecuaciones-diferenciales-derivadas-parciales-julia.epub">
+              <i class="bi bi-journal pe-1"></i>
+            Download ePub
+            </a>
+          </li>
+      </ul>
+    </div>
+    <a href="https://www.linkedin.com/sharing/share-offsite/?url=|url|" title="LinkedIn" class="quarto-navigation-tool px-1" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Alternar modo oscuro"><i class="bi"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Buscar"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Prefacio</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-edos-primer-orden.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Ecuaciones diferenciales de primer orden</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-geometria-sistemas.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Geometría de un sistema de ecuaciones diferenciales de primer orden</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-sistemas-lineales.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Sistemas de ecuaciones diferenciales lineales</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-ecuaciones-orden-superior.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Ecuaciones lineales de orden superior al primero</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-sistemas-no-lineales.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Sistemas de ecuaciones diferenciales no lineales</span></span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Sistemas de ecuaciones diferenciales no lineales</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>En un sistema autónomo no lineal <span class="math inline">\(\mathbf{x}' = F(\mathbf{x})\)</span> el comportamiento cualitativo se estudia <strong>linealizando</strong> en torno a cada punto de equilibrio <span class="math inline">\(\mathbf{x}^*\)</span>: cerca de él el sistema se comporta como <span class="math inline">\(\mathbf{u}' = J(\mathbf{x}^*)\,\mathbf{u}\)</span>, donde <span class="math inline">\(J\)</span> es la <strong>matriz jacobiana</strong> de <span class="math inline">\(F\)</span>. Los autovalores de <span class="math inline">\(J(\mathbf{x}^*)\)</span> clasifican el equilibrio (nodo, silla, foco, centro), siempre que ninguno tenga parte real nula (teorema de Hartman–Grobman). Además pueden aparecer fenómenos ausentes en los sistemas lineales: <strong>ciclos límite</strong>, órbitas homoclinas y bifurcaciones.</p>
+<section id="ejercicios-resueltos" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="ejercicios-resueltos"><span class="header-section-number">5.1</span> Ejercicios resueltos</h2>
+<p>Para la realización de esta práctica se requieren los siguientes paquetes:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">SymPyPythonCall</span>        <span class="co"># Cálculo simbólico y jacobianas.</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">LinearAlgebra</span>          <span class="co"># Autovalores de la linealización.</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Plots</span>                  <span class="co"># Dibujo de gráficas.</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">DifferentialEquations</span>  <span class="co"># Resolución numérica.</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">LaTeXStrings</span>           <span class="co"># Código LaTeX en los gráficos.</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">NLsolve</span>                <span class="co"># Puntos de equilibrio.</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Versiones de Julia y de los paquetes utilizados
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div id="274e1d63" class="cell" data-execution_count="3">
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="4">
+<div>
+<figure class="figure">
+<p><img src="https://img.shields.io/badge/Julia-1.12.6-9558B2?logo=julia" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="070ad6b9" class="cell" data-execution_count="6">
+<div class="cell-output cell-output-stdout">
+<div class="ansi-escaped-output">
+<pre><span class="ansi-green-fg ansi-bold">Status</span> `~/.julia/environments/v1.12/Project.toml`
+
+  <span class="ansi-bright-black-fg">[0c46a032] </span>DifferentialEquations v8.0.2
+
+  <span class="ansi-bright-black-fg">[b964fa9f] </span>LaTeXStrings v1.4.0
+
+  <span class="ansi-bright-black-fg">[91a5bcdd] </span>Plots v1.41.6
+
+  <span class="ansi-bright-black-fg">[bc8888f7] </span>SymPyPythonCall v0.5.1
+
+  <span class="ansi-bright-black-fg">[37e2e46d] </span>LinearAlgebra v1.12.0
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>A lo largo de la esta práctica usaremos la siguiente función auxiliar para dibujar campos vectoriales normalizados.</p>
+<div id="c279386f" class="cell" data-execution_count="8">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">campo_vectorial</span>(f, g, xs, ys; escala <span class="op">=</span> <span class="fl">0.35</span>, kwargs<span class="op">...</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    X <span class="op">=</span> [x for y <span class="kw">in</span> ys for x <span class="kw">in</span> xs]</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    Y <span class="op">=</span> [y for y <span class="kw">in</span> ys for x <span class="kw">in</span> xs]</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    U <span class="op">=</span> <span class="fu">f</span>.(X, Y)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    V <span class="op">=</span> <span class="fu">g</span>.(X, Y)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    N <span class="op">=</span> <span class="fu">sqrt</span>.(U <span class="op">.^</span> <span class="fl">2</span> <span class="op">.+</span> V <span class="op">.^</span> <span class="fl">2</span>) <span class="op">.+</span> <span class="fl">1e-12</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">quiver</span>(X, Y, quiver <span class="op">=</span> (escala <span class="op">*</span> U <span class="op">./</span> N, escala <span class="op">*</span> V <span class="op">./</span> N),</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>           color <span class="op">=</span> <span class="op">:</span>gray, alpha <span class="op">=</span> <span class="fl">0.7</span>; kwargs<span class="op">...</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span>;</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="exr-linealizacion-competencia" class="theorem exercise">
+<p><span class="theorem-title"><strong>Ejercicio 5.1</strong></span> <strong>Linealización de un modelo de competencia.</strong> Dos especies compiten según</p>
+<p><span class="math display">\[
+\begin{cases}
+x' = x\,(3 - x - 2y) \\
+y' = y\,(2 - x - y)
+\end{cases}
+\]</span></p>
+<ol type="a">
+<li><p>Hallar los puntos de equilibrio y la matriz jacobiana del sistema.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Ayuda
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>La jacobiana de <span class="math inline">\((f, g)\)</span> es <span class="math inline">\(J = \begin{psmallmatrix} f_x &amp; f_y \\ g_x &amp; g_y \end{psmallmatrix}\)</span>. Usar <code>solve</code> para los equilibrios y construir la jacobiana con <code>diff</code>.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div id="5c5bebd5" class="cell" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">SymPyPythonCall</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="pp">@syms</span> x y</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>f <span class="op">=</span> x <span class="op">*</span> (<span class="fl">3</span> <span class="op">-</span> x <span class="op">-</span> <span class="fl">2</span>y)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>g <span class="op">=</span> y <span class="op">*</span> (<span class="fl">2</span> <span class="op">-</span> x <span class="op">-</span> y)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>equilibrios <span class="op">=</span> <span class="fu">solve</span>([f, g], [x, y])</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="10">
+<pre><code>4-element Vector{Tuple{Sym{PythonCall.Py}, Sym{PythonCall.Py}}}:
+ (0, 0)
+ (0, 2)
+ (1, 1)
+ (3, 0)</code></pre>
+</div>
+</div>
+<div id="772733bc" class="cell" data-execution_count="10">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>J <span class="op">=</span> [<span class="fu">diff</span>(f, x) <span class="fu">diff</span>(f, y); <span class="fu">diff</span>(g, x) <span class="fu">diff</span>(g, y)]</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="11">
+<p><span class="math inline">\(\left[\begin{smallmatrix}- 2 x - 2 y + 3 &amp; - 2 x\\- y &amp; - x - 2 y + 2\end{smallmatrix}\right]\)</span></p>
+</div>
+</div>
+<p>Los equilibrios son <span class="math inline">\((0,0)\)</span>, <span class="math inline">\((3,0)\)</span>, <span class="math inline">\((0,2)\)</span> y el de coexistencia <span class="math inline">\((1, 1)\)</span>.</p>
+</div>
+</div>
+</div></li>
+<li><p>Clasificar cada equilibrio evaluando los autovalores de la jacobiana. ¿Existe coexistencia estable?</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div id="0944207d" class="cell" data-execution_count="11">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">LinearAlgebra</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> eq <span class="kw">in</span> equilibrios</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    Je <span class="op">=</span> J.<span class="fu">subs</span>(<span class="fu">Dict</span>(x <span class="op">=&gt;</span> eq[<span class="fl">1</span>], y <span class="op">=&gt;</span> eq[<span class="fl">2</span>]))</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    vals <span class="op">=</span> <span class="fu">eigvals</span>(<span class="fu">Float64</span>.(Je))</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">println</span>(<span class="st">"Equilibrio </span><span class="sc">$</span>eq<span class="st"> → autovalores </span><span class="sc">$</span>(<span class="fu">round</span>.(vals, digits<span class="op">=</span><span class="fl">3</span>))<span class="st">"</span>)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Equilibrio (0, 0) → autovalores [2.0, 3.0]
+Equilibrio (0, 2) → autovalores [-2.0, -1.0]
+Equilibrio (1, 1) → autovalores [-2.414, 0.414]
+Equilibrio (3, 0) → autovalores [-3.0, -1.0]</code></pre>
+</div>
+</div>
+<ul>
+<li><span class="math inline">\((0,0)\)</span>: autovalores <span class="math inline">\(3, 2\)</span> (positivos) → <strong>nodo inestable</strong>.</li>
+<li><span class="math inline">\((3,0)\)</span> y <span class="math inline">\((0,2)\)</span>: autovalores de signo opuesto y del mismo signo respectivamente; <span class="math inline">\((3,0)\)</span> resulta ser un nodo estable y <span class="math inline">\((0,2)\)</span> un punto de silla (según los signos obtenidos).</li>
+<li><span class="math inline">\((1,1)\)</span>: autovalores reales de signo opuesto → <strong>punto de silla</strong>, inestable.</li>
+</ul>
+<p>Como el equilibrio de coexistencia es una silla, <strong>no hay coexistencia estable</strong>: dependiendo de las condiciones iniciales, una especie desplaza a la otra (exclusión competitiva).</p>
+</div>
+</div>
+</div></li>
+<li><p>Dibujar el diagrama de fases con las órbitas y comprobar la clasificación anterior.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div id="018032bc" class="cell" data-execution_count="12">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Plots</span>, <span class="bu">LaTeXStrings</span>, <span class="bu">DifferentialEquations</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">fn</span>(x, y) <span class="op">=</span> x <span class="op">*</span> (<span class="fl">3</span> <span class="op">-</span> x <span class="op">-</span> <span class="fl">2</span>y)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">gn</span>(x, y) <span class="op">=</span> y <span class="op">*</span> (<span class="fl">2</span> <span class="op">-</span> x <span class="op">-</span> y)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>plt <span class="op">=</span> <span class="fu">campo_vectorial</span>(fn, gn, <span class="fl">0</span><span class="op">:</span><span class="fl">0.25</span><span class="op">:</span><span class="fl">3.5</span>, <span class="fl">0</span><span class="op">:</span><span class="fl">0.2</span><span class="op">:</span><span class="fl">2.5</span>, escala <span class="op">=</span> <span class="fl">0.25</span>,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    xlab <span class="op">=</span> L<span class="st">"x"</span>, ylab <span class="op">=</span> L<span class="st">"y"</span>, legend <span class="op">=</span> <span class="cn">false</span>, xlims <span class="op">=</span> (<span class="fl">0</span>, <span class="fl">3.5</span>), ylims <span class="op">=</span> (<span class="fl">0</span>, <span class="fl">2.5</span>))</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="fu">scatter!</span>(plt, [<span class="fl">0</span>,<span class="fl">3</span>,<span class="fl">0</span>,<span class="fl">1</span>], [<span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">2</span>,<span class="fl">1</span>], color <span class="op">=</span> <span class="op">:</span>red, ms <span class="op">=</span> <span class="fl">6</span>)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">comp!</span>(du, u, p, t)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    du[<span class="fl">1</span>] <span class="op">=</span> <span class="fu">fn</span>(u[<span class="fl">1</span>], u[<span class="fl">2</span>]); du[<span class="fl">2</span>] <span class="op">=</span> <span class="fu">gn</span>(u[<span class="fl">1</span>], u[<span class="fl">2</span>])</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> u0 <span class="kw">in</span> [[<span class="fl">0.5</span>,<span class="fl">0.4</span>],[<span class="fl">0.4</span>,<span class="fl">0.5</span>],[<span class="fl">2</span>,<span class="fl">2</span>],[<span class="fl">3</span>,<span class="fl">1.5</span>],[<span class="fl">0.2</span>,<span class="fl">2</span>],[<span class="fl">3</span>,<span class="fl">0.3</span>],[<span class="fl">1.1</span>,<span class="fl">0.9</span>],[<span class="fl">0.9</span>,<span class="fl">1.1</span>]]</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    sol <span class="op">=</span> <span class="fu">solve</span>(<span class="fu">ODEProblem</span>(comp!, <span class="fu">float</span>.(u0), (<span class="fl">0.0</span>, <span class="fl">15.0</span>)))</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">plot!</span>(plt, sol, idxs <span class="op">=</span> (<span class="fl">1</span>, <span class="fl">2</span>), lw <span class="op">=</span> <span class="fl">2</span>)</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>plt</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="13">
+<div>
+<figure class="figure">
+<p><img src="05-sistemas-no-lineales_files/figure-html/cell-13-output-1.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Las órbitas confirman que <span class="math inline">\((1,1)\)</span> es una silla: la separatriz que entra en él divide el plano en dos cuencas de atracción, una hacia <span class="math inline">\((3,0)\)</span> y otra hacia <span class="math inline">\((0,2)\)</span>.</p>
+</div>
+</div>
+</div></li>
+</ol>
+</div>
+<div id="exr-ciclo-limite" class="theorem exercise">
+<p><span class="theorem-title"><strong>Ejercicio 5.2</strong></span> <strong>Ciclo límite: el oscilador de Van der Pol.</strong> El circuito de Van der Pol, usado históricamente en osciladores electrónicos y como modelo del latido cardíaco, obedece</p>
+<p><span class="math display">\[
+x'' - \mu(1 - x^2)x' + x = 0
+\;\Longleftrightarrow\;
+\begin{cases} x' = y \\ y' = \mu(1 - x^2)y - x \end{cases}
+\]</span></p>
+<p>con <span class="math inline">\(\mu = 1.5\)</span>.</p>
+<ol type="a">
+<li><p>Comprobar que el único equilibrio <span class="math inline">\((0,0)\)</span> es un foco inestable, de modo que las órbitas cercanas se alejan de él.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div id="953aaa79" class="cell" data-execution_count="13">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">LinearAlgebra</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>μ <span class="op">=</span> <span class="fl">1.5</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>J0 <span class="op">=</span> [<span class="fl">0</span> <span class="fl">1.0</span>; <span class="op">-</span><span class="fl">1</span> μ]      <span class="co"># Jacobiana en (0,0)</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="fu">eigvals</span>(J0)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="14">
+<pre><code>2-element Vector{ComplexF64}:
+ 0.75 - 0.6614378277661476im
+ 0.75 + 0.6614378277661476im</code></pre>
+</div>
+</div>
+<p>Los autovalores son complejos con parte real positiva (<span class="math inline">\(0.75 \pm 0.66i\)</span>): el origen es un <strong>foco inestable</strong>.</p>
+</div>
+</div>
+</div></li>
+<li><p>Resolver el sistema desde una condición inicial cercana al origen y otra lejana, y comprobar que ambas convergen al mismo <strong>ciclo límite</strong>.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Ayuda
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Un ciclo límite es una órbita cerrada aislada a la que tienden las trayectorias vecinas. Resolver desde dentro (p.&nbsp;ej. <span class="math inline">\((0.1, 0)\)</span>) y desde fuera (p.&nbsp;ej. <span class="math inline">\((3, 3)\)</span>) y superponer las órbitas.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-8" class="callout-8-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div id="08f1a6e5" class="cell" data-execution_count="14">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Plots</span>, <span class="bu">LaTeXStrings</span>, <span class="bu">DifferentialEquations</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">vdp!</span>(du, u, p, t)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    du[<span class="fl">1</span>] <span class="op">=</span> u[<span class="fl">2</span>]</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    du[<span class="fl">2</span>] <span class="op">=</span> <span class="fl">1.5</span> <span class="op">*</span> (<span class="fl">1</span> <span class="op">-</span> u[<span class="fl">1</span>]<span class="op">^</span><span class="fl">2</span>) <span class="op">*</span> u[<span class="fl">2</span>] <span class="op">-</span> u[<span class="fl">1</span>]</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>plt <span class="op">=</span> <span class="fu">plot</span>(xlab <span class="op">=</span> L<span class="st">"x"</span>, ylab <span class="op">=</span> L<span class="st">"y = x'"</span>, legend <span class="op">=</span> <span class="op">:</span>topright)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (u0, lab) <span class="kw">in</span> [([<span class="fl">0.1</span>, <span class="fl">0.0</span>], <span class="st">"Desde el interior"</span>),</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>                  ([<span class="fl">3.0</span>, <span class="fl">3.0</span>], <span class="st">"Desde el exterior"</span>)]</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    sol <span class="op">=</span> <span class="fu">solve</span>(<span class="fu">ODEProblem</span>(vdp!, u0, (<span class="fl">0.0</span>, <span class="fl">30.0</span>)), saveat <span class="op">=</span> <span class="fl">0.01</span>)</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">plot!</span>(plt, sol[<span class="fl">1</span>, <span class="op">:</span>], sol[<span class="fl">2</span>, <span class="op">:</span>], lw <span class="op">=</span> <span class="fl">1.5</span>, label <span class="op">=</span> lab)</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a><span class="fu">scatter!</span>(plt, [<span class="fl">0</span>], [<span class="fl">0</span>], color <span class="op">=</span> <span class="op">:</span>red, label <span class="op">=</span> <span class="st">"Foco inestable"</span>)</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>plt</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="15">
+<div>
+<figure class="figure">
+<p><img src="05-sistemas-no-lineales_files/figure-html/cell-15-output-1.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Ambas trayectorias, una que espiralea hacia afuera y otra hacia adentro, terminan enrollándose sobre la <strong>misma curva cerrada</strong>: el ciclo límite. La serie temporal muestra las características oscilaciones de relajación:</p>
+<div id="f5f0ba78" class="cell" data-execution_count="15">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>sol <span class="op">=</span> <span class="fu">solve</span>(<span class="fu">ODEProblem</span>(vdp!, [<span class="fl">0.1</span>, <span class="fl">0.0</span>], (<span class="fl">0.0</span>, <span class="fl">30.0</span>)), saveat <span class="op">=</span> <span class="fl">0.01</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(sol, idxs <span class="op">=</span> <span class="fl">1</span>, lw <span class="op">=</span> <span class="fl">2</span>, label <span class="op">=</span> L<span class="st">"x(t)"</span>, xlab <span class="op">=</span> L<span class="st">"t"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="16">
+<div>
+<figure class="figure">
+<p><img src="05-sistemas-no-lineales_files/figure-html/cell-16-output-1.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Este comportamiento (oscilación autosostenida independiente de la amplitud inicial) es imposible en un sistema lineal y modela, por ejemplo, la periodicidad robusta del latido cardíaco.</p>
+</div>
+</div>
+</div></li>
+</ol>
+</div>
+<div id="exr-fitzhugh" class="theorem exercise">
+<p><span class="theorem-title"><strong>Ejercicio 5.3</strong></span> <strong>Modelo de FitzHugh–Nagumo (neurociencia).</strong> La actividad de una neurona se describe con</p>
+<p><span class="math display">\[
+\begin{cases}
+v' = v - \dfrac{v^3}{3} - w + I \\
+w' = 0.08\,(v + 0.7 - 0.8\,w)
+\end{cases}
+\]</span></p>
+<p>donde <span class="math inline">\(v\)</span> es el potencial de membrana, <span class="math inline">\(w\)</span> una variable de recuperación e <span class="math inline">\(I\)</span> la corriente de estímulo.</p>
+<ol type="a">
+<li><p>Para <span class="math inline">\(I = 0\)</span>, dibujar las <strong>nulclinas</strong> (<span class="math inline">\(v'=0\)</span> y <span class="math inline">\(w'=0\)</span>), localizar el punto de equilibrio como su intersección y clasificarlo.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Ayuda
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-9" class="callout-9-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Las nulclinas son las curvas donde cada derivada se anula: <span class="math inline">\(w = v - v^3/3 + I\)</span> (nulclina de <span class="math inline">\(v\)</span>, cúbica) y <span class="math inline">\(w = (v+0.7)/0.8\)</span> (nulclina de <span class="math inline">\(w\)</span>, recta). El equilibrio se calcula con <code>nlsolve</code> y se clasifica con la jacobiana.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-10" class="callout-10-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div id="94063905" class="cell" data-execution_count="16">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">NLsolve</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>I <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">F</span>(u) <span class="op">=</span> [u[<span class="fl">1</span>] <span class="op">-</span> u[<span class="fl">1</span>]<span class="op">^</span><span class="fl">3</span><span class="op">/</span><span class="fl">3</span> <span class="op">-</span> u[<span class="fl">2</span>] <span class="op">+</span> I, <span class="fl">0.08</span><span class="fu">*</span>(u[<span class="fl">1</span>] <span class="op">+</span> <span class="fl">0.7</span> <span class="op">-</span> <span class="fl">0.8</span>u[<span class="fl">2</span>])]</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>eq <span class="op">=</span> <span class="fu">nlsolve</span>(F, [<span class="op">-</span><span class="fl">1.2</span>, <span class="op">-</span><span class="fl">0.6</span>]).zero</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="17">
+<pre><code>2-element Vector{Float64}:
+ -1.1994080352440788
+ -0.6242600440550986</code></pre>
+</div>
+</div>
+<div id="80383edd" class="cell" data-execution_count="17">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">SymPyPythonCall</span>, <span class="bu">LinearAlgebra</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="pp">@syms</span> v w</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>fv <span class="op">=</span> v <span class="op">-</span> v<span class="op">^</span><span class="fl">3</span><span class="op">/</span><span class="fl">3</span> <span class="op">-</span> w <span class="op">+</span> I</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>gw <span class="op">=</span> <span class="fu">Sym</span>(<span class="fl">8</span>)<span class="op">/</span><span class="fl">100</span> <span class="op">*</span> (v <span class="op">+</span> <span class="fu">Sym</span>(<span class="fl">7</span>)<span class="op">/</span><span class="fl">10</span> <span class="op">-</span> <span class="fu">Sym</span>(<span class="fl">8</span>)<span class="op">/</span><span class="fl">10</span> <span class="op">*</span> w)</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>Jsym <span class="op">=</span> [<span class="fu">diff</span>(fv,v) <span class="fu">diff</span>(fv,w); <span class="fu">diff</span>(gw,v) <span class="fu">diff</span>(gw,w)]</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>Je <span class="op">=</span> <span class="fu">Float64</span>.(Jsym.<span class="fu">subs</span>(<span class="fu">Dict</span>(v <span class="op">=&gt;</span> eq[<span class="fl">1</span>], w <span class="op">=&gt;</span> eq[<span class="fl">2</span>])))</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="fu">eigvals</span>(Je)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="18">
+<pre><code>2-element Vector{ComplexF64}:
+ -0.2512898175040307 - 0.21194934361612663im
+ -0.2512898175040307 + 0.21194934361612663im</code></pre>
+</div>
+</div>
+<div id="a6910db6" class="cell" data-execution_count="18">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Plots</span>, <span class="bu">LaTeXStrings</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">nv</span>(v) <span class="op">=</span> v <span class="op">-</span> v<span class="op">^</span><span class="fl">3</span><span class="op">/</span><span class="fl">3</span> <span class="op">+</span> I     <span class="co"># nulclina de v</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">nw</span>(v) <span class="op">=</span> (v <span class="op">+</span> <span class="fl">0.7</span>) <span class="op">/</span> <span class="fl">0.8</span>    <span class="co"># nulclina de w</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(nv, <span class="op">-</span><span class="fl">2.5</span>, <span class="fl">2.5</span>, lw <span class="op">=</span> <span class="fl">2</span>, label <span class="op">=</span> L<span class="st">"v'=0"</span>, xlab <span class="op">=</span> L<span class="st">"v"</span>, ylab <span class="op">=</span> L<span class="st">"w"</span>)</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot!</span>(nw, <span class="op">-</span><span class="fl">2.5</span>, <span class="fl">2.5</span>, lw <span class="op">=</span> <span class="fl">2</span>, label <span class="op">=</span> L<span class="st">"w'=0"</span>)</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="fu">scatter!</span>([eq[<span class="fl">1</span>]], [eq[<span class="fl">2</span>]], color <span class="op">=</span> <span class="op">:</span>red, label <span class="op">=</span> <span class="st">"Equilibrio"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="19">
+<div>
+<figure class="figure">
+<p><img src="05-sistemas-no-lineales_files/figure-html/cell-19-output-1.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Con <span class="math inline">\(I=0\)</span> los autovalores tienen parte real negativa: el equilibrio es un <strong>foco estable</strong> (neurona en reposo).</p>
+</div>
+</div>
+</div></li>
+<li><p>Comprobar que un estímulo <span class="math inline">\(I = 0.5\)</span> desestabiliza el equilibrio y hace que la neurona dispare de forma repetitiva (aparición de un ciclo límite por bifurcación de Hopf).</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-11-contents" aria-controls="callout-11" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-11" class="callout-11-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div id="3c363de5" class="cell" data-execution_count="19">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">DifferentialEquations</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">fhn!</span>(du, u, p, t)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    I <span class="op">=</span> p</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    du[<span class="fl">1</span>] <span class="op">=</span> u[<span class="fl">1</span>] <span class="op">-</span> u[<span class="fl">1</span>]<span class="op">^</span><span class="fl">3</span><span class="op">/</span><span class="fl">3</span> <span class="op">-</span> u[<span class="fl">2</span>] <span class="op">+</span> I</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    du[<span class="fl">2</span>] <span class="op">=</span> <span class="fl">0.08</span><span class="fu">*</span>(u[<span class="fl">1</span>] <span class="op">+</span> <span class="fl">0.7</span> <span class="op">-</span> <span class="fl">0.8</span>u[<span class="fl">2</span>])</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>sol <span class="op">=</span> <span class="fu">solve</span>(<span class="fu">ODEProblem</span>(fhn!, [<span class="op">-</span><span class="fl">1.0</span>, <span class="op">-</span><span class="fl">0.5</span>], (<span class="fl">0.0</span>, <span class="fl">200.0</span>), <span class="fl">0.5</span>), saveat <span class="op">=</span> <span class="fl">0.1</span>)</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(sol, idxs <span class="op">=</span> <span class="fl">1</span>, lw <span class="op">=</span> <span class="fl">2</span>, label <span class="op">=</span> L<span class="st">"v(t)"</span>, xlab <span class="op">=</span> L<span class="st">"t"</span>,</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>     ylab <span class="op">=</span> <span class="st">"Potencial de membrana"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="20">
+<div>
+<figure class="figure">
+<p><img src="05-sistemas-no-lineales_files/figure-html/cell-20-output-1.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Con la corriente aplicada, el potencial genera trenes de <strong>potenciales de acción</strong> periódicos: la neurona pasa de estar en reposo a disparar de forma sostenida, reproduciendo cualitativamente el comportamiento excitable real.</p>
+</div>
+</div>
+</div></li>
+</ol>
+</div>
+<div id="exr-conservado-presa" class="theorem exercise">
+<p><span class="theorem-title"><strong>Ejercicio 5.4</strong></span> <strong>Cantidad conservada en Lotka–Volterra.</strong> El sistema depredador–presa clásico <span class="math inline">\(x' = x(1-y)\)</span>, <span class="math inline">\(y' = 0.5\,y(x-1)\)</span> posee la cantidad conservada</p>
+<p><span class="math display">\[
+H(x, y) = 0.5(x - \ln x) + (y - \ln y).
+\]</span></p>
+<p>Comprobar que <span class="math inline">\(H\)</span> es constante a lo largo de las órbitas (calculando <span class="math inline">\(\frac{d}{dt}H(x(t),y(t))\)</span> simbólicamente) y dibujar varias curvas de nivel de <span class="math inline">\(H\)</span>, que coinciden con las órbitas del diagrama de fases.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-12-contents" aria-controls="callout-12" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-12" class="callout-12-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div id="00ef149e" class="cell" data-execution_count="20">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">SymPyPythonCall</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="pp">@syms</span> x y</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>H <span class="op">=</span> <span class="fu">Sym</span>(<span class="fl">1</span>)<span class="op">/</span><span class="fl">2</span> <span class="op">*</span> (x <span class="op">-</span> <span class="fu">log</span>(x)) <span class="op">+</span> (y <span class="op">-</span> <span class="fu">log</span>(y))</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>dHdt <span class="op">=</span> <span class="fu">diff</span>(H, x) <span class="op">*</span> (x <span class="op">*</span> (<span class="fl">1</span> <span class="op">-</span> y)) <span class="op">+</span> <span class="fu">diff</span>(H, y) <span class="op">*</span> (<span class="fu">Sym</span>(<span class="fl">1</span>)<span class="op">/</span><span class="fl">2</span> <span class="op">*</span> y <span class="op">*</span> (x <span class="op">-</span> <span class="fl">1</span>))</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="fu">simplify</span>(dHdt)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="21">
+<p><span class="math inline">\(0\)</span></p>
+</div>
+</div>
+<p>La derivada total es idénticamente nula, luego <span class="math inline">\(H\)</span> se conserva. Sus curvas de nivel:</p>
+<div id="7159101f" class="cell" data-execution_count="21">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Plots</span>, <span class="bu">LaTeXStrings</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">Hnum</span>(x, y) <span class="op">=</span> <span class="fl">0.5</span><span class="fu">*</span>(x <span class="op">-</span> <span class="fu">log</span>(x)) <span class="op">+</span> (y <span class="op">-</span> <span class="fu">log</span>(y))</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> ys <span class="op">=</span> <span class="fu">range</span>(<span class="fl">0.1</span>, <span class="fl">4</span>, length <span class="op">=</span> <span class="fl">300</span>)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="fu">contour</span>(xs, ys, Hnum, levels <span class="op">=</span> <span class="fl">15</span>, xlab <span class="op">=</span> L<span class="st">"x"</span>, ylab <span class="op">=</span> L<span class="st">"y"</span>,</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>        color <span class="op">=</span> <span class="op">:</span>viridis, title <span class="op">=</span> <span class="st">"Curvas de nivel de H = órbitas"</span>)</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="fu">scatter!</span>([<span class="fl">1</span>], [<span class="fl">1</span>], color <span class="op">=</span> <span class="op">:</span>red, label <span class="op">=</span> <span class="st">""</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="22">
+<div>
+<figure class="figure">
+<p><img src="05-sistemas-no-lineales_files/figure-html/cell-22-output-1.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Cada órbita del sistema es una curva cerrada <span class="math inline">\(H = \text{cte}\)</span> que rodea el centro <span class="math inline">\((1,1)\)</span>; esta es la razón matemática por la que las poblaciones oscilan periódicamente sin amortiguarse.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="ejercicios-propuestos" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="ejercicios-propuestos"><span class="header-section-number">5.2</span> Ejercicios propuestos</h2>
+<div id="exr-propuesto-sir-vital" class="theorem exercise">
+<p><span class="theorem-title"><strong>Ejercicio 5.5</strong></span> <strong>Epidemiología.</strong> Estudiar los equilibrios y su estabilidad del modelo SIR con demografía <span class="math inline">\(S' = \mu - \beta SI - \mu S\)</span>, <span class="math inline">\(I' = \beta SI - (\gamma+\mu)I\)</span>, y determinar el número reproductivo básico <span class="math inline">\(R_0\)</span> que separa el equilibrio libre de enfermedad del endémico.</p>
+</div>
+<div id="exr-propuesto-lorenz-2d" class="theorem exercise">
+<p><span class="theorem-title"><strong>Ejercicio 5.6</strong></span> <strong>Física.</strong> Para el sistema <span class="math inline">\(x' = -x + y\)</span>, <span class="math inline">\(y' = -y + x^3\)</span>, hallar los tres equilibrios, clasificarlos y dibujar las cuencas de atracción de los dos estables.</p>
+</div>
+<div id="exr-propuesto-brusselator" class="theorem exercise">
+<p><span class="theorem-title"><strong>Ejercicio 5.7</strong></span> <strong>Cinética química.</strong> Estudiar el Bruselador <span class="math inline">\(x' = 1 - (b+1)x + a x^2 y\)</span>, <span class="math inline">\(y' = bx - ax^2y\)</span> con <span class="math inline">\(a = 1\)</span>, y encontrar el valor de <span class="math inline">\(b\)</span> para el que aparece un ciclo límite por bifurcación de Hopf.</p>
+</div>
+<div id="exr-propuesto-pendulo-forzado" class="theorem exercise">
+<p><span class="theorem-title"><strong>Ejercicio 5.8</strong></span> <strong>Mecánica.</strong> Explorar numéricamente el péndulo forzado <span class="math inline">\(\theta'' + 0.5\theta' + \sin\theta = 1.1\cos(0.8t)\)</span> y describir la sensibilidad a las condiciones iniciales (preludio del capítulo sobre caos).</p>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiado");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiado");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./04-ecuaciones-orden-superior.html" class="pagination-link" aria-label="Ecuaciones lineales de orden superior al primero">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Ecuaciones lineales de orden superior al primero</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
