@@ -16,12 +16,12 @@ se resuelve hallando la solución general de la homogénea a partir de las raíc
 
 Para la realización de esta práctica se requieren los siguientes paquetes:
 
-```{julia}
-using SymPy                  # Cálculo simbólico.
+```julia
+using SymPyPythonCall        # Cálculo simbólico.
 using Plots                  # Dibujo de gráficas.
 using DifferentialEquations  # Resolución numérica.
 using LaTeXStrings           # Código LaTeX en los gráficos.
-using LinearAlgebra
+using LinearAlgebra          # Operaciones con matrices.
 ```
 
 :::{#exr-amortiguacion-coche}
@@ -37,7 +37,9 @@ a.  Calcular el valor crítico $c^* = 2\sqrt{mk}$ y resolver simbólicamente la 
 
     :::{.callout-note collapse="true"}
     ## Ayuda
-    Las raíces del polinomio característico $m\lambda^2 + c\lambda + k = 0$ determinan el régimen: complejas (subamortiguado), doble (crítico) o reales distintas (sobreamortiguado). Usar `dsolve` con `ics = Dict(y(0) => ..., diff(y(t),t)(0) => ...)` (en SymPy, la derivada inicial se impone con `Derivative(y(t),t)(0)`; en `SymPy.jl` puede escribirse `diff(y(t), t) => ...` evaluada en 0 mediante `subs`). Alternativamente resolver cada caso con `dsolve` sin condiciones y determinar las constantes con `solve`.
+    Las raíces del polinomio característico $m\lambda^2 + c\lambda + k = 0$ determinan el régimen: complejas (subamortiguado), doble (crítico) o reales distintas (sobreamortiguado). Usar `dsolve` de `SymPy` con `ics = Dict(y(0) => ..., diff(y(t),t)(0) => ...)` . 
+    
+    Alternativamente resolver cada caso con `dsolve` sin condiciones y determinar las constantes con `solve`.
     :::
 
     :::{.callout-tip collapse="true"}
@@ -50,6 +52,7 @@ a.  Calcular el valor crítico $c^* = 2\sqrt{mk}$ y resolver simbólicamente la 
     El amortiguamiento crítico es $c^* = 2\sqrt{250\cdot 10^4} \approx 3162$ N·s/m. Raíces características en cada caso:
 
     ```{julia}
+    using SymPyPythonCall
     @syms λ
     [solve(m * λ^2 + c * λ + k, λ) for c in (1000, ccrit, 6000)]
     ```
@@ -76,6 +79,7 @@ a.  Dibujar las tres soluciones. ¿Por qué los fabricantes ajustan la suspensi�
     :::{.callout-tip collapse="true"}
     ## Solución
     ```{julia}
+    using Plots, LaTeXStrings
     plt = plot(xlab = L"t \; (s)", ylab = L"y \; (m)")
     etiquetas = Dict(1000 => "Subamortiguado", round(ccrit) => "Crítico",
                      6000 => "Sobreamortiguado")
@@ -108,6 +112,7 @@ a.  Calcular por coeficientes indeterminados la solución particular estacionari
     :::{.callout-tip collapse="true"}
     ## Solución
     ```{julia}
+    using SymPyPythonCall
     @syms t ω::positive a b
     β, ω0, F0 = Sym(3)/10, 6, 1
     yp = a * cos(ω * t) + b * sin(ω * t)
@@ -116,7 +121,7 @@ a.  Calcular por coeficientes indeterminados la solución particular estacionari
     R = simplify(sqrt(coefs[a]^2 + coefs[b]^2))
     ```
 
-    Se obtiene $R(\omega) = \dfrac{1}{\sqrt{(36-\omega^2)^2 + 0.36\,\omega^2}}$.
+    Se obtiene $R(\omega) = \dfrac{1}{\sqrt{\omega^4 -71.64\,\omega^2 + 1296}} = \dfrac{1}{\sqrt{(36-\omega^2)^2 + 0.36\,\omega^2}}$.
     :::
 
 a.  Dibujar la curva de resonancia $R(\omega)$ para $\omega\in(0, 12)$, localizar la frecuencia de máxima amplitud y comparar la amplitud resonante con la estática $R(0)$. ¿Qué implicaciones tiene para el diseño?
@@ -124,11 +129,15 @@ a.  Dibujar la curva de resonancia $R(\omega)$ para $\omega\in(0, 12)$, localiza
     :::{.callout-tip collapse="true"}
     ## Solución
     ```{julia}
+    using Plots, LaTeXStrings
     Rnum = lambdify(R, (ω,))
     plot(Rnum, 0.01, 12, lw = 2, label = L"R(\omega)",
         xlab = L"\omega \; (rad/s)", ylab = "Amplitud (m)")
     ωres = sqrt(36 - 2 * 0.3^2)
     vline!([ωres], ls = :dash, label = "Resonancia")
+    ```
+
+    ```{julia}
     (ω_resonancia = ωres, amplificación = Rnum(ωres) / Rnum(0.01))
     ```
 
@@ -140,6 +149,7 @@ a.  Resolver numéricamente la ecuación completa con $\omega = \omega_{res}$, $
     :::{.callout-tip collapse="true"}
     ## Solución
     ```{julia}
+    using DifferentialEquations
     function pasarela!(du, u, p, t)
         du[1] = u[2]
         du[2] = -2 * 0.3 * u[2] - 36 * u[1] + cos(ωres * t)
@@ -171,6 +181,7 @@ Resolver con `dsolve`; los términos con $e^{-t}$ forman el transitorio. Derivar
 :::{.callout-tip collapse="true"}
 ## Solución
 ```{julia}
+using SymPyPythonCall
 @syms t q()
 eq = Eq(diff(q(t), t, 2) + 2diff(q(t), t) + 4q(t), 50cos(t))
 sol = dsolve(eq, q(t), ics = Dict(q(0) => 0, diff(q(t), t)(0) => 0))
@@ -186,6 +197,7 @@ amplitud = sqrt(ip.coeff(cos(t))^2 + ip.coeff(sin(t))^2) |> simplify
 ```
 
 ```{julia}
+using Plots, LaTeXStrings
 plot(lambdify(rhs(sol), (t,)), 0, 15, lw = 2, label = L"q(t)")
 plot!(lambdify(qp, (t,)), 0, 15, ls = :dash, lw = 2, label = "Permanente",
       xlab = L"t \; (s)", ylab = L"q \; (C)")
@@ -214,6 +226,7 @@ Integrar cuatro veces la ecuación (o usar `dsolve`), obtener un polinomio de gr
 :::{.callout-tip collapse="true"}
 ## Solución
 ```{julia}
+using SymPyPythonCall
 @syms x y() C1 C2 C3 C4
 EI, w, L = Sym(2 * 10^6), 5000, 4
 sol = dsolve(Eq(EI * diff(y(x), x, 4), w), y(x))
@@ -239,6 +252,7 @@ formula = 5 * w * L^4 / (384 * EI)
 ```
 
 ```{julia}
+using Plots, LaTeXStrings
 plot(lambdify(-ydef, (x,)), 0, 4, lw = 3, legend = false,
     xlab = L"x \; (m)", ylab = "Deformada (m)", yflip = false)
 ```
@@ -261,6 +275,7 @@ A = \begin{pmatrix} 0 & 1 \\ -\omega_0^2 & -2\beta \end{pmatrix}
 $$
 
 ```{julia}
+using LinearAlgebra
 A = [0 1.0; -36 -0.6]
 eigvals(A)
 ```
