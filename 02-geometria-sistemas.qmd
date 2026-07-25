@@ -1,7 +1,7 @@
 ---
 title: Geometría de un sistema de ecuaciones diferenciales de primer orden
 lang: es
-#jupyter: julia-1.11
+jupyter: julia-1.12
 ---
 
 Un sistema autónomo de dos ecuaciones diferenciales de primer orden
@@ -19,15 +19,33 @@ define un **campo vectorial** $F(x,y) = (f(x,y), g(x,y))$ en el plano. El plano 
 
 Para la realización de esta práctica se requieren los siguientes paquetes:
 
-```{julia}
-using SymPy                  # Cálculo simbólico.
+```julia
+using SymPyPythonCall        # Cálculo simbólico.
 using Plots                  # Dibujo de gráficas.
 using DifferentialEquations  # Resolución numérica de sistemas.
 using LaTeXStrings           # Código LaTeX en los gráficos.
 using NLsolve                # Puntos de equilibrio numéricos.
 ```
 
-Definimos una función auxiliar para dibujar campos vectoriales normalizados:
+```{julia}
+#| echo: false
+#| include: false
+packages = ["SymPyPythonCall", "Plots", "CairoMakie", "DifferentialEquations", "LaTeXStrings", "Roots"]
+```
+
+```{julia}
+#| echo: false
+#| include: false
+using Plots
+# Plots y Makie generan además una representación text/html con la imagen en base64
+# en una sola línea; con figuras grandes esa línea desborda la pila del conversor
+# de Quarto a Markdown. La desactivamos y dejamos solo image/png.
+Base.showable(::MIME"text/html", ::Plots.Plot) = false
+```
+
+{{< include _versiones-paquetes.qmd >}}
+
+A lo largo de la esta práctica usaremos la siguiente función auxiliar para dibujar campos vectoriales normalizados:
 
 ```{julia}
 function campo_vectorial(f, g, xs, ys; escala = 0.35, kwargs...)
@@ -61,6 +79,7 @@ a.  Calcular simbólicamente los puntos de equilibrio del sistema.
     :::{.callout-tip collapse="true"}
     ## Solución
     ```{julia}
+    using SymPyPythonCall
     @syms x y
     solve([x * (1 - y), Sym(1)/2 * y * (x - 1)], [x, y])
     ```
@@ -72,7 +91,9 @@ a.  Dibujar el campo vectorial en $[0, 3]\times[0, 3]$ marcando los puntos de eq
 
     :::{.callout-tip collapse="true"}
     ## Solución
+
     ```{julia}
+    using Plots
     f(x, y) = x * (1 - y)
     g(x, y) = 0.5 * y * (x - 1)
     plt = campo_vectorial(f, g, 0:0.25:3, 0:0.25:3,
@@ -94,6 +115,7 @@ a.  Superponer al campo las curvas solución con condiciones iniciales $(2, 1)$,
     :::{.callout-tip collapse="true"}
     ## Solución
     ```{julia}
+    using DifferentialEquations
     function lotka!(du, u, p, t)
         du[1] = u[1] * (1 - u[2])
         du[2] = 0.5 * u[2] * (u[1] - 1)
@@ -107,10 +129,10 @@ a.  Superponer al campo las curvas solución con condiciones iniciales $(2, 1)$,
 
     ```{julia}
     sol = solve(ODEProblem(lotka!, [2.0, 1.0], (0.0, 20.0)))
-    plot(sol, lw = 2, label = ["Liebres" "Linces"], xlab = L"t \; (\text{años})")
+    plot(sol, lw = 2, label = ["Liebres" "Linces"], xlab = "Tiempo (años)", ylab = "Población (miles)", legend = :topright)
     ```
 
-    Las órbitas son **curvas cerradas** alrededor de $(1,1)$: las poblaciones oscilan periódicamente, con los máximos de linces retrasados respecto a los de liebres.
+    Las órbitas son curvas cerradas alrededor de $(1,1)$. Las poblaciones oscilan periódicamente, con los máximos de linces retrasados respecto a los de liebres.
     :::
 :::
 
@@ -131,11 +153,12 @@ a.  Calcular los puntos de equilibrio en $[-2\pi, 2\pi]\times\mathbb{R}$ e inter
     :::{.callout-tip collapse="true"}
     ## Solución
     ```{julia}
+    using SymPyPythonCall
     @syms θ ω
     solve([ω, -sin(θ) - Sym(1)/4 * ω], [θ, ω])
     ```
 
-    `SymPy` devuelve $(0,0)$ y $(\pi, 0)$; por periodicidad, los equilibrios son $(k\pi, 0)$, $k\in\mathbb{Z}$. Los de $k$ par corresponden al péndulo **colgando en reposo** (estables) y los de $k$ impar al péndulo **invertido** (inestables).
+    `SymPy` devuelve $(0,0)$ y $(\pi, 0)$; por periodicidad, los equilibrios son $(k\pi, 0)$, $k\in\mathbb{Z}$. Los de $k$ par corresponden al péndulo colgando en reposo (estables) y los de $k$ impar al péndulo invertido (inestables).
     :::
 
 a.  Dibujar el diagrama de fases en $[-2\pi, 2\pi]\times[-4, 4]$ con órbitas que partan de $(\theta_0, \omega_0) = (0, 1), (0, 2.5), (0, 3.2), (-2\pi, 3.2)$. Interpretar los distintos tipos de órbitas.
@@ -143,6 +166,7 @@ a.  Dibujar el diagrama de fases en $[-2\pi, 2\pi]\times[-4, 4]$ con órbitas qu
     :::{.callout-tip collapse="true"}
     ## Solución
     ```{julia}
+    using Plots, DifferentialEquations, LaTeXStrings
     f(θ, ω) = ω
     g(θ, ω) = -sin(θ) - 0.25ω
     plt = campo_vectorial(f, g, -2π:0.5:2π, -4:0.5:4, escala = 0.3,
@@ -183,6 +207,7 @@ a.  Calcular todos los puntos de equilibrio, simbólica y numéricamente.
     :::{.callout-tip collapse="true"}
     ## Solución
     ```{julia}
+    using SymPyPythonCall
     @syms x y
     eqs = solve([x * (10 - x - 2y), y * (8 - y - Sym(3)/2 * x)], [x, y])
     ```
@@ -190,6 +215,7 @@ a.  Calcular todos los puntos de equilibrio, simbólica y numéricamente.
     Hay cuatro equilibrios: $(0,0)$, $(10, 0)$, $(0, 8)$ y el de coexistencia $(3, 3.5)$. Numéricamente:
 
     ```{julia}
+    using NLsolve
     F(u) = [u[1] * (10 - u[1] - 2u[2]), u[2] * (8 - u[2] - 1.5u[1])]
     nlsolve(F, [3.0, 3.0]).zero
     ```
@@ -200,6 +226,7 @@ a.  Dibujar el diagrama de fases en $[0,11]\times[0,9]$ con varias órbitas y de
     :::{.callout-tip collapse="true"}
     ## Solución
     ```{julia}
+    using Plots, DifferentialEquations
     f(x, y) = x * (10 - x - 2y)
     g(x, y) = y * (8 - y - 1.5x)
     plt = campo_vectorial(f, g, 0:0.75:11, 0:0.6:9, escala = 0.3,
@@ -217,7 +244,7 @@ a.  Dibujar el diagrama de fases en $[0,11]\times[0,9]$ con varias órbitas y de
     plt
     ```
 
-    El equilibrio de coexistencia $(3, 3.5)$ es un **punto de silla**: casi todas las órbitas se alejan de él y terminan en $(10, 0)$ o en $(0, 8)$. Este es el *principio de exclusión competitiva*: según la ventaja inicial, una de las dos empresas acaba monopolizando el mercado.
+    El equilibrio de coexistencia $(3, 3.5)$ es un punto de silla. Casi todas las órbitas se alejan de él y terminan en $(10, 0)$ o en $(0, 8)$. Este es el _principio de exclusión competitiva_: según la ventaja inicial, una de las dos empresas acaba monopolizando el mercado.
     :::
 :::
 
@@ -232,6 +259,7 @@ Usar `plot(sol.t, primero, segundo)` para la curva 3D, extrayendo las componente
 :::{.callout-tip collapse="true"}
 ## Solución
 ```{julia}
+using Plots, DifferentialEquations, LaTeXStrings
 function lotka!(du, u, p, t)
     du[1] = u[1] * (1 - u[2])
     du[2] = 0.5 * u[2] * (u[1] - 1)

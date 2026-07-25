@@ -1,7 +1,7 @@
 ---
 title: Ecuaciones en derivadas parciales de primer orden
 lang: es
-#jupyter: julia-1.11
+jupyter: julia-1.12
 ---
 
 Una **ecuación en derivadas parciales (EDP) de primer orden** relaciona una función incógnita $u(x, t)$ de varias variables con sus derivadas parciales de primer orden. La EDP lineal de primer orden más importante es la **ecuación de transporte** (o advección)

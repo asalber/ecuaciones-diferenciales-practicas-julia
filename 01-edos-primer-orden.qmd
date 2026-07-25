@@ -1,9 +1,7 @@
 ---
 title: Ecuaciones diferenciales de primer orden
 lang: es
-engine: jupyter
-execute:
-  fig-format: png
+jupyter: julia-1.12
 ---
 
 Una *ecuación diferencial ordinaria de primer orden* es una ecuación de la forma

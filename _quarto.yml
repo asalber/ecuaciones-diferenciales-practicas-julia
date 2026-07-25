@@ -5,10 +5,13 @@ project:
     port: 1313
     browser: false
 
+engine: jupyter
+
 execute:
   freeze: auto
   cache: true
   daemon: 3600
+  fig-format: png
 
 website:
   favicon: "img/logos/favicon.ico"
@@ -37,7 +40,7 @@ book:
   chapters:
     - index.qmd
     - 01-edos-primer-orden.qmd
-    # - 02-geometria-sistemas.qmd
+    - 02-geometria-sistemas.qmd
     # - 03-sistemas-lineales.qmd
     # - 04-ecuaciones-orden-superior.qmd
     # - 05-sistemas-no-lineales.qmd

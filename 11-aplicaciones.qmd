@@ -1,7 +1,7 @@
 ---
 title: "Aplicaciones en Ciencias e Ingeniería"
 lang: es
-#jupyter: julia-1.11
+jupyter: julia-1.12
 ---
 
 Este capítulo final reúne problemas **integradores** que combinan las técnicas de los capítulos anteriores: modelización con EDO y EDP, sistemas no lineales, resolución numérica, análisis de estabilidad y simulación estocástica. Cada ejercicio parte de un problema real de las ciencias de la salud, la ingeniería o las finanzas, y recorre el ciclo completo de *modelizar → resolver → interpretar*.

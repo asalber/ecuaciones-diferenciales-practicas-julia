@@ -1,7 +1,7 @@
 ---
 title: Iniciación al estudio de sistemas dinámicos discretos
 lang: es
-#jupyter: julia-1.11
+jupyter: julia-1.12
 ---
 
 Un **sistema dinámico discreto** viene dado por una ecuación en diferencias

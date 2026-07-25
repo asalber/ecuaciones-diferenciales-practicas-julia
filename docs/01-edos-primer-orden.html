@@ -68,6 +68,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
+<link href="./02-geometria-sistemas.html" rel="next">
 <link href="./index.html" rel="prev">
 <link href="./img/logos/favicon.ico" rel="icon">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
@@ -378,6 +379,12 @@ window.Quarto = {
  <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Ecuaciones diferenciales de primer orden</span></span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-geometria-sistemas.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Geometría de un sistema de ecuaciones diferenciales de primer orden</span></span></a>
+  </div>
+</li>
     </ul>
     </div>
 </nav>
@@ -433,8 +440,8 @@ y' = f(t, y),
 </div>
 <div id="callout-1" class="callout-1-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<div id="28a5ec27" class="cell" data-execution_count="3">
-<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="32">
+<div id="7a016f1f" class="cell" data-execution_count="3">
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="4">
 <div>
 <figure class="figure">
 <p><img src="https://img.shields.io/badge/Julia-1.12.6-9558B2?logo=julia" class="img-fluid figure-img"></p>
@@ -442,7 +449,7 @@ y' = f(t, y),
 </div>
 </div>
 </div>
-<div id="77e3d688" class="cell" data-execution_count="6">
+<div id="ff5c833e" class="cell" data-execution_count="6">
 <div class="cell-output cell-output-stdout">
 <div class="ansi-escaped-output">
 <pre><span class="ansi-green-fg ansi-bold">Status</span> `~/.julia/environments/v1.12/Project.toml`
@@ -472,7 +479,7 @@ y' = f(t, y),
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="" aria-current="page">Plots</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">Makie</a></li></ul>
 <div class="tab-content">
 <div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
-<div id="569c1b46" class="cell" data-execution_count="8">
+<div id="c4510ab5" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">campo_direcciones_plot</span>(f, ts, ys; escala <span class="op">=</span> <span class="fl">0.4</span>, kwargs<span class="op">...</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    T <span class="op">=</span> [t for y <span class="kw">in</span> ys for t <span class="kw">in</span> ts]</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    Y <span class="op">=</span> [y for y <span class="kw">in</span> ys for t <span class="kw">in</span> ts]</span>
@@ -487,7 +494,7 @@ y' = f(t, y),
 </div>
 </div>
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
-<div id="261b27d5" class="cell" data-execution_count="9">
+<div id="c678482b" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CairoMakie</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">campo_direcciones_makie!</span>(ax, f, ts, ys; escala <span class="op">=</span> <span class="fl">0.4</span>, kwargs<span class="op">...</span>)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    T <span class="op">=</span> [t for y <span class="kw">in</span> ys for t <span class="kw">in</span> ts]</span>
@@ -541,12 +548,12 @@ y' = -0.5\,(y - 20),
 <div id="callout-3" class="callout-3-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>La ecuación es lineal (y separable).</p>
-<div id="9c9fef5f" class="cell" data-execution_count="10">
+<div id="1748637f" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">SymPyPythonCall</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="pp">@syms</span> t <span class="fu">y</span>()</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>eq <span class="op">=</span> <span class="fu">Eq</span>(<span class="fu">diff</span>(<span class="fu">y</span>(t), t), <span class="op">-</span><span class="fl">1</span><span class="op">//</span><span class="fl">2</span> <span class="op">*</span> (<span class="fu">y</span>(t) <span class="op">-</span> <span class="fl">20</span>))</span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>sol <span class="op">=</span> <span class="fu">dsolve</span>(eq, <span class="fu">y</span>(t), ics <span class="op">=</span> <span class="fu">Dict</span>(<span class="fu">y</span>(<span class="fl">0</span>) <span class="op">=&gt;</span> <span class="fl">90</span>))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="39">
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="11">
 <p><span class="math inline">\(y{\left(t \right)} = 20 + 70 e^{- \frac{t}{2}}\)</span></p>
 </div>
 </div>
@@ -583,13 +590,13 @@ y' = -0.5\,(y - 20),
 </div>
 <div id="callout-5" class="callout-5-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<div id="40881033" class="cell" data-execution_count="11">
+<div id="f0924d9c" class="cell" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">DifferentialEquations</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">f</span>(t, y) <span class="op">=</span> <span class="op">-</span><span class="fl">0.5</span> <span class="op">*</span> (y <span class="op">-</span> <span class="fl">20</span>)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>prob <span class="op">=</span> <span class="fu">ODEProblem</span>((y, p, t) <span class="op">-&gt;</span> <span class="fu">f</span>(t, y), <span class="fl">90.0</span>, (<span class="fl">0.0</span>, <span class="fl">10.0</span>))</span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>sol2 <span class="op">=</span> <span class="fu">solve</span>(prob)</span>
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>Plots.<span class="fu">plot</span>(sol2, lw <span class="op">=</span> <span class="fl">2</span>, xlab <span class="op">=</span> <span class="st">"Tiempo (min)"</span>, ylab <span class="op">=</span> <span class="st">"Temperatura (°C)"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="40">
+<div class="cell-output cell-output-display" data-execution_count="12">
 <div>
 <figure class="figure">
 <p><img src="01-edos-primer-orden_files/figure-html/cell-12-output-1.svg" class="img-fluid figure-img"></p>
@@ -613,9 +620,9 @@ y' = -0.5\,(y - 20),
 </div>
 <div id="callout-6" class="callout-6-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<div id="2f0f93a6" class="cell" data-execution_count="12">
+<div id="e5ec8123" class="cell" data-execution_count="12">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">N</span>(<span class="fu">rhs</span>(sol)(<span class="fl">2</span>))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="41">
+<div class="cell-output cell-output-display" data-execution_count="13">
 <pre><code>45.75156088200096</code></pre>
 </div>
 </div>
@@ -636,9 +643,9 @@ y' = -0.5\,(y - 20),
 </div>
 <div id="callout-7" class="callout-7-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<div id="b37ffe35" class="cell" data-execution_count="13">
+<div id="2bba3b43" class="cell" data-execution_count="13">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">N</span>(<span class="fu">solve</span>(<span class="fu">rhs</span>(sol) <span class="op">-</span> <span class="fl">30</span>)[<span class="fl">1</span>])</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="42">
+<div class="cell-output cell-output-display" data-execution_count="14">
 <pre><code>3.8918202981106265</code></pre>
 </div>
 </div>
@@ -678,7 +685,7 @@ y' = -0.5\,(y - 20),
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">Plots</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">Makie</a></li></ul>
 <div class="tab-content">
 <div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
-<div id="d72ad9b4" class="cell" data-fig-format="png" data-execution_count="14">
+<div id="15bd989b" class="cell" data-fig-format="png" data-execution_count="14">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Plots</span>, <span class="bu">DifferentialEquations</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">f</span>(t, y) <span class="op">=</span> <span class="op">-</span><span class="fl">0.5</span> <span class="op">*</span> (y <span class="op">-</span> <span class="fl">20</span>)</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>plt <span class="op">=</span> <span class="fu">campo_direcciones_plot</span>(f, <span class="fl">0</span><span class="op">:</span><span class="fl">0.5</span><span class="op">:</span><span class="fl">10</span>, <span class="fl">0</span><span class="op">:</span><span class="fl">5</span><span class="op">:</span><span class="fl">100</span>,</span>
@@ -690,7 +697,7 @@ y' = -0.5\,(y - 20),
 <span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    Plots.<span class="fu">plot!</span>(plt, sol, lw <span class="op">=</span> <span class="fl">2</span>, label <span class="op">=</span> L<span class="st">"y(0)=%</span><span class="sc">$</span>y0<span class="st">"</span>)</span>
 <span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
 <span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>plt</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="43">
+<div class="cell-output cell-output-display" data-execution_count="15">
 <div>
 <figure class="figure">
 <p><img src="01-edos-primer-orden_files/figure-html/cell-15-output-1.svg" class="img-fluid figure-img"></p>
@@ -700,7 +707,7 @@ y' = -0.5\,(y - 20),
 </div>
 </div>
 <div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
-<div id="730b3b8a" class="cell" data-fig-format="png" data-execution_count="15">
+<div id="642d3b9b" class="cell" data-fig-format="png" data-execution_count="15">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CairoMakie</span>, <span class="bu">DifferentialEquations</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">f</span>(t, y) <span class="op">=</span> <span class="op">-</span><span class="fl">0.5</span> <span class="op">*</span> (y <span class="op">-</span> <span class="fl">20</span>)</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> <span class="fu">Figure</span>()</span>
@@ -721,7 +728,7 @@ y' = -0.5\,(y - 20),
 </pre>
 </div>
 </div>
-<div class="cell-output cell-output-display" data-execution_count="44">
+<div class="cell-output cell-output-display" data-execution_count="16">
 <div>
 <figure class="figure">
 <p><img src="01-edos-primer-orden_files/figure-html/cell-16-output-2.png" class="img-fluid figure-img"></p>
@@ -774,26 +781,26 @@ y' = 0.4\, y\left(1 - \frac{y}{10}\right),
 </div>
 <div id="callout-11" class="callout-11-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<div id="2e68e38c" class="cell" data-execution_count="16">
+<div id="7784532d" class="cell" data-execution_count="16">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">SymPyPythonCall</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="pp">@syms</span> u</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>fexpr <span class="op">=</span> <span class="fl">0.4</span> <span class="op">*</span> u <span class="op">*</span> (<span class="fl">1</span> <span class="op">-</span> u <span class="op">/</span> <span class="fl">10</span>)</span>
 <span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>equilibrios <span class="op">=</span> <span class="fu">solve</span>(fexpr, u)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="45">
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="17">
 <p><span class="math inline">\(\left[\begin{smallmatrix}0.0\\10.0\end{smallmatrix}\right]\)</span></p>
 </div>
 </div>
-<div id="cb93cad1" class="cell" data-execution_count="17">
+<div id="9c86ecf6" class="cell" data-execution_count="17">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>dfdu <span class="op">=</span> <span class="fu">diff</span>(fexpr, u)</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>[(y0, <span class="fu">dfdu</span>(u <span class="op">=&gt;</span> y0)) for y0 <span class="kw">in</span> equilibrios]</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="46">
+<div class="cell-output cell-output-display" data-execution_count="18">
 <pre><code>2-element Vector{Tuple{Sym{PythonCall.Py}, Sym{PythonCall.Py}}}:
  (0.0, 0.400000000000000)
  (10.0000000000000, -0.400000000000000)</code></pre>
 </div>
 </div>
 <p>Como <span class="math inline">\(f'(0)=0.4&gt;0\)</span>, el equilibrio <span class="math inline">\(y^*=0\)</span> es <strong>inestable</strong> (extinción repulsora), y como <span class="math inline">\(f'(10)=-0.4&lt;0\)</span>, el equilibrio <span class="math inline">\(y^*=10\)</span> (la capacidad de carga) es <strong>estable</strong>. Dibujamos <span class="math inline">\(f(y)\)</span> y la línea de fases:</p>
-<div id="d8180152" class="cell" data-execution_count="18">
+<div id="d8573279" class="cell" data-execution_count="18">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Plots</span>, <span class="bu">LaTeXStrings</span></span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">fnum</span>(y) <span class="op">=</span> <span class="fl">0.4</span>y <span class="op">*</span> (<span class="fl">1</span> <span class="op">-</span> y <span class="op">/</span> <span class="fl">10</span>)</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>Plots.<span class="fu">plot</span>(fnum, <span class="op">-</span><span class="fl">1</span>, <span class="fl">12</span>, lw <span class="op">=</span> <span class="fl">2</span>, label <span class="op">=</span> L<span class="st">"f(y)"</span>, xlab <span class="op">=</span> L<span class="st">"y"</span>, ylab <span class="op">=</span> L<span class="st">"y'"</span>)</span>
@@ -804,7 +811,7 @@ y' = 0.4\, y\left(1 - \frac{y}{10}\right),
 <span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>Plots.<span class="fu">plot!</span>([<span class="fl">2</span>, <span class="fl">4</span>], [<span class="fl">0</span>, <span class="fl">0</span>], arrow <span class="op">=</span> <span class="cn">true</span>, lw <span class="op">=</span> <span class="fl">3</span>, color <span class="op">=</span> <span class="op">:</span>blue, label <span class="op">=</span> <span class="st">""</span>)</span>
 <span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>Plots.<span class="fu">plot!</span>([<span class="fl">12</span>, <span class="fl">11</span>], [<span class="fl">0</span>, <span class="fl">0</span>], arrow <span class="op">=</span> <span class="cn">true</span>, lw <span class="op">=</span> <span class="fl">3</span>, color <span class="op">=</span> <span class="op">:</span>blue, label <span class="op">=</span> <span class="st">""</span>)</span>
 <span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>Plots.<span class="fu">plot!</span>([<span class="op">-</span><span class="fl">1</span>, <span class="op">-</span><span class="fl">0.5</span>], [<span class="fl">0</span>, <span class="fl">0</span>], arrow <span class="op">=</span> <span class="op">:</span>head, lw <span class="op">=</span> <span class="fl">3</span>, color <span class="op">=</span> <span class="op">:</span>blue, label <span class="op">=</span> <span class="st">""</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="47">
+<div class="cell-output cell-output-display" data-execution_count="19">
 <div>
 <figure class="figure">
 <p><img src="01-edos-primer-orden_files/figure-html/cell-19-output-1.svg" class="img-fluid figure-img"></p>
@@ -829,7 +836,7 @@ y' = 0.4\, y\left(1 - \frac{y}{10}\right),
 </div>
 <div id="callout-12" class="callout-12-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<div id="3aa667f7" class="cell" data-execution_count="19">
+<div id="6bb66828" class="cell" data-execution_count="19">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">DifferentialEquations</span></span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>plt <span class="op">=</span> Plots.<span class="fu">plot</span>(xlab <span class="op">=</span> <span class="st">"Tiempo"</span>, ylab <span class="op">=</span> <span class="st">"Biomasa (miles de toneladas)"</span>, legend <span class="op">=</span> <span class="op">:</span>right)</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> y0 <span class="kw">in</span> [<span class="fl">0.5</span>, <span class="fl">2.0</span>, <span class="fl">12.0</span>]</span>
@@ -838,7 +845,7 @@ y' = 0.4\, y\left(1 - \frac{y}{10}\right),
 <span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
 <span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="fu">hline!</span>(plt, [<span class="fl">10</span>], ls <span class="op">=</span> <span class="op">:</span>dash, color <span class="op">=</span> <span class="op">:</span>green, label <span class="op">=</span> <span class="st">"Capacidad de carga"</span>)</span>
 <span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>plt</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="48">
+<div class="cell-output cell-output-display" data-execution_count="20">
 <div>
 <figure class="figure">
 <p><img src="01-edos-primer-orden_files/figure-html/cell-20-output-1.svg" class="img-fluid figure-img"></p>
@@ -887,18 +894,18 @@ y' = 0.4\,y\left(1-\frac{y}{10}\right) - h.
 </div>
 <div id="callout-14" class="callout-14-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<div id="ee0a1223" class="cell" data-execution_count="20">
+<div id="ebc952f0" class="cell" data-execution_count="20">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">SymPyPythonCall</span></span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="pp">@syms</span> u h<span class="op">::</span><span class="dt">positive</span></span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>equilibrios <span class="op">=</span> <span class="fu">solve</span>(<span class="fl">0.4</span> <span class="op">*</span> u <span class="op">*</span> (<span class="fl">1</span> <span class="op">-</span> u <span class="op">/</span> <span class="fl">10</span>) <span class="op">-</span> h, u)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="49">
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="21">
 <p><span class="math inline">\(\left[\begin{smallmatrix}5.0 - 5.0 \sqrt{1.0 - h}\\5.0 \sqrt{1.0 - h} + 5.0\end{smallmatrix}\right]\)</span></p>
 </div>
 </div>
 <p>Los equilibrios son <span class="math inline">\(y^*_\pm = 5 \pm 5\sqrt{1 - h}\)</span>. Existen dos equilibrios (uno estable, <span class="math inline">\(y^*_+\)</span>, y otro inestable, <span class="math inline">\(y^*_-\)</span>) si <span class="math inline">\(h&lt;1\)</span>, se funden en uno solo si <span class="math inline">\(h=1\)</span> y desaparecen si <span class="math inline">\(h&gt;1\)</span>:</p>
-<div id="7627138b" class="cell" data-execution_count="21">
+<div id="152f7118" class="cell" data-execution_count="21">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>hcrit <span class="op">=</span> <span class="fu">solve</span>(<span class="fl">1</span> <span class="op">-</span> h, h)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="50">
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="22">
 <p><span class="math inline">\(\left[\begin{smallmatrix}1\end{smallmatrix}\right]\)</span></p>
 </div>
 </div>
@@ -919,14 +926,14 @@ y' = 0.4\,y\left(1-\frac{y}{10}\right) - h.
 </div>
 <div id="callout-15" class="callout-15-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<div id="91486104" class="cell" data-execution_count="22">
+<div id="d9bfe910" class="cell" data-execution_count="22">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>hs <span class="op">=</span> <span class="fl">0</span><span class="op">:</span><span class="fl">0.01</span><span class="op">:</span><span class="fl">1</span></span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>yplus  <span class="op">=</span> <span class="fl">5</span> <span class="op">.+</span> <span class="fl">5</span> <span class="op">.*</span> <span class="fu">sqrt</span>.(<span class="fl">1</span> <span class="op">.-</span> hs)</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>yminus <span class="op">=</span> <span class="fl">5</span> <span class="op">.-</span> <span class="fl">5</span> <span class="op">.*</span> <span class="fu">sqrt</span>.(<span class="fl">1</span> <span class="op">.-</span> hs)</span>
 <span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>Plots.<span class="fu">plot</span>(hs, yplus, lw <span class="op">=</span> <span class="fl">2</span>, color <span class="op">=</span> <span class="op">:</span>green, label <span class="op">=</span> <span class="st">"Equilibrio estable"</span>, xlab <span class="op">=</span> L<span class="st">"h"</span>, ylab <span class="op">=</span> L<span class="st">"y^*"</span>)</span>
 <span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>Plots.<span class="fu">plot!</span>(hs, yminus, lw <span class="op">=</span> <span class="fl">2</span>, ls <span class="op">=</span> <span class="op">:</span>dash, color <span class="op">=</span> <span class="op">:</span>red, label <span class="op">=</span> <span class="st">"Equilibrio inestable"</span>)</span>
 <span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>Plots.<span class="fu">scatter!</span>([<span class="fl">1</span>], [<span class="fl">5</span>], color <span class="op">=</span> <span class="op">:</span>black, ms <span class="op">=</span> <span class="fl">6</span>, label <span class="op">=</span> <span class="st">"Bifurcación silla-nodo"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="51">
+<div class="cell-output cell-output-display" data-execution_count="23">
 <div>
 <figure class="figure">
 <p><img src="01-edos-primer-orden_files/figure-html/cell-23-output-1.svg" class="img-fluid figure-img"></p>
@@ -972,21 +979,21 @@ y' = 0.4\,y\left(1-\frac{y}{10}\right) - h.
 <div id="callout-17" class="callout-17-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>Separando variables e integrando, <span class="math inline">\(\ln y = -\lambda t + C\)</span>, luego <span class="math inline">\(y(t)=y_0 e^{-\lambda t}\)</span>. Reproducimos el proceso simbólicamente:</p>
-<div id="7a523834" class="cell" data-execution_count="23">
+<div id="2b55dd69" class="cell" data-execution_count="23">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">SymPyPythonCall</span></span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="pp">@syms</span> t <span class="fu">y</span>() λ<span class="op">::</span><span class="dt">positive </span>y0<span class="op">::</span><span class="dt">positive</span></span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Comprobación directa con dsolve:</span></span>
 <span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>sol <span class="op">=</span> <span class="fu">dsolve</span>(<span class="fu">Eq</span>(<span class="fu">diff</span>(<span class="fu">y</span>(t), t), <span class="op">-</span>λ <span class="op">*</span> <span class="fu">y</span>(t)), <span class="fu">y</span>(t), ics <span class="op">=</span> <span class="fu">Dict</span>(<span class="fu">y</span>(<span class="fl">0</span>) <span class="op">=&gt;</span> y0))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="52">
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="24">
 <p><span class="math inline">\(y{\left(t \right)} = y_{0} e^{- t λ}\)</span></p>
 </div>
 </div>
 <p>Imponemos <span class="math inline">\(y(t)/y_0 = 0.53\)</span> con <span class="math inline">\(\lambda = \ln(2)/5730\)</span>:</p>
-<div id="c588ff1f" class="cell" data-execution_count="24">
+<div id="d05f6f59" class="cell" data-execution_count="24">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>λv <span class="op">=</span> <span class="fu">log</span>(<span class="fu">Sym</span>(<span class="fl">2</span>)) <span class="op">/</span> <span class="fl">5730</span></span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>edad <span class="op">=</span> <span class="fu">solve</span>(<span class="fu">Eq</span>(<span class="fu">exp</span>(<span class="op">-</span>λv <span class="op">*</span> t), <span class="fu">Sym</span>(<span class="fl">53</span>) <span class="op">/</span> <span class="fl">100</span>), t)[<span class="fl">1</span>]</span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="fu">N</span>(edad)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="53">
+<div class="cell-output cell-output-display" data-execution_count="25">
 <pre><code>5248.311762762041</code></pre>
 </div>
 </div>
@@ -1037,14 +1044,14 @@ y' = \frac{y - k\sqrt{x^2+y^2}}{x}, \qquad k = \frac{w}{v_0} = 0.2.
 \operatorname{arcsinh}(u) = -k \ln x + C.
 \]</span></p>
 <p>Resolvemos simbólicamente y aplicamos la condición inicial <span class="math inline">\(y(200)=0\)</span>:</p>
-<div id="366af4e7" class="cell" data-execution_count="25">
+<div id="72b10e08" class="cell" data-execution_count="25">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">SymPyPythonCall</span></span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="pp">@syms</span> x<span class="op">::</span><span class="dt">positive </span><span class="fu">y</span>()</span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>k, a <span class="op">=</span> <span class="fu">Sym</span>(<span class="fl">1</span>)<span class="op">/</span><span class="fl">5</span>, <span class="fl">200</span></span>
 <span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>eq <span class="op">=</span> <span class="fu">Eq</span>(<span class="fu">diff</span>(<span class="fu">y</span>(x), x), (<span class="fu">y</span>(x) <span class="op">-</span> k <span class="op">*</span> <span class="fu">sqrt</span>(x<span class="op">^</span><span class="fl">2</span> <span class="op">+</span> <span class="fu">y</span>(x)<span class="op">^</span><span class="fl">2</span>)) <span class="op">/</span> x)</span>
 <span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>sol <span class="op">=</span> <span class="fu">dsolve</span>(eq, <span class="fu">y</span>(x), ics <span class="op">=</span> <span class="fu">Dict</span>(<span class="fu">y</span>(a) <span class="op">=&gt;</span> <span class="fl">0</span>))</span>
 <span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a><span class="fu">simplify</span>(<span class="fu">rhs</span>(sol))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="54">
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="26">
 <p><span class="math inline">\(- x \sinh{\left(\frac{\log{\left(x \right)}}{5} - \frac{\log{\left(200 \right)}}{5} \right)}\)</span></p>
 </div>
 </div>
@@ -1065,12 +1072,12 @@ y' = \frac{y - k\sqrt{x^2+y^2}}{x}, \qquad k = \frac{w}{v_0} = 0.2.
 </div>
 <div id="callout-20" class="callout-20-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<div id="a95a5ad9" class="cell" data-execution_count="26">
+<div id="108e85bb" class="cell" data-execution_count="26">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">LaTeXStrings</span>, <span class="bu">Plots</span></span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">traj</span>(x) <span class="op">=</span> <span class="fl">100</span> <span class="op">*</span> ((x <span class="op">/</span> <span class="fl">200</span>)<span class="op">^</span><span class="fl">0.8</span> <span class="op">-</span> (x <span class="op">/</span> <span class="fl">200</span>)<span class="op">^</span><span class="fl">1.2</span>)</span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>Plots.<span class="fu">plot</span>(traj, <span class="fl">0</span>, <span class="fl">200</span>, lw <span class="op">=</span> <span class="fl">2</span>, label <span class="op">=</span> <span class="st">"Trayectoria"</span>, aspect_ratio <span class="op">=</span> <span class="op">:</span>equal, xlab <span class="op">=</span> L<span class="st">"x \; (km)"</span>, ylab <span class="op">=</span> L<span class="st">"y \; (km)"</span>)</span>
 <span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>Plots.<span class="fu">scatter!</span>([<span class="fl">200</span>], [<span class="fl">0</span>], label <span class="op">=</span> <span class="st">"Salida"</span>); Plots.<span class="fu">scatter!</span>([<span class="fl">0</span>], [<span class="fl">0</span>], label <span class="op">=</span> <span class="st">"Aeropuerto"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="55">
+<div class="cell-output cell-output-display" data-execution_count="27">
 <div>
 <figure class="figure">
 <p><img src="01-edos-primer-orden_files/figure-html/cell-27-output-1.svg" class="img-fluid figure-img"></p>
@@ -1078,13 +1085,13 @@ y' = \frac{y - k\sqrt{x^2+y^2}}{x}, \qquad k = \frac{w}{v_0} = 0.2.
 </div>
 </div>
 </div>
-<div id="e6826f3e" class="cell" data-execution_count="27">
+<div id="58bc7ecf" class="cell" data-execution_count="27">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Roots</span></span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Máxima desviación:</span></span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>xmax <span class="op">=</span> <span class="fu">find_zero</span>(x <span class="op">-&gt;</span> <span class="fl">0.8</span> <span class="op">*</span> (x<span class="op">/</span><span class="fl">200</span>)<span class="op">^</span>(<span class="op">-</span><span class="fl">0.2</span>) <span class="op">-</span> <span class="fl">1.2</span> <span class="op">*</span> (x<span class="op">/</span><span class="fl">200</span>)<span class="op">^</span><span class="fl">0.2</span>, <span class="fl">100</span>) <span class="op">/</span> <span class="fl">200</span> <span class="op">|&gt;</span> </span>
 <span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>        u <span class="op">-&gt;</span> <span class="fl">200</span>u</span>
 <span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>(xmax, <span class="fu">traj</span>(xmax))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="56">
+<div class="cell-output cell-output-display" data-execution_count="28">
 <pre><code>(72.57747386024232, 14.814814814814808)</code></pre>
 </div>
 </div>
@@ -1129,22 +1136,22 @@ y' = \frac{y - k\sqrt{x^2+y^2}}{x}, \qquad k = \frac{w}{v_0} = 0.2.
 </div>
 <div id="callout-22" class="callout-22-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<div id="ff881579" class="cell" data-execution_count="28">
+<div id="27890b07" class="cell" data-execution_count="28">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">SymPyPythonCall</span></span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="pp">@syms</span> x y</span>
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>M <span class="op">=</span> x<span class="op">^</span><span class="fl">3</span> <span class="op">-</span> <span class="fl">2</span>x <span class="op">*</span> y</span>
 <span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>N <span class="op">=</span> y <span class="op">-</span> x<span class="op">^</span><span class="fl">2</span></span>
 <span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="fu">diff</span>(M, y) <span class="op">==</span> <span class="fu">diff</span>(N, x)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="57">
+<div class="cell-output cell-output-display" data-execution_count="29">
 <pre><code>true</code></pre>
 </div>
 </div>
 <p>Ambas derivadas cruzadas valen <span class="math inline">\(-2x\)</span>: la ecuación es <strong>exacta</strong>. Construimos el potencial:</p>
-<div id="83aa3aad" class="cell" data-execution_count="29">
+<div id="6071eb10" class="cell" data-execution_count="29">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>F <span class="op">=</span> <span class="fu">integrate</span>(M, x)          <span class="co"># F = x⁴/4 − x²y + g(y)</span></span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>g <span class="op">=</span> <span class="fu">integrate</span>(N <span class="op">-</span> <span class="fu">diff</span>(F, y), y)</span>
 <span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>F <span class="op">=</span> F <span class="op">+</span> g</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="58">
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="30">
 <p><span class="math inline">\(\frac{x^{4}}{4} - x^{2} y + \frac{y^{2}}{2}\)</span></p>
 </div>
 </div>
@@ -1168,12 +1175,12 @@ F(x, y) = \frac{x^4}{4} - x^2 y + \frac{y^2}{2} = C.
 </div>
 <div id="callout-23" class="callout-23-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<div id="5ceb3b2b" class="cell" data-execution_count="30">
+<div id="2d228195" class="cell" data-execution_count="30">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Fnum</span>(x, y) <span class="op">=</span> x<span class="op">^</span><span class="fl">4</span> <span class="op">/</span> <span class="fl">4</span> <span class="op">-</span> x<span class="op">^</span><span class="fl">2</span> <span class="op">*</span> y <span class="op">+</span> y<span class="op">^</span><span class="fl">2</span> <span class="op">/</span> <span class="fl">2</span></span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> ys <span class="op">=</span> <span class="fu">range</span>(<span class="op">-</span><span class="fl">2</span>, <span class="fl">2</span>, length <span class="op">=</span> <span class="fl">300</span>)</span>
 <span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>Plots.<span class="fu">contour</span>(xs, ys, Fnum, levels <span class="op">=</span> <span class="fl">20</span>, xlab <span class="op">=</span> L<span class="st">"x"</span>, ylab <span class="op">=</span> L<span class="st">"y"</span>,</span>
 <span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>        color <span class="op">=</span> <span class="op">:</span>viridis, cbar <span class="op">=</span> <span class="cn">true</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="59">
+<div class="cell-output cell-output-display" data-execution_count="31">
 <div>
 <figure class="figure">
 <p><img src="01-edos-primer-orden_files/figure-html/cell-31-output-1.svg" class="img-fluid figure-img"></p>
@@ -1221,43 +1228,43 @@ y\,dx + (2x - y e^{y})\,dy = 0
 </div>
 <div id="callout-25" class="callout-25-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<div id="91cf368c" class="cell" data-execution_count="31">
+<div id="a98bc340" class="cell" data-execution_count="31">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@syms</span> x y</span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>M <span class="op">=</span> y</span>
 <span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>N <span class="op">=</span> <span class="fl">2</span>x <span class="op">-</span> y <span class="op">*</span> <span class="fu">exp</span>(y)</span>
 <span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>cociente <span class="op">=</span> <span class="fu">simplify</span>((<span class="fu">diff</span>(N, x) <span class="op">-</span> <span class="fu">diff</span>(M, y)) <span class="op">/</span> M)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="60">
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="32">
 <p><span class="math inline">\(\frac{1}{y}\)</span></p>
 </div>
 </div>
 <p>El cociente vale <span class="math inline">\(1/y\)</span>, que depende solo de <span class="math inline">\(y\)</span>, luego</p>
-<div id="f1edec86" class="cell" data-execution_count="32">
+<div id="3ccf0285" class="cell" data-execution_count="32">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>μ <span class="op">=</span> <span class="fu">exp</span>(<span class="fu">integrate</span>(cociente, y))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="61">
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="33">
 <p><span class="math inline">\(y\)</span></p>
 </div>
 </div>
 <p>es decir, <span class="math inline">\(\mu(y)=y\)</span>. Multiplicando la ecuación por <span class="math inline">\(\mu\)</span>, queda <span class="math inline">\(y^2\,dx + (2xy - y^2 e^y)\,dy = 0\)</span>, que ya es exacta:</p>
-<div id="476069cb" class="cell" data-execution_count="33">
+<div id="30e8a663" class="cell" data-execution_count="33">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>M2, N2 <span class="op">=</span> μ <span class="op">*</span> M, μ <span class="op">*</span> N</span>
 <span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="fu">diff</span>(M2, y) <span class="op">==</span> <span class="fu">diff</span>(N2, x)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="62">
+<div class="cell-output cell-output-display" data-execution_count="34">
 <pre><code>true</code></pre>
 </div>
 </div>
-<div id="328e283e" class="cell" data-execution_count="34">
+<div id="ec63c676" class="cell" data-execution_count="34">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>F <span class="op">=</span> <span class="fu">integrate</span>(M2, x)</span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>F <span class="op">=</span> F <span class="op">+</span> <span class="fu">integrate</span>(N2 <span class="op">-</span> <span class="fu">diff</span>(F, y), y) <span class="op">|&gt;</span> simplify</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="63">
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="35">
 <p><span class="math inline">\(x y^{2} + \left(- y^{2} + 2 y - 2\right) e^{y}\)</span></p>
 </div>
 </div>
 <p>La solución general es <span class="math inline">\(x y^2 - (y^2 - 2y + 2)e^y = C\)</span>. Comprobación con <code>dsolve</code> (tratando <span class="math inline">\(x\)</span> como función de <span class="math inline">\(y\)</span>, pues la ecuación es lineal en <span class="math inline">\(x\)</span>):</p>
-<div id="f5c39243" class="cell" data-execution_count="35">
+<div id="29ef1446" class="cell" data-execution_count="35">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@syms</span> t <span class="fu">x</span>()</span>
 <span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>sol <span class="op">=</span> <span class="fu">dsolve</span>(<span class="fu">Eq</span>(<span class="fu">diff</span>(<span class="fu">x</span>(t), t), (t <span class="op">*</span> <span class="fu">exp</span>(t) <span class="op">-</span> <span class="fl">2</span><span class="fu">x</span>(t)) <span class="op">/</span> t), <span class="fu">x</span>(t))</span>
 <span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="fu">simplify</span>(<span class="fu">rhs</span>(sol))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="64">
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="36">
 <p><span class="math inline">\(\frac{C_{1} + t^{2} e^{t} - 2 t e^{t} + 2 e^{t}}{t^{2}}\)</span></p>
 </div>
 </div>
@@ -1303,13 +1310,13 @@ q' + 10\,q = 0.012\cos(10 t).
 </div>
 <div id="callout-27" class="callout-27-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<div id="5bedb66b" class="cell" data-execution_count="36">
+<div id="d5e6e6df" class="cell" data-execution_count="36">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">SymPyPythonCall</span></span>
 <span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="pp">@syms</span> t <span class="fu">q</span>()</span>
 <span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>eq <span class="op">=</span> <span class="fu">Eq</span>(<span class="fu">diff</span>(<span class="fu">q</span>(t), t) <span class="op">+</span> <span class="fl">10</span> <span class="op">*</span> <span class="fu">q</span>(t), <span class="fu">Sym</span>(<span class="fl">12</span>)<span class="op">/</span><span class="fl">1000</span> <span class="op">*</span> <span class="fu">cos</span>(<span class="fl">10</span>t))</span>
 <span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>sol <span class="op">=</span> <span class="fu">dsolve</span>(eq, <span class="fu">q</span>(t), ics <span class="op">=</span> <span class="fu">Dict</span>(<span class="fu">q</span>(<span class="fl">0</span>) <span class="op">=&gt;</span> <span class="fl">0</span>))</span>
 <span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>qsol <span class="op">=</span> <span class="fu">simplify</span>(<span class="fu">rhs</span>(sol))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="65">
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="37">
 <p><span class="math inline">\(\frac{3 \sqrt{2} \sin{\left(10 t + \frac{\pi}{4} \right)}}{5000} - \frac{3 e^{- 10 t}}{5000}\)</span></p>
 </div>
 </div>
@@ -1334,14 +1341,14 @@ q(t) = \underbrace{-\,0.0006\, e^{-10 t}}_{\text{transitorio}} \;+\; \underbrace
 </div>
 <div id="callout-28" class="callout-28-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<div id="3589c411" class="cell" data-execution_count="37">
+<div id="cffec881" class="cell" data-execution_count="37">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>qnum <span class="op">=</span> <span class="fu">lambdify</span>(qsol, (t,))</span>
 <span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="fu">qperm</span>(t) <span class="op">=</span> <span class="fl">0.0006</span> <span class="op">*</span> (<span class="fu">cos</span>(<span class="fl">10</span>t) <span class="op">+</span> <span class="fu">sin</span>(<span class="fl">10</span>t))</span>
 <span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>Plots.<span class="fu">plot</span>(qnum, <span class="fl">0</span>, <span class="fl">1.5</span>, lw <span class="op">=</span> <span class="fl">2</span>, label <span class="op">=</span> <span class="st">"Solución completa"</span>,</span>
 <span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>    xlab <span class="op">=</span> L<span class="st">"t \; (s)"</span>, ylab <span class="op">=</span> L<span class="st">"q \; (C)"</span>)</span>
 <span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>Plots.<span class="fu">plot!</span>(qperm, <span class="fl">0</span>, <span class="fl">1.5</span>, ls <span class="op">=</span> <span class="op">:</span>dash, lw <span class="op">=</span> <span class="fl">2</span>, label <span class="op">=</span> <span class="st">"Régimen permanente"</span>)</span>
 <span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a><span class="fu">vline!</span>([<span class="fl">0.1</span>, <span class="fl">0.3</span>], color <span class="op">=</span> <span class="op">:</span>gray, ls <span class="op">=</span> <span class="op">:</span>dot, label <span class="op">=</span> L<span class="st">"</span><span class="sc">\t</span><span class="st">au, 3</span><span class="sc">\t</span><span class="st">au"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="66">
+<div class="cell-output cell-output-display" data-execution_count="38">
 <div>
 <figure class="figure">
 <p><img src="01-edos-primer-orden_files/figure-html/cell-38-output-1.svg" class="img-fluid figure-img"></p>
@@ -1391,37 +1398,37 @@ y' = 0.8\,y - 0.8\,y^2,
 <div id="callout-30" class="callout-30-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>Con <span class="math inline">\(v = 1/y\)</span>, la ecuación se transforma en la lineal <span class="math inline">\(v' + 0.8v = 0.8\)</span>, con condición inicial <span class="math inline">\(v(0) = 1/y(0) = 20\)</span>:</p>
-<div id="b01efd86" class="cell" data-execution_count="38">
+<div id="3ecf6c1a" class="cell" data-execution_count="38">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@syms</span> t<span class="op">::</span><span class="dt">real </span><span class="fu">v</span>()</span>
 <span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>eq_v <span class="op">=</span> <span class="fu">Eq</span>(<span class="fu">diff</span>(<span class="fu">v</span>(t), t) <span class="op">+</span> <span class="fu">Sym</span>(<span class="fl">4</span>)<span class="op">//</span><span class="fl">5</span> <span class="op">*</span> <span class="fu">v</span>(t), <span class="fu">Sym</span>(<span class="fl">4</span>)<span class="op">//</span><span class="fl">5</span>)</span>
 <span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>solv <span class="op">=</span> <span class="fu">dsolve</span>(eq_v, <span class="fu">v</span>(t), ics <span class="op">=</span> <span class="fu">Dict</span>(<span class="fu">v</span>(<span class="fl">0</span>) <span class="op">=&gt;</span> <span class="fl">20</span>))</span>
 <span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>vsol <span class="op">=</span> <span class="fu">rhs</span>(solv)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="67">
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="39">
 <p><span class="math inline">\(1 + 19 e^{- \frac{4 t}{5}}\)</span></p>
 </div>
 </div>
 <p>Deshaciendo el cambio, <span class="math inline">\(y = 1/v\)</span>:</p>
-<div id="ab3ae47d" class="cell" data-execution_count="39">
+<div id="cd7a4fb9" class="cell" data-execution_count="39">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>ysol <span class="op">=</span> <span class="fu">simplify</span>(<span class="fl">1</span> <span class="op">/</span> vsol)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="68">
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="40">
 <p><span class="math inline">\(\frac{e^{\frac{4 t}{5}}}{e^{\frac{4 t}{5}} + 19}\)</span></p>
 </div>
 </div>
 <p>es decir, <span class="math inline">\(y(t) = \dfrac{e^{0.8t}}{e^{0.8t}+19}\)</span>. Comprobación resolviendo directamente la ecuación de Bernoulli original con <code>dsolve</code>:</p>
-<div id="f082b547" class="cell" data-execution_count="40">
+<div id="0016b51d" class="cell" data-execution_count="40">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@syms</span> <span class="fu">y</span>()</span>
 <span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>eq_y <span class="op">=</span> <span class="fu">Eq</span>(<span class="fu">diff</span>(<span class="fu">y</span>(t), t), <span class="fu">Sym</span>(<span class="fl">4</span>)<span class="op">//</span><span class="fl">5</span> <span class="op">*</span> <span class="fu">y</span>(t) <span class="op">-</span> <span class="fu">Sym</span>(<span class="fl">4</span>)<span class="op">//</span><span class="fl">5</span> <span class="op">*</span> <span class="fu">y</span>(t)<span class="op">^</span><span class="fl">2</span>)</span>
 <span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>soly <span class="op">=</span> <span class="fu">dsolve</span>(eq_y, <span class="fu">y</span>(t), hint <span class="op">=</span> <span class="st">"Bernoulli"</span>, ics <span class="op">=</span> <span class="fu">Dict</span>(<span class="fu">y</span>(<span class="fl">0</span>) <span class="op">=&gt;</span> <span class="fu">Sym</span>(<span class="fl">1</span>)<span class="op">//</span><span class="fl">20</span>))</span>
 <span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>soly</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="69">
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="41">
 <p><span class="math inline">\(y{\left(t \right)} = \frac{e^{\frac{4 t}{5}}}{e^{\frac{4 t}{5}} + 19}\)</span></p>
 </div>
 </div>
 <p>Por último, el instante en que <span class="math inline">\(y=0.5\)</span>:</p>
-<div id="b54fd8e8" class="cell" data-execution_count="41">
+<div id="4e18e3d8" class="cell" data-execution_count="41">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>tsol <span class="op">=</span> <span class="fu">solve</span>(ysol <span class="op">-</span> <span class="fl">0.5</span>, t)[<span class="fl">1</span>]</span>
 <span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="fu">N</span>(tsol)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="70">
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="42">
 <p><span class="math inline">\(- y e^{y} + 7.3610974479161\)</span></p>
 </div>
 </div>
@@ -1465,18 +1472,18 @@ A' = 0.05\,A + 6000.
 </div>
 <div id="callout-32" class="callout-32-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<div id="772b8f84" class="cell" data-execution_count="42">
+<div id="e83c8f72" class="cell" data-execution_count="42">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">SymPyPythonCall</span></span>
 <span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="pp">@syms</span> t <span class="fu">A</span>()</span>
 <span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>sol <span class="op">=</span> <span class="fu">dsolve</span>(<span class="fu">Eq</span>(<span class="fu">diff</span>(<span class="fu">A</span>(t), t), <span class="fu">Sym</span>(<span class="fl">5</span>)<span class="op">/</span><span class="fl">100</span> <span class="op">*</span> <span class="fu">A</span>(t) <span class="op">+</span> <span class="fl">6000</span>), <span class="fu">A</span>(t), ics <span class="op">=</span> <span class="fu">Dict</span>(<span class="fu">A</span>(<span class="fl">0</span>) <span class="op">=&gt;</span> <span class="fl">10000</span>))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="71">
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="43">
 <p><span class="math inline">\(A{\left(t \right)} = 130000 e^{\frac{t}{20}} - 120000\)</span></p>
 </div>
 </div>
 <p>Es decir, <span class="math inline">\(A(t) = 130\,000\,e^{0.05t} - 120\,000\)</span>. A los 30 años:</p>
-<div id="a246cd41" class="cell" data-execution_count="43">
+<div id="7665ecd4" class="cell" data-execution_count="43">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">N</span>(<span class="fu">rhs</span>(sol)(<span class="fl">30</span>))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="72">
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="44">
 <p><span class="math inline">\(- y e^{y} - 240000 + 260000 e^{\frac{3}{2}}\)</span></p>
 </div>
 </div>
@@ -1497,11 +1504,11 @@ A' = 0.05\,A + 6000.
 </div>
 <div id="callout-33" class="callout-33-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<div id="ff7ac4c4" class="cell" data-execution_count="44">
+<div id="cfbb0bfd" class="cell" data-execution_count="44">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@syms</span> d<span class="op">::</span><span class="dt">positive</span></span>
 <span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>solA <span class="op">=</span> <span class="fu">dsolve</span>(<span class="fu">Eq</span>(<span class="fu">diff</span>(<span class="fu">A</span>(t), t), <span class="fu">Sym</span>(<span class="fl">5</span>)<span class="op">/</span><span class="fl">100</span> <span class="op">*</span> <span class="fu">A</span>(t) <span class="op">+</span> d), <span class="fu">A</span>(t), ics <span class="op">=</span> <span class="fu">Dict</span>(<span class="fu">A</span>(<span class="fl">0</span>) <span class="op">=&gt;</span> <span class="fl">10000</span>))</span>
 <span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a><span class="fu">N</span>(<span class="fu">solve</span>(<span class="fu">Eq</span>(<span class="fu">rhs</span>(solA)(t <span class="op">=&gt;</span> <span class="fl">30</span>), <span class="fl">1000000</span>), d)[<span class="fl">1</span>])</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="73">
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="45">
 <p><span class="math inline">\(- y e^{y} + \frac{1000 \left(-100 + e^{\frac{3}{2}}\right)}{1 - e^{\frac{3}{2}}}\)</span></p>
 </div>
 </div>
@@ -1550,10 +1557,10 @@ x^2 + y^2 = 2Cx.
 y' = \frac{y^2 - x^2}{2xy}.
 \]</span></p>
 <p>La familia ortogonal satisface la ecuación homogénea <span class="math inline">\(y' = \dfrac{2xy}{x^2 - y^2}\)</span>:</p>
-<div id="ff13a8e2" class="cell" data-execution_count="45">
+<div id="1c265103" class="cell" data-execution_count="45">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@syms</span> x <span class="fu">y</span>()</span>
 <span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>sol <span class="op">=</span> <span class="fu">dsolve</span>(<span class="fu">Eq</span>(<span class="fu">diff</span>(<span class="fu">y</span>(x), x), <span class="fl">2</span>x <span class="op">*</span> <span class="fu">y</span>(x) <span class="op">/</span> (x<span class="op">^</span><span class="fl">2</span> <span class="op">-</span> <span class="fu">y</span>(x)<span class="op">^</span><span class="fl">2</span>)), <span class="fu">y</span>(x))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="74">
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="46">
 <p><span class="math inline">\(\left[\begin{smallmatrix}y{\left(x \right)} = - \frac{\sqrt{- 4 x^{2} + e^{2 C_{1}}}}{2} + \frac{e^{C_{1}}}{2}\\y{\left(x \right)} = \frac{\sqrt{- 4 x^{2} + e^{2 C_{1}}}}{2} + \frac{e^{C_{1}}}{2}\end{smallmatrix}\right]\)</span></p>
 </div>
 <div class="cell-output cell-output-stderr">
@@ -1573,7 +1580,7 @@ will be removed in a future version of SymPy.
 </div>
 </div>
 <p>Reordenando la solución implícita se obtiene <span class="math inline">\(x^2 + y^2 = 2Ky\)</span>: las líneas de campo son <strong>circunferencias centradas en el eje <span class="math inline">\(y\)</span> y que pasan por el origen</strong>, ortogonales a las equipotenciales (circunferencias centradas en el eje <span class="math inline">\(x\)</span> por el origen). Dibujamos ambas familias:</p>
-<div id="4b081868" class="cell" data-execution_count="46">
+<div id="136c00cf" class="cell" data-execution_count="46">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>plt <span class="op">=</span> Plots.<span class="fu">plot</span>(aspect_ratio <span class="op">=</span> <span class="op">:</span>equal, legend <span class="op">=</span> <span class="cn">false</span>, xlab <span class="op">=</span> L<span class="st">"x"</span>, ylab <span class="op">=</span> L<span class="st">"y"</span>, xlims <span class="op">=</span> (<span class="op">-</span><span class="fl">3</span>, <span class="fl">3</span>), ylims <span class="op">=</span> (<span class="op">-</span><span class="fl">3</span>, <span class="fl">3</span>))</span>
 <span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>θ <span class="op">=</span> <span class="fu">range</span>(<span class="fl">0</span>, <span class="fl">2</span>π, length <span class="op">=</span> <span class="fl">200</span>)</span>
 <span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> c <span class="kw">in</span> [<span class="fl">0.5</span>, <span class="fl">1</span>, <span class="fl">1.5</span>]</span>
@@ -1583,7 +1590,7 @@ will be removed in a future version of SymPy.
 <span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a>    Plots.<span class="fu">plot!</span>(plt, c <span class="op">.*</span> <span class="fu">cos</span>.(θ), <span class="op">-</span>c <span class="op">.+</span> c <span class="op">.*</span> <span class="fu">sin</span>.(θ), color <span class="op">=</span> <span class="op">:</span>red)</span>
 <span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
 <span id="cb48-9"><a href="#cb48-9" aria-hidden="true" tabindex="-1"></a>plt</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="75">
+<div class="cell-output cell-output-display" data-execution_count="47">
 <div>
 <figure class="figure">
 <p><img src="01-edos-primer-orden_files/figure-html/cell-47-output-1.svg" class="img-fluid figure-img"></p>
@@ -2039,6 +2046,9 @@ will be removed in a future version of SymPy.
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="./02-geometria-sistemas.html" class="pagination-link" aria-label="Geometría de un sistema de ecuaciones diferenciales de primer orden">
+        <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Geometría de un sistema de ecuaciones diferenciales de primer orden</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav>
 </div> <!-- /content -->

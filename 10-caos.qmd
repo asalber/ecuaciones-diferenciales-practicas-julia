@@ -1,7 +1,7 @@
 ---
 title: "Dependencia de los datos. Introducción a la Teoría del caos"
 lang: es
-#jupyter: julia-1.11
+jupyter: julia-1.12
 ---
 
 Los sistemas dinámicos pueden presentar **dependencia sensible de las condiciones iniciales**: dos trayectorias que parten de puntos muy próximos se separan exponencialmente en el tiempo, de modo que a largo plazo el comportamiento resulta impredecible pese a ser completamente determinista. Esta es la esencia del **caos**. La tasa de separación se cuantifica con el **exponente de Lyapunov** $\lambda$: si $\delta(t)\approx \delta_0\,e^{\lambda t}$ con $\lambda > 0$, el sistema es caótico. Los atractores caóticos suelen tener estructura fractal (**atractores extraños**).

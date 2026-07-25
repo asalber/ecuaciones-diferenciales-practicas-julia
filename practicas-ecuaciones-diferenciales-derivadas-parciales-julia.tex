@@ -383,23 +383,24 @@ Compartir bajo la misma licencia 3.0 España de Creative Commons
 
 \bookmarksetup{startatroot}
 
-\chapter{Ecuaciones diferenciales de primer
-orden}\label{ecuaciones-diferenciales-de-primer-orden}
+\chapter{Geometría de un sistema de ecuaciones diferenciales de primer
+orden}\label{geometruxeda-de-un-sistema-de-ecuaciones-diferenciales-de-primer-orden}
 
-Una \emph{ecuación diferencial ordinaria de primer orden} es una
-ecuación de la forma
+Un sistema autónomo de dos ecuaciones diferenciales de primer orden
 
 \[
-y' = f(t, y),
+\begin{cases}
+x' = f(x, y) \\
+y' = g(x, y)
+\end{cases}
 \]
 
-donde \(y(t)\) es una función desconocida de la variable independiente
-\(t\). En este capítulo se estudia la geometría de estas ecuaciones
-(campos de direcciones, puntos de equilibrio, líneas de fases, curvas
-integrales y bifurcaciones) y los métodos analíticos clásicos de
-resolución (variables separables, homogéneas, exactas, factores
-integrantes, lineales y de Bernoulli), con aplicaciones geométricas y
-físicas.
+define un \textbf{campo vectorial} \(F(x,y) = (f(x,y), g(x,y))\) en el
+plano. El plano \((x,y)\) se denomina \textbf{espacio de fases}, las
+soluciones \((x(t), y(t))\) dibujan en él las \textbf{curvas solución} u
+\textbf{órbitas}, y el conjunto de órbitas representativas junto con los
+\textbf{puntos de equilibrio} (donde \(F=0\)) constituye el
+\textbf{diagrama de fases} del sistema.
 
 \section{Ejercicios resueltos}\label{ejercicios-resueltos}
 
@@ -408,12 +409,11 @@ paquetes:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\ImportTok{using} \BuiltInTok{SymPyPythonCall}         \CommentTok{\# Cálculo simbólico y resolución exacta de EDOs.}
+\ImportTok{using} \BuiltInTok{SymPyPythonCall}        \CommentTok{\# Cálculo simbólico.}
 \ImportTok{using} \BuiltInTok{Plots}                  \CommentTok{\# Dibujo de gráficas.}
-\ImportTok{using} \BuiltInTok{GLMakie}                \CommentTok{\# Dibujo de gráficas.}
-\ImportTok{using} \BuiltInTok{DifferentialEquations}  \CommentTok{\# Resolución numérica de EDOs.}
+\ImportTok{using} \BuiltInTok{DifferentialEquations}  \CommentTok{\# Resolución numérica de sistemas.}
 \ImportTok{using} \BuiltInTok{LaTeXStrings}           \CommentTok{\# Código LaTeX en los gráficos.}
-\ImportTok{using} \BuiltInTok{Roots}                  \CommentTok{\# Cálculo de raíces (puntos de equilibrio).}
+\ImportTok{using} \BuiltInTok{NLsolve}                \CommentTok{\# Puntos de equilibrio numéricos.}
 \end{Highlighting}
 \end{Shaded}
 
@@ -423,250 +423,382 @@ paquetes:
 
 \begin{verbatim}
 Status `~/.julia/environments/v1.12/Project.toml`
+⌃ [13f3f980] CairoMakie v0.15.10
   [0c46a032] DifferentialEquations v8.0.2
-⌃ [e9467ef8] GLMakie v0.13.10
   [b964fa9f] LaTeXStrings v1.4.0
   [91a5bcdd] Plots v1.41.6
+  [f2b01f46] Roots v3.0.6
   [bc8888f7] SymPyPythonCall v0.5.1
 Info Packages marked with ⌃ have new versions available and may be upgradable.
 \end{verbatim}
 
 \end{tcolorbox}
 
-A lo largo del capítulo usaremos las siguientes funciones auxiliares
-para dibujar campos de direcciones de la ecuación \(y'=f(t,y)\):
-
-\section{Plots}
+A lo largo de la esta práctica usaremos la siguiente función auxiliar
+para dibujar campos vectoriales normalizados:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{function} \FunctionTok{campo\_direcciones\_plot}\NormalTok{(f, ts, ys; escala }\OperatorTok{=} \FloatTok{0.4}\NormalTok{, kwargs}\OperatorTok{...}\NormalTok{)}
-\NormalTok{    T }\OperatorTok{=}\NormalTok{ [t for y }\KeywordTok{in}\NormalTok{ ys for t }\KeywordTok{in}\NormalTok{ ts]}
-\NormalTok{    Y }\OperatorTok{=}\NormalTok{ [y for y }\KeywordTok{in}\NormalTok{ ys for t }\KeywordTok{in}\NormalTok{ ts]}
-\NormalTok{    U }\OperatorTok{=} \FunctionTok{ones}\NormalTok{(}\FunctionTok{length}\NormalTok{(T))}
-\NormalTok{    V }\OperatorTok{=} \FunctionTok{f}\NormalTok{.(T, Y)}
-\NormalTok{    N }\OperatorTok{=} \FunctionTok{sqrt}\NormalTok{.(U }\OperatorTok{.\^{}} \FloatTok{2} \OperatorTok{.+}\NormalTok{ V }\OperatorTok{.\^{}} \FloatTok{2}\NormalTok{)          }\CommentTok{\# Normalizamos los vectores}
-\NormalTok{    Plots.}\FunctionTok{quiver}\NormalTok{(T, Y, quiver }\OperatorTok{=}\NormalTok{ (escala }\OperatorTok{*}\NormalTok{ U }\OperatorTok{./}\NormalTok{ N, escala }\OperatorTok{*}\NormalTok{ V }\OperatorTok{./}\NormalTok{ N),}
+\KeywordTok{function} \FunctionTok{campo\_vectorial}\NormalTok{(f, g, xs, ys; escala }\OperatorTok{=} \FloatTok{0.35}\NormalTok{, kwargs}\OperatorTok{...}\NormalTok{)}
+\NormalTok{    X }\OperatorTok{=}\NormalTok{ [x for y }\KeywordTok{in}\NormalTok{ ys for x }\KeywordTok{in}\NormalTok{ xs]}
+\NormalTok{    Y }\OperatorTok{=}\NormalTok{ [y for y }\KeywordTok{in}\NormalTok{ ys for x }\KeywordTok{in}\NormalTok{ xs]}
+\NormalTok{    U }\OperatorTok{=} \FunctionTok{f}\NormalTok{.(X, Y)}
+\NormalTok{    V }\OperatorTok{=} \FunctionTok{g}\NormalTok{.(X, Y)}
+\NormalTok{    N }\OperatorTok{=} \FunctionTok{sqrt}\NormalTok{.(U }\OperatorTok{.\^{}} \FloatTok{2} \OperatorTok{.+}\NormalTok{ V }\OperatorTok{.\^{}} \FloatTok{2}\NormalTok{) }\OperatorTok{.+} \FloatTok{1e{-}12}
+    \FunctionTok{quiver}\NormalTok{(X, Y, quiver }\OperatorTok{=}\NormalTok{ (escala }\OperatorTok{*}\NormalTok{ U }\OperatorTok{./}\NormalTok{ N, escala }\OperatorTok{*}\NormalTok{ V }\OperatorTok{./}\NormalTok{ N),}
 \NormalTok{           color }\OperatorTok{=} \OperatorTok{:}\NormalTok{gray, alpha }\OperatorTok{=} \FloatTok{0.7}\NormalTok{; kwargs}\OperatorTok{...}\NormalTok{)}
 \KeywordTok{end}\NormalTok{;}
 \end{Highlighting}
 \end{Shaded}
 
-\section{Makie}
+\begin{exercise}[]\protect\hypertarget{exr-campo-vectorial-depredador}{}\label{exr-campo-vectorial-depredador}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\ImportTok{using} \BuiltInTok{GLMakie}
-\KeywordTok{function} \FunctionTok{campo\_direcciones\_makie!}\NormalTok{(ax, f, ts, ys; escala }\OperatorTok{=} \FloatTok{0.4}\NormalTok{, kwargs}\OperatorTok{...}\NormalTok{)}
-\NormalTok{    T }\OperatorTok{=}\NormalTok{ [t for y }\KeywordTok{in}\NormalTok{ ys for t }\KeywordTok{in}\NormalTok{ ts]}
-\NormalTok{    Y }\OperatorTok{=}\NormalTok{ [y for y }\KeywordTok{in}\NormalTok{ ys for t }\KeywordTok{in}\NormalTok{ ts]}
-\NormalTok{    U }\OperatorTok{=} \FunctionTok{ones}\NormalTok{(}\FunctionTok{length}\NormalTok{(T))}
-\NormalTok{    V }\OperatorTok{=} \FunctionTok{f}\NormalTok{.(T, Y)}
-\NormalTok{    N }\OperatorTok{=} \FunctionTok{sqrt}\NormalTok{.(U }\OperatorTok{.\^{}} \FloatTok{2} \OperatorTok{.+}\NormalTok{ V }\OperatorTok{.\^{}} \FloatTok{2}\NormalTok{)          }\CommentTok{\# Normalizamos los vectores}
-\NormalTok{    Makie.}\FunctionTok{arrows2d!}\NormalTok{(ax, T, Y, escala }\OperatorTok{*}\NormalTok{ U }\OperatorTok{./}\NormalTok{ N, escala }\OperatorTok{*}\NormalTok{ V }\OperatorTok{./}\NormalTok{ N; color }\OperatorTok{=}\NormalTok{ (}\OperatorTok{:}\NormalTok{gray, }\FloatTok{0.7}\NormalTok{), kwargs}\OperatorTok{...}\NormalTok{)}
-\KeywordTok{end}\NormalTok{;}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{exercise}[]\protect\hypertarget{exr-campo-direcciones-enfriamiento}{}\label{exr-campo-direcciones-enfriamiento}
-
-\textbf{Enfriamiento de un café (ley de Newton).} La temperatura
-\(y(t)\) (en °C) de una taza de café en una habitación a \(20\) °C
-obedece la ley de enfriamiento de Newton
+\textbf{Campo vectorial de un sistema depredador--presa.} En una reserva
+conviven liebres (\(x\), en miles) y linces (\(y\), en cientos), según
+el sistema de Lotka--Volterra
 
 \[
-y' = -0.5\,(y - 20),
+\begin{cases}
+x' = x\,(1 - y) \\
+y' = 0.5\,y\,(x - 1)
+\end{cases}
 \]
-
-con el tiempo \(t\) medido en minutos.
 
 \begin{enumerate}
 \def\labelenumi{\alph{enumi}.}
 \item
-  Dibujar el campo de direcciones de la ecuación en la región
-  \([0,10]\times[0,100]\) junto con algunas curvas integrales. ¿Qué se
-  observa?
+  Calcular simbólicamente los puntos de equilibrio del sistema.
 
   \begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, breakable, colback=white, colbacktitle=quarto-callout-note-color!10!white, colframe=quarto-callout-note-color-frame, coltitle=black, left=2mm, leftrule=.75mm, opacityback=0, opacitybacktitle=0.6, rightrule=.15mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{Ayuda}, titlerule=0mm, toprule=.15mm, toptitle=1mm]
 
-  Usar la función \texttt{campo\_direcciones} definida al principio de
-  la práctica y superponer las soluciones numéricas de varios problemas
-  de valor inicial obtenidas con
-  \href{https://docs.sciml.ai/DiffEqDocs/stable/types/ode_types/}{\texttt{ODEProblem}}
-  y \texttt{solve} del paquete \texttt{DifferentialEquations}.
+  Los puntos de equilibrio son las soluciones del sistema algebraico
+  \(f(x,y)=0\), \(g(x,y)=0\). Usar \texttt{solve} de \texttt{SymPy} con
+  una lista de ecuaciones.
 
   \end{tcolorbox}
 
   \begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, breakable, colback=white, colbacktitle=quarto-callout-tip-color!10!white, colframe=quarto-callout-tip-color-frame, coltitle=black, left=2mm, leftrule=.75mm, opacityback=0, opacitybacktitle=0.6, rightrule=.15mm, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Solución}, titlerule=0mm, toprule=.15mm, toptitle=1mm]
 
-  \section{Plots}
+\begin{Shaded}
+\begin{Highlighting}[]
+\ImportTok{using} \BuiltInTok{SymPyPythonCall}
+\PreprocessorTok{@syms}\NormalTok{ x y}
+\FunctionTok{solve}\NormalTok{([x }\OperatorTok{*}\NormalTok{ (}\FloatTok{1} \OperatorTok{{-}}\NormalTok{ y), }\FunctionTok{Sym}\NormalTok{(}\FloatTok{1}\NormalTok{)}\OperatorTok{/}\FloatTok{2} \OperatorTok{*}\NormalTok{ y }\OperatorTok{*}\NormalTok{ (x }\OperatorTok{{-}} \FloatTok{1}\NormalTok{)], [x, y])}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+2-element Vector{Tuple{Sym{PythonCall.Py}, Sym{PythonCall.Py}}}:
+ (0, 0)
+ (1, 1)
+\end{verbatim}
+
+  Hay dos equilibrios: \((0,0)\) (extinción de ambas especies) y
+  \((1,1)\) (coexistencia con mil liebres y cien linces).
+
+  \end{tcolorbox}
+\item
+  Dibujar el campo vectorial en \([0, 3]\times[0, 3]\) marcando los
+  puntos de equilibrio. Interpretar el sentido de giro del campo.
+
+  \begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, breakable, colback=white, colbacktitle=quarto-callout-tip-color!10!white, colframe=quarto-callout-tip-color-frame, coltitle=black, left=2mm, leftrule=.75mm, opacityback=0, opacitybacktitle=0.6, rightrule=.15mm, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Solución}, titlerule=0mm, toprule=.15mm, toptitle=1mm]
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\ImportTok{using} \BuiltInTok{Plots}\NormalTok{, }\BuiltInTok{DifferentialEquations}
-\FunctionTok{f}\NormalTok{(t, y) }\OperatorTok{=} \OperatorTok{{-}}\FloatTok{0.5} \OperatorTok{*}\NormalTok{ (y }\OperatorTok{{-}} \FloatTok{20}\NormalTok{)}
-\NormalTok{plt }\OperatorTok{=} \FunctionTok{campo\_direcciones\_plot}\NormalTok{(f, }\FloatTok{0}\OperatorTok{:}\FloatTok{0.5}\OperatorTok{:}\FloatTok{10}\NormalTok{, }\FloatTok{0}\OperatorTok{:}\FloatTok{5}\OperatorTok{:}\FloatTok{100}\NormalTok{,}
-\NormalTok{    xlab }\OperatorTok{=} \StringTok{"Tiempo (min)"}\NormalTok{, ylab }\OperatorTok{=} \StringTok{"Temperatura (°C)"}\NormalTok{, legend }\OperatorTok{=} \ConstantTok{true}\NormalTok{, size }\OperatorTok{=}\NormalTok{ (}\FloatTok{600}\NormalTok{, }\FloatTok{450}\NormalTok{))}
-\CommentTok{\# Curvas integrales para distintas temperaturas iniciales.}
-\ControlFlowTok{for}\NormalTok{ y0 }\KeywordTok{in}\NormalTok{ [}\FloatTok{90}\NormalTok{, }\FloatTok{60}\NormalTok{, }\FloatTok{35}\NormalTok{, }\FloatTok{20}\NormalTok{, }\FloatTok{5}\NormalTok{]}
-\NormalTok{    prob }\OperatorTok{=} \FunctionTok{ODEProblem}\NormalTok{((y, p, t) }\OperatorTok{{-}\textgreater{}} \FunctionTok{f}\NormalTok{(t, y), }\FunctionTok{float}\NormalTok{(y0), (}\FloatTok{0.0}\NormalTok{, }\FloatTok{10.0}\NormalTok{))}
-\NormalTok{    sol }\OperatorTok{=} \FunctionTok{solve}\NormalTok{(prob)}
-\NormalTok{    Plots.}\FunctionTok{plot!}\NormalTok{(plt, sol, lw }\OperatorTok{=} \FloatTok{2}\NormalTok{, label }\OperatorTok{=}\NormalTok{ L}\StringTok{"y(0)=\%}\SpecialCharTok{$}\NormalTok{y0}\StringTok{"}\NormalTok{)}
+\ImportTok{using} \BuiltInTok{Plots}
+\FunctionTok{f}\NormalTok{(x, y) }\OperatorTok{=}\NormalTok{ x }\OperatorTok{*}\NormalTok{ (}\FloatTok{1} \OperatorTok{{-}}\NormalTok{ y)}
+\FunctionTok{g}\NormalTok{(x, y) }\OperatorTok{=} \FloatTok{0.5} \OperatorTok{*}\NormalTok{ y }\OperatorTok{*}\NormalTok{ (x }\OperatorTok{{-}} \FloatTok{1}\NormalTok{)}
+\NormalTok{plt }\OperatorTok{=} \FunctionTok{campo\_vectorial}\NormalTok{(f, g, }\FloatTok{0}\OperatorTok{:}\FloatTok{0.25}\OperatorTok{:}\FloatTok{3}\NormalTok{, }\FloatTok{0}\OperatorTok{:}\FloatTok{0.25}\OperatorTok{:}\FloatTok{3}\NormalTok{,}
+\NormalTok{    xlab }\OperatorTok{=} \StringTok{"Liebres (miles)"}\NormalTok{, ylab }\OperatorTok{=} \StringTok{"Linces (cientos)"}\NormalTok{, legend }\OperatorTok{=} \ConstantTok{false}\NormalTok{)}
+\FunctionTok{scatter!}\NormalTok{(plt, [}\FloatTok{0}\NormalTok{, }\FloatTok{1}\NormalTok{], [}\FloatTok{0}\NormalTok{, }\FloatTok{1}\NormalTok{], color }\OperatorTok{=} \OperatorTok{:}\NormalTok{red, ms }\OperatorTok{=} \FloatTok{6}\NormalTok{)}
+\NormalTok{plt}
+\end{Highlighting}
+\end{Shaded}
+
+  \pandocbounded{\includegraphics[keepaspectratio]{index_files/mediabag/02-geometria-sistemas_files/figure-pdf/cell-11-output-1.pdf}}
+
+  Alrededor de \((1,1)\) el campo gira en sentido antihorario: cuando
+  hay muchas liebres los linces crecen, cuando hay muchos linces las
+  liebres decrecen, etc. Es el ciclo clásico depredador--presa.
+
+  \end{tcolorbox}
+\item
+  Superponer al campo las curvas solución con condiciones iniciales
+  \((2, 1)\), \((1.5, 1)\) y \((1.2, 1)\) y dibujar también las series
+  temporales \(x(t)\), \(y(t)\) para la primera de ellas.
+
+  \begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, breakable, colback=white, colbacktitle=quarto-callout-note-color!10!white, colframe=quarto-callout-note-color-frame, coltitle=black, left=2mm, leftrule=.75mm, opacityback=0, opacitybacktitle=0.6, rightrule=.15mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{Ayuda}, titlerule=0mm, toprule=.15mm, toptitle=1mm]
+
+  Resolver el sistema con \texttt{ODEProblem} pasando la función
+  \texttt{du\ =\ F(u,\ p,\ t)} en forma vectorial, y dibujar la órbita
+  con \texttt{plot(sol,\ idxs\ =\ (1,\ 2))}.
+
+  \end{tcolorbox}
+
+  \begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, breakable, colback=white, colbacktitle=quarto-callout-tip-color!10!white, colframe=quarto-callout-tip-color-frame, coltitle=black, left=2mm, leftrule=.75mm, opacityback=0, opacitybacktitle=0.6, rightrule=.15mm, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Solución}, titlerule=0mm, toprule=.15mm, toptitle=1mm]
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ImportTok{using} \BuiltInTok{DifferentialEquations}
+\KeywordTok{function} \FunctionTok{lotka!}\NormalTok{(du, u, p, t)}
+\NormalTok{    du[}\FloatTok{1}\NormalTok{] }\OperatorTok{=}\NormalTok{ u[}\FloatTok{1}\NormalTok{] }\OperatorTok{*}\NormalTok{ (}\FloatTok{1} \OperatorTok{{-}}\NormalTok{ u[}\FloatTok{2}\NormalTok{])}
+\NormalTok{    du[}\FloatTok{2}\NormalTok{] }\OperatorTok{=} \FloatTok{0.5} \OperatorTok{*}\NormalTok{ u[}\FloatTok{2}\NormalTok{] }\OperatorTok{*}\NormalTok{ (u[}\FloatTok{1}\NormalTok{] }\OperatorTok{{-}} \FloatTok{1}\NormalTok{)}
+\KeywordTok{end}
+\ControlFlowTok{for}\NormalTok{ u0 }\KeywordTok{in}\NormalTok{ [[}\FloatTok{2.0}\NormalTok{, }\FloatTok{1.0}\NormalTok{], [}\FloatTok{1.5}\NormalTok{, }\FloatTok{1.0}\NormalTok{], [}\FloatTok{1.2}\NormalTok{, }\FloatTok{1.0}\NormalTok{]]}
+\NormalTok{    sol }\OperatorTok{=} \FunctionTok{solve}\NormalTok{(}\FunctionTok{ODEProblem}\NormalTok{(lotka!, u0, (}\FloatTok{0.0}\NormalTok{, }\FloatTok{20.0}\NormalTok{)))}
+    \FunctionTok{plot!}\NormalTok{(plt, sol, idxs }\OperatorTok{=}\NormalTok{ (}\FloatTok{1}\NormalTok{, }\FloatTok{2}\NormalTok{), lw }\OperatorTok{=} \FloatTok{2}\NormalTok{)}
 \ControlFlowTok{end}
 \NormalTok{plt}
 \end{Highlighting}
 \end{Shaded}
 
-  \pandocbounded{\includegraphics[keepaspectratio]{index_files/mediabag/01-edos-primer-orden_files/figure-pdf/cell-10-output-1.pdf}}
-
-  \section{Makie}
+  \pandocbounded{\includegraphics[keepaspectratio]{index_files/mediabag/02-geometria-sistemas_files/figure-pdf/cell-12-output-1.pdf}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\ImportTok{using} \BuiltInTok{GLMakie}
-\NormalTok{Makie.}\FunctionTok{set\_theme!}\NormalTok{(resolution }\OperatorTok{=}\NormalTok{ (}\FloatTok{600}\NormalTok{, }\FloatTok{450}\NormalTok{))}
-\FunctionTok{f}\NormalTok{(t, y) }\OperatorTok{=} \OperatorTok{{-}}\FloatTok{0.5} \OperatorTok{*}\NormalTok{ (y }\OperatorTok{{-}} \FloatTok{20}\NormalTok{)}
-\NormalTok{fig }\OperatorTok{=} \FunctionTok{Figure}\NormalTok{()}
-\NormalTok{ax }\OperatorTok{=} \FunctionTok{Axis}\NormalTok{(fig[}\FloatTok{1}\NormalTok{, }\FloatTok{1}\NormalTok{], xlabel }\OperatorTok{=} \StringTok{"Tiempo (min)"}\NormalTok{, ylabel }\OperatorTok{=} \StringTok{"Temperatura (°C)"}\NormalTok{, limits }\OperatorTok{=}\NormalTok{ ((}\FloatTok{0}\NormalTok{, }\FloatTok{10}\NormalTok{), (}\FloatTok{0}\NormalTok{, }\FloatTok{100}\NormalTok{)))}
-\FunctionTok{campo\_direcciones\_makie!}\NormalTok{(ax, f, }\FloatTok{0}\OperatorTok{:}\FloatTok{0.5}\OperatorTok{:}\FloatTok{10}\NormalTok{, }\FloatTok{0}\OperatorTok{:}\FloatTok{5}\OperatorTok{:}\FloatTok{100}\NormalTok{, escala }\OperatorTok{=} \FloatTok{0.4}\NormalTok{)}
-\CommentTok{\# Curvas integrales para distintas temperaturas iniciales.}
-\ControlFlowTok{for}\NormalTok{ y0 }\KeywordTok{in}\NormalTok{ [}\FloatTok{90}\NormalTok{, }\FloatTok{60}\NormalTok{, }\FloatTok{35}\NormalTok{, }\FloatTok{20}\NormalTok{, }\FloatTok{5}\NormalTok{]}
-\NormalTok{prob }\OperatorTok{=} \FunctionTok{ODEProblem}\NormalTok{((y, p, t) }\OperatorTok{{-}\textgreater{}} \FunctionTok{f}\NormalTok{(t, y), }\FunctionTok{float}\NormalTok{(y0), (}\FloatTok{0.0}\NormalTok{, }\FloatTok{10.0}\NormalTok{))}
-\NormalTok{sol }\OperatorTok{=} \FunctionTok{solve}\NormalTok{(prob)}
-\NormalTok{Makie.}\FunctionTok{lines!}\NormalTok{(ax, sol.t, sol.u, linewidth }\OperatorTok{=} \FloatTok{2}\NormalTok{, label }\OperatorTok{=}\NormalTok{ L}\StringTok{"y(0)=\%}\SpecialCharTok{$}\NormalTok{y0}\StringTok{"}\NormalTok{)}
-\ControlFlowTok{end}
-\NormalTok{fig}
+\NormalTok{sol }\OperatorTok{=} \FunctionTok{solve}\NormalTok{(}\FunctionTok{ODEProblem}\NormalTok{(lotka!, [}\FloatTok{2.0}\NormalTok{, }\FloatTok{1.0}\NormalTok{], (}\FloatTok{0.0}\NormalTok{, }\FloatTok{20.0}\NormalTok{)))}
+\FunctionTok{plot}\NormalTok{(sol, lw }\OperatorTok{=} \FloatTok{2}\NormalTok{, label }\OperatorTok{=}\NormalTok{ [}\StringTok{"Liebres"} \StringTok{"Linces"}\NormalTok{], xlab }\OperatorTok{=} \StringTok{"Tiempo (años)"}\NormalTok{, ylab }\OperatorTok{=} \StringTok{"Población (miles)"}\NormalTok{, legend }\OperatorTok{=} \OperatorTok{:}\NormalTok{topright)}
 \end{Highlighting}
 \end{Shaded}
 
-\begin{verbatim}
-┌ Warning: Found `resolution` in the theme when creating a `Scene`. The `resolution` keyword for `Scene`s and `Figure`s has been deprecated. Use `Figure(; size = ...` or `Scene(; size = ...)` instead, which better reflects that this is a unitless size and not a pixel resolution. The key could also come from `set_theme!` calls or related theming functions.
-└ @ Makie ~/.julia/packages/Makie/p9K7f/src/scenes.jl:264
-\end{verbatim}
+  \pandocbounded{\includegraphics[keepaspectratio]{index_files/mediabag/02-geometria-sistemas_files/figure-pdf/cell-13-output-1.pdf}}
 
-  \pandocbounded{\includegraphics[keepaspectratio]{01-edos-primer-orden_files/figure-pdf/cell-11-output-2.png}}
-
-  Todas las curvas integrales tienden a la temperatura ambiente
-  \(y=20\): el campo de direcciones ``empuja'' cualquier solución hacia
-  la recta horizontal \(y=20\), que es un punto de equilibrio estable.
-
-  \end{tcolorbox}
-\item
-  Resolver simbólicamente la ecuación con la condición inicial
-  \(y(0)=90\) y calcular cuánto tarda el café en alcanzar los \(30\) °C.
-
-  \begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, breakable, colback=white, colbacktitle=quarto-callout-note-color!10!white, colframe=quarto-callout-note-color-frame, coltitle=black, left=2mm, leftrule=.75mm, opacityback=0, opacitybacktitle=0.6, rightrule=.15mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{Ayuda}, titlerule=0mm, toprule=.15mm, toptitle=1mm]
-
-  Usar la función
-  \href{https://docs.juliahub.com/SymPyPythonCall/}{\texttt{dsolve}} del
-  paquete \texttt{SymPyPythonCall} con el argumento \texttt{ics} para
-  imponer la condición inicial, y la función \texttt{solve} para
-  despejar el instante pedido.
-
-  \end{tcolorbox}
-
-  \begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, breakable, colback=white, colbacktitle=quarto-callout-tip-color!10!white, colframe=quarto-callout-tip-color-frame, coltitle=black, left=2mm, leftrule=.75mm, opacityback=0, opacitybacktitle=0.6, rightrule=.15mm, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Solución}, titlerule=0mm, toprule=.15mm, toptitle=1mm]
-
-  La ecuación es lineal (y separable). Simbólicamente:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\ImportTok{using} \BuiltInTok{SymPyPythonCall}
-\PreprocessorTok{@syms}\NormalTok{ t }\FunctionTok{y}\NormalTok{()}
-\NormalTok{eq }\OperatorTok{=} \FunctionTok{Eq}\NormalTok{(}\FunctionTok{diff}\NormalTok{(}\FunctionTok{y}\NormalTok{(t), t), }\OperatorTok{{-}}\FloatTok{1}\OperatorTok{//}\FloatTok{2} \OperatorTok{*}\NormalTok{ (}\FunctionTok{y}\NormalTok{(t) }\OperatorTok{{-}} \FloatTok{20}\NormalTok{))}
-\NormalTok{sol }\OperatorTok{=} \FunctionTok{dsolve}\NormalTok{(eq, }\FunctionTok{y}\NormalTok{(t), ics }\OperatorTok{=} \FunctionTok{Dict}\NormalTok{(}\FunctionTok{y}\NormalTok{(}\FloatTok{0}\NormalTok{) }\OperatorTok{=\textgreater{}} \FloatTok{90}\NormalTok{))}
-\end{Highlighting}
-\end{Shaded}
-
-  $y{\left(t \right)} = 20 + 70 e^{- \frac{t}{2}}$
-
-  Es decir, \(y(t) = 20 + 70e^{-t/2}\). El instante en que \(y(t)=30\):
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{t30 }\OperatorTok{=} \FunctionTok{solve}\NormalTok{(}\FunctionTok{Eq}\NormalTok{(}\FunctionTok{rhs}\NormalTok{(sol), }\FloatTok{30}\NormalTok{), t)[}\FloatTok{1}\NormalTok{]}
-\FunctionTok{N}\NormalTok{(t30)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-3.8918202981106265
-\end{verbatim}
-
-  El café alcanza los 30 °C a los \(2\ln 7 \approx 3.89\) minutos.
+  Las órbitas son curvas cerradas alrededor de \((1,1)\). Las
+  poblaciones oscilan periódicamente, con los máximos de linces
+  retrasados respecto a los de liebres.
 
   \end{tcolorbox}
 \end{enumerate}
 
 \end{exercise}
 
-\begin{exercise}[]\protect\hypertarget{exr-trayectorias-ortogonales}{}\label{exr-trayectorias-ortogonales}
+\begin{exercise}[]\protect\hypertarget{exr-espacio-fases-pendulo}{}\label{exr-espacio-fases-pendulo}
 
-\textbf{Aplicación geométrica: trayectorias ortogonales.} En
-electrostática, las líneas de campo de una carga puntual son ortogonales
-a las curvas equipotenciales. Las equipotenciales de un dipolo
-bidimensional simplificado forman la familia de circunferencias
+\textbf{Espacio de fases del péndulo amortiguado.} Las oscilaciones de
+un péndulo con rozamiento se describen mediante el sistema
 
 \[
-x^2 + y^2 = 2Cx.
+\begin{cases}
+\theta' = \omega \\
+\omega' = -\sin\theta - 0.25\,\omega
+\end{cases}
 \]
 
-Hallar la familia de trayectorias ortogonales (las líneas de campo) y
-dibujar ambas familias.
+donde \(\theta\) es el ángulo con la vertical y \(\omega\) la velocidad
+angular.
 
-\begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, breakable, colback=white, colbacktitle=quarto-callout-note-color!10!white, colframe=quarto-callout-note-color-frame, coltitle=black, left=2mm, leftrule=.75mm, opacityback=0, opacitybacktitle=0.6, rightrule=.15mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{Ayuda}, titlerule=0mm, toprule=.15mm, toptitle=1mm]
+\begin{enumerate}
+\def\labelenumi{\alph{enumi}.}
+\item
+  Calcular los puntos de equilibrio en \([-2\pi, 2\pi]\times\mathbb{R}\)
+  e interpretarlos físicamente.
 
-Derivar implícitamente la familia y eliminar la constante \(C\) para
-obtener la EDO \(y' = f(x,y)\) de la familia. La familia ortogonal
-satisface \(y' = -1/f(x,y)\). La ecuación resultante es homogénea.
-
-\end{tcolorbox}
-
-\begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, breakable, colback=white, colbacktitle=quarto-callout-tip-color!10!white, colframe=quarto-callout-tip-color-frame, coltitle=black, left=2mm, leftrule=.75mm, opacityback=0, opacitybacktitle=0.6, rightrule=.15mm, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Solución}, titlerule=0mm, toprule=.15mm, toptitle=1mm]
-
-De \(x^2+y^2 = 2Cx\) se obtiene \(C = \frac{x^2+y^2}{2x}\), y derivando
-implícitamente, \(2x + 2yy' = 2C\), luego
-
-\[
-y' = \frac{y^2 - x^2}{2xy}.
-\]
-
-La familia ortogonal satisface la ecuación homogénea
-\(y' = \dfrac{2xy}{x^2 - y^2}\):
+  \begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, breakable, colback=white, colbacktitle=quarto-callout-tip-color!10!white, colframe=quarto-callout-tip-color-frame, coltitle=black, left=2mm, leftrule=.75mm, opacityback=0, opacitybacktitle=0.6, rightrule=.15mm, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Solución}, titlerule=0mm, toprule=.15mm, toptitle=1mm]
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\PreprocessorTok{@syms}\NormalTok{ x }\FunctionTok{y}\NormalTok{()}
-\NormalTok{sol }\OperatorTok{=} \FunctionTok{dsolve}\NormalTok{(}\FunctionTok{Eq}\NormalTok{(}\FunctionTok{diff}\NormalTok{(}\FunctionTok{y}\NormalTok{(x), x), }\FloatTok{2}\NormalTok{x }\OperatorTok{*} \FunctionTok{y}\NormalTok{(x) }\OperatorTok{/}\NormalTok{ (x}\OperatorTok{\^{}}\FloatTok{2} \OperatorTok{{-}} \FunctionTok{y}\NormalTok{(x)}\OperatorTok{\^{}}\FloatTok{2}\NormalTok{)), }\FunctionTok{y}\NormalTok{(x))}
+\ImportTok{using} \BuiltInTok{SymPyPythonCall}
+\PreprocessorTok{@syms}\NormalTok{ θ ω}
+\FunctionTok{solve}\NormalTok{([ω, }\FunctionTok{{-}sin}\NormalTok{(θ) }\OperatorTok{{-}} \FunctionTok{Sym}\NormalTok{(}\FloatTok{1}\NormalTok{)}\OperatorTok{/}\FloatTok{4} \OperatorTok{*}\NormalTok{ ω], [θ, ω])}
 \end{Highlighting}
 \end{Shaded}
 
-$\left[\begin{smallmatrix}y{\left(x \right)} = - \frac{\sqrt{- 4 x^{2} + e^{2 C_{1}}}}{2} + \frac{e^{C_{1}}}{2}\\y{\left(x \right)} = \frac{\sqrt{- 4 x^{2} + e^{2 C_{1}}}}{2} + \frac{e^{C_{1}}}{2}\end{smallmatrix}\right]$
+\begin{verbatim}
+2-element Vector{Tuple{Sym{PythonCall.Py}, Sym{PythonCall.Py}}}:
+ (0, 0)
+ (pi, 0)
+\end{verbatim}
 
-Reordenando la solución implícita se obtiene \(x^2 + y^2 = 2Ky\): las
-líneas de campo son \textbf{circunferencias centradas en el eje \(y\) y
-que pasan por el origen}, ortogonales a las equipotenciales
-(circunferencias centradas en el eje \(x\) por el origen). Dibujamos
-ambas familias:
+  \texttt{SymPy} devuelve \((0,0)\) y \((\pi, 0)\); por periodicidad,
+  los equilibrios son \((k\pi, 0)\), \(k\in\mathbb{Z}\). Los de \(k\)
+  par corresponden al péndulo colgando en reposo (estables) y los de
+  \(k\) impar al péndulo invertido (inestables).
+
+  \end{tcolorbox}
+\item
+  Dibujar el diagrama de fases en \([-2\pi, 2\pi]\times[-4, 4]\) con
+  órbitas que partan de
+  \((\theta_0, \omega_0) = (0, 1), (0, 2.5), (0, 3.2), (-2\pi, 3.2)\).
+  Interpretar los distintos tipos de órbitas.
+
+  \begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, breakable, colback=white, colbacktitle=quarto-callout-tip-color!10!white, colframe=quarto-callout-tip-color-frame, coltitle=black, left=2mm, leftrule=.75mm, opacityback=0, opacitybacktitle=0.6, rightrule=.15mm, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Solución}, titlerule=0mm, toprule=.15mm, toptitle=1mm]
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{plt }\OperatorTok{=}\NormalTok{ Plots.}\FunctionTok{plot}\NormalTok{(aspect\_ratio }\OperatorTok{=} \OperatorTok{:}\NormalTok{equal, legend }\OperatorTok{=} \ConstantTok{false}\NormalTok{, xlab }\OperatorTok{=}\NormalTok{ L}\StringTok{"x"}\NormalTok{, ylab }\OperatorTok{=}\NormalTok{ L}\StringTok{"y"}\NormalTok{, xlims }\OperatorTok{=}\NormalTok{ (}\OperatorTok{{-}}\FloatTok{3}\NormalTok{, }\FloatTok{3}\NormalTok{), ylims }\OperatorTok{=}\NormalTok{ (}\OperatorTok{{-}}\FloatTok{3}\NormalTok{, }\FloatTok{3}\NormalTok{))}
-\NormalTok{θ }\OperatorTok{=} \FunctionTok{range}\NormalTok{(}\FloatTok{0}\NormalTok{, }\FloatTok{2}\NormalTok{π, length }\OperatorTok{=} \FloatTok{200}\NormalTok{)}
-\ControlFlowTok{for}\NormalTok{ c }\KeywordTok{in}\NormalTok{ [}\FloatTok{0.5}\NormalTok{, }\FloatTok{1}\NormalTok{, }\FloatTok{1.5}\NormalTok{]}
-\NormalTok{    Plots.}\FunctionTok{plot!}\NormalTok{(plt, c }\OperatorTok{.+}\NormalTok{ c }\OperatorTok{.*} \FunctionTok{cos}\NormalTok{.(θ),  c }\OperatorTok{.*} \FunctionTok{sin}\NormalTok{.(θ), color }\OperatorTok{=} \OperatorTok{:}\NormalTok{blue)   }\CommentTok{\# Equipotenciales}
-\NormalTok{    Plots.}\FunctionTok{plot!}\NormalTok{(plt, }\OperatorTok{{-}}\NormalTok{c }\OperatorTok{.+}\NormalTok{ c }\OperatorTok{.*} \FunctionTok{cos}\NormalTok{.(θ), c }\OperatorTok{.*} \FunctionTok{sin}\NormalTok{.(θ), color }\OperatorTok{=} \OperatorTok{:}\NormalTok{blue)}
-\NormalTok{    Plots.}\FunctionTok{plot!}\NormalTok{(plt, c }\OperatorTok{.*} \FunctionTok{cos}\NormalTok{.(θ),  c }\OperatorTok{.+}\NormalTok{ c }\OperatorTok{.*} \FunctionTok{sin}\NormalTok{.(θ), color }\OperatorTok{=} \OperatorTok{:}\NormalTok{red)    }\CommentTok{\# Líneas de campo}
-\NormalTok{    Plots.}\FunctionTok{plot!}\NormalTok{(plt, c }\OperatorTok{.*} \FunctionTok{cos}\NormalTok{.(θ), }\OperatorTok{{-}}\NormalTok{c }\OperatorTok{.+}\NormalTok{ c }\OperatorTok{.*} \FunctionTok{sin}\NormalTok{.(θ), color }\OperatorTok{=} \OperatorTok{:}\NormalTok{red)}
+\ImportTok{using} \BuiltInTok{Plots}\NormalTok{, }\BuiltInTok{DifferentialEquations}\NormalTok{, }\BuiltInTok{LaTeXStrings}
+\FunctionTok{f}\NormalTok{(θ, ω) }\OperatorTok{=}\NormalTok{ ω}
+\FunctionTok{g}\NormalTok{(θ, ω) }\OperatorTok{=} \FunctionTok{{-}sin}\NormalTok{(θ) }\OperatorTok{{-}} \FloatTok{0.25}\NormalTok{ω}
+\NormalTok{plt }\OperatorTok{=} \FunctionTok{campo\_vectorial}\NormalTok{(f, g, }\OperatorTok{{-}}\FloatTok{2}\NormalTok{π}\OperatorTok{:}\FloatTok{0.5}\OperatorTok{:}\FloatTok{2}\NormalTok{π, }\OperatorTok{{-}}\FloatTok{4}\OperatorTok{:}\FloatTok{0.5}\OperatorTok{:}\FloatTok{4}\NormalTok{, escala }\OperatorTok{=} \FloatTok{0.3}\NormalTok{,}
+\NormalTok{    xlab }\OperatorTok{=}\NormalTok{ L}\StringTok{"}\SpecialCharTok{\textbackslash{}t}\StringTok{heta"}\NormalTok{, ylab }\OperatorTok{=}\NormalTok{ L}\StringTok{"\textbackslash{}omega"}\NormalTok{, legend }\OperatorTok{=} \ConstantTok{false}\NormalTok{)}
+\FunctionTok{scatter!}\NormalTok{(plt, [}\OperatorTok{{-}}\FloatTok{2}\NormalTok{π, }\OperatorTok{{-}}\ConstantTok{π}\NormalTok{, }\FloatTok{0}\NormalTok{, }\ConstantTok{π}\NormalTok{, }\FloatTok{2}\NormalTok{π], }\FunctionTok{zeros}\NormalTok{(}\FloatTok{5}\NormalTok{), color }\OperatorTok{=} \OperatorTok{:}\NormalTok{red, ms }\OperatorTok{=} \FloatTok{5}\NormalTok{)}
+\KeywordTok{function} \FunctionTok{pendulo!}\NormalTok{(du, u, p, t)}
+\NormalTok{    du[}\FloatTok{1}\NormalTok{] }\OperatorTok{=}\NormalTok{ u[}\FloatTok{2}\NormalTok{]}
+\NormalTok{    du[}\FloatTok{2}\NormalTok{] }\OperatorTok{=} \FunctionTok{{-}sin}\NormalTok{(u[}\FloatTok{1}\NormalTok{]) }\OperatorTok{{-}} \FloatTok{0.25}\NormalTok{u[}\FloatTok{2}\NormalTok{]}
+\KeywordTok{end}
+\ControlFlowTok{for}\NormalTok{ u0 }\KeywordTok{in}\NormalTok{ [[}\FloatTok{0.0}\NormalTok{, }\FloatTok{1.0}\NormalTok{], [}\FloatTok{0.0}\NormalTok{, }\FloatTok{2.5}\NormalTok{], [}\FloatTok{0.0}\NormalTok{, }\FloatTok{3.2}\NormalTok{], [}\OperatorTok{{-}}\FloatTok{2}\NormalTok{π, }\FloatTok{3.2}\NormalTok{]]}
+\NormalTok{    sol }\OperatorTok{=} \FunctionTok{solve}\NormalTok{(}\FunctionTok{ODEProblem}\NormalTok{(pendulo!, u0, (}\FloatTok{0.0}\NormalTok{, }\FloatTok{40.0}\NormalTok{)))}
+    \FunctionTok{plot!}\NormalTok{(plt, sol, idxs }\OperatorTok{=}\NormalTok{ (}\FloatTok{1}\NormalTok{, }\FloatTok{2}\NormalTok{), lw }\OperatorTok{=} \FloatTok{2}\NormalTok{)}
 \ControlFlowTok{end}
 \NormalTok{plt}
 \end{Highlighting}
 \end{Shaded}
 
-\pandocbounded{\includegraphics[keepaspectratio]{index_files/mediabag/01-edos-primer-orden_files/figure-pdf/cell-15-output-1.pdf}}
+  \pandocbounded{\includegraphics[keepaspectratio]{index_files/mediabag/02-geometria-sistemas_files/figure-pdf/cell-15-output-1.pdf}}
 
-En cada intersección, una circunferencia azul y una roja se cortan en
-ángulo recto.
+  Con poca energía inicial (\(\omega_0=1, 2.5\)), el péndulo oscila y
+  cae en espiral hacia el equilibrio \((0,0)\). Con más energía
+  (\(\omega_0=3.2\)), da una o varias vueltas completas (\(\theta\)
+  avanza \(2\pi\)) antes de quedar atrapado en el pozo de otro
+  equilibrio estable: el rozamiento disipa energía y todas las órbitas
+  terminan en algún \((2k\pi, 0)\).
+
+  \end{tcolorbox}
+\end{enumerate}
+
+\end{exercise}
+
+\begin{exercise}[]\protect\hypertarget{exr-equilibrios-numericos}{}\label{exr-equilibrios-numericos}
+
+\textbf{Puntos de equilibrio numéricos: dos empresas en competencia.}
+Las cuotas de producción \(x, y \ge 0\) de dos empresas que compiten por
+el mismo mercado evolucionan según
+
+\[
+\begin{cases}
+x' = x\,(10 - x - 2y) \\
+y' = y\,(8 - y - 1.5x)
+\end{cases}
+\]
+
+\begin{enumerate}
+\def\labelenumi{\alph{enumi}.}
+\item
+  Calcular todos los puntos de equilibrio, simbólica y numéricamente.
+
+  \begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, breakable, colback=white, colbacktitle=quarto-callout-note-color!10!white, colframe=quarto-callout-note-color-frame, coltitle=black, left=2mm, leftrule=.75mm, opacityback=0, opacitybacktitle=0.6, rightrule=.15mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{Ayuda}, titlerule=0mm, toprule=.15mm, toptitle=1mm]
+
+  Simbólicamente con \texttt{solve} de \texttt{SymPy}; numéricamente con
+  \texttt{nlsolve} del paquete \texttt{NLsolve} partiendo de puntos
+  iniciales próximos a cada equilibrio.
+
+  \end{tcolorbox}
+
+  \begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, breakable, colback=white, colbacktitle=quarto-callout-tip-color!10!white, colframe=quarto-callout-tip-color-frame, coltitle=black, left=2mm, leftrule=.75mm, opacityback=0, opacitybacktitle=0.6, rightrule=.15mm, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Solución}, titlerule=0mm, toprule=.15mm, toptitle=1mm]
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ImportTok{using} \BuiltInTok{SymPyPythonCall}
+\PreprocessorTok{@syms}\NormalTok{ x y}
+\NormalTok{eqs }\OperatorTok{=} \FunctionTok{solve}\NormalTok{([x }\OperatorTok{*}\NormalTok{ (}\FloatTok{10} \OperatorTok{{-}}\NormalTok{ x }\OperatorTok{{-}} \FloatTok{2}\NormalTok{y), y }\OperatorTok{*}\NormalTok{ (}\FloatTok{8} \OperatorTok{{-}}\NormalTok{ y }\OperatorTok{{-}} \FunctionTok{Sym}\NormalTok{(}\FloatTok{3}\NormalTok{)}\OperatorTok{/}\FloatTok{2} \OperatorTok{*}\NormalTok{ x)], [x, y])}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+4-element Vector{Tuple{Sym{PythonCall.Py}, Sym{PythonCall.Py}}}:
+ (0, 0)
+ (0, 8)
+ (3, 7/2)
+ (10, 0)
+\end{verbatim}
+
+  Hay cuatro equilibrios: \((0,0)\), \((10, 0)\), \((0, 8)\) y el de
+  coexistencia \((3, 3.5)\). Numéricamente:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ImportTok{using} \BuiltInTok{NLsolve}
+\FunctionTok{F}\NormalTok{(u) }\OperatorTok{=}\NormalTok{ [u[}\FloatTok{1}\NormalTok{] }\OperatorTok{*}\NormalTok{ (}\FloatTok{10} \OperatorTok{{-}}\NormalTok{ u[}\FloatTok{1}\NormalTok{] }\OperatorTok{{-}} \FloatTok{2}\NormalTok{u[}\FloatTok{2}\NormalTok{]), u[}\FloatTok{2}\NormalTok{] }\OperatorTok{*}\NormalTok{ (}\FloatTok{8} \OperatorTok{{-}}\NormalTok{ u[}\FloatTok{2}\NormalTok{] }\OperatorTok{{-}} \FloatTok{1.5}\NormalTok{u[}\FloatTok{1}\NormalTok{])]}
+\FunctionTok{nlsolve}\NormalTok{(F, [}\FloatTok{3.0}\NormalTok{, }\FloatTok{3.0}\NormalTok{]).zero}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+2-element Vector{Float64}:
+ 3.0000000000000018
+ 3.4999999999999996
+\end{verbatim}
+
+  \end{tcolorbox}
+\item
+  Dibujar el diagrama de fases en \([0,11]\times[0,9]\) con varias
+  órbitas y decidir gráficamente si el equilibrio de coexistencia es
+  estable, es decir, si ambas empresas pueden sobrevivir en el mercado.
+
+  \begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, breakable, colback=white, colbacktitle=quarto-callout-tip-color!10!white, colframe=quarto-callout-tip-color-frame, coltitle=black, left=2mm, leftrule=.75mm, opacityback=0, opacitybacktitle=0.6, rightrule=.15mm, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Solución}, titlerule=0mm, toprule=.15mm, toptitle=1mm]
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ImportTok{using} \BuiltInTok{Plots}\NormalTok{, }\BuiltInTok{DifferentialEquations}
+\FunctionTok{f}\NormalTok{(x, y) }\OperatorTok{=}\NormalTok{ x }\OperatorTok{*}\NormalTok{ (}\FloatTok{10} \OperatorTok{{-}}\NormalTok{ x }\OperatorTok{{-}} \FloatTok{2}\NormalTok{y)}
+\FunctionTok{g}\NormalTok{(x, y) }\OperatorTok{=}\NormalTok{ y }\OperatorTok{*}\NormalTok{ (}\FloatTok{8} \OperatorTok{{-}}\NormalTok{ y }\OperatorTok{{-}} \FloatTok{1.5}\NormalTok{x)}
+\NormalTok{plt }\OperatorTok{=} \FunctionTok{campo\_vectorial}\NormalTok{(f, g, }\FloatTok{0}\OperatorTok{:}\FloatTok{0.75}\OperatorTok{:}\FloatTok{11}\NormalTok{, }\FloatTok{0}\OperatorTok{:}\FloatTok{0.6}\OperatorTok{:}\FloatTok{9}\NormalTok{, escala }\OperatorTok{=} \FloatTok{0.3}\NormalTok{,}
+\NormalTok{    xlab }\OperatorTok{=} \StringTok{"Producción empresa 1"}\NormalTok{, ylab }\OperatorTok{=} \StringTok{"Producción empresa 2"}\NormalTok{,}
+\NormalTok{    legend }\OperatorTok{=} \ConstantTok{false}\NormalTok{)}
+\FunctionTok{scatter!}\NormalTok{(plt, [}\FloatTok{0}\NormalTok{, }\FloatTok{10}\NormalTok{, }\FloatTok{0}\NormalTok{, }\FloatTok{3}\NormalTok{], [}\FloatTok{0}\NormalTok{, }\FloatTok{0}\NormalTok{, }\FloatTok{8}\NormalTok{, }\FloatTok{3.5}\NormalTok{], color }\OperatorTok{=} \OperatorTok{:}\NormalTok{red, ms }\OperatorTok{=} \FloatTok{6}\NormalTok{)}
+\KeywordTok{function} \FunctionTok{comp!}\NormalTok{(du, u, p, t)}
+\NormalTok{    du[}\FloatTok{1}\NormalTok{] }\OperatorTok{=}\NormalTok{ u[}\FloatTok{1}\NormalTok{] }\OperatorTok{*}\NormalTok{ (}\FloatTok{10} \OperatorTok{{-}}\NormalTok{ u[}\FloatTok{1}\NormalTok{] }\OperatorTok{{-}} \FloatTok{2}\NormalTok{u[}\FloatTok{2}\NormalTok{])}
+\NormalTok{    du[}\FloatTok{2}\NormalTok{] }\OperatorTok{=}\NormalTok{ u[}\FloatTok{2}\NormalTok{] }\OperatorTok{*}\NormalTok{ (}\FloatTok{8} \OperatorTok{{-}}\NormalTok{ u[}\FloatTok{2}\NormalTok{] }\OperatorTok{{-}} \FloatTok{1.5}\NormalTok{u[}\FloatTok{1}\NormalTok{])}
+\KeywordTok{end}
+\ControlFlowTok{for}\NormalTok{ u0 }\KeywordTok{in}\NormalTok{ [[}\FloatTok{1}\NormalTok{,}\FloatTok{1}\NormalTok{],[}\FloatTok{9}\NormalTok{,}\FloatTok{8}\NormalTok{],[}\FloatTok{2.5}\NormalTok{,}\FloatTok{4}\NormalTok{],[}\FloatTok{3.6}\NormalTok{,}\FloatTok{3}\NormalTok{],[}\FloatTok{0.5}\NormalTok{,}\FloatTok{8}\NormalTok{],[}\FloatTok{10}\NormalTok{,}\FloatTok{0.5}\NormalTok{],[}\FloatTok{6}\NormalTok{,}\FloatTok{1}\NormalTok{],[}\FloatTok{1}\NormalTok{,}\FloatTok{6}\NormalTok{]]}
+\NormalTok{    sol }\OperatorTok{=} \FunctionTok{solve}\NormalTok{(}\FunctionTok{ODEProblem}\NormalTok{(comp!, }\FunctionTok{float}\NormalTok{.(u0), (}\FloatTok{0.0}\NormalTok{, }\FloatTok{10.0}\NormalTok{)))}
+    \FunctionTok{plot!}\NormalTok{(plt, sol, idxs }\OperatorTok{=}\NormalTok{ (}\FloatTok{1}\NormalTok{, }\FloatTok{2}\NormalTok{), lw }\OperatorTok{=} \FloatTok{2}\NormalTok{)}
+\ControlFlowTok{end}
+\NormalTok{plt}
+\end{Highlighting}
+\end{Shaded}
+
+  \pandocbounded{\includegraphics[keepaspectratio]{index_files/mediabag/02-geometria-sistemas_files/figure-pdf/cell-18-output-1.pdf}}
+
+  El equilibrio de coexistencia \((3, 3.5)\) es un punto de silla. Casi
+  todas las órbitas se alejan de él y terminan en \((10, 0)\) o en
+  \((0, 8)\). Este es el \emph{principio de exclusión competitiva}:
+  según la ventaja inicial, una de las dos empresas acaba monopolizando
+  el mercado.
+
+  \end{tcolorbox}
+\end{enumerate}
+
+\end{exercise}
+
+\begin{exercise}[]\protect\hypertarget{exr-curvas-solucion-3d}{}\label{exr-curvas-solucion-3d}
+
+\textbf{Curvas solución en el espacio \((t, x, y)\).} Para el sistema
+depredador--presa del Ejercicio~\ref{exr-campo-vectorial-depredador} con
+condición inicial \((x_0, y_0) = (2, 1)\), dibujar la curva solución
+tridimensional \(t \mapsto (t, x(t), y(t))\) y su proyección sobre el
+espacio de fases, para visualizar que la órbita plana es la ``sombra''
+de la curva solución.
+
+\begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, breakable, colback=white, colbacktitle=quarto-callout-note-color!10!white, colframe=quarto-callout-note-color-frame, coltitle=black, left=2mm, leftrule=.75mm, opacityback=0, opacitybacktitle=0.6, rightrule=.15mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{Ayuda}, titlerule=0mm, toprule=.15mm, toptitle=1mm]
+
+Usar \texttt{plot(sol.t,\ primero,\ segundo)} para la curva 3D,
+extrayendo las componentes con \texttt{sol{[}1,\ :{]}} y
+\texttt{sol{[}2,\ :{]}}.
+
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, breakable, colback=white, colbacktitle=quarto-callout-tip-color!10!white, colframe=quarto-callout-tip-color-frame, coltitle=black, left=2mm, leftrule=.75mm, opacityback=0, opacitybacktitle=0.6, rightrule=.15mm, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Solución}, titlerule=0mm, toprule=.15mm, toptitle=1mm]
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ImportTok{using} \BuiltInTok{Plots}\NormalTok{, }\BuiltInTok{DifferentialEquations}\NormalTok{, }\BuiltInTok{LaTeXStrings}
+\KeywordTok{function} \FunctionTok{lotka!}\NormalTok{(du, u, p, t)}
+\NormalTok{    du[}\FloatTok{1}\NormalTok{] }\OperatorTok{=}\NormalTok{ u[}\FloatTok{1}\NormalTok{] }\OperatorTok{*}\NormalTok{ (}\FloatTok{1} \OperatorTok{{-}}\NormalTok{ u[}\FloatTok{2}\NormalTok{])}
+\NormalTok{    du[}\FloatTok{2}\NormalTok{] }\OperatorTok{=} \FloatTok{0.5} \OperatorTok{*}\NormalTok{ u[}\FloatTok{2}\NormalTok{] }\OperatorTok{*}\NormalTok{ (u[}\FloatTok{1}\NormalTok{] }\OperatorTok{{-}} \FloatTok{1}\NormalTok{)}
+\KeywordTok{end}
+\NormalTok{sol }\OperatorTok{=} \FunctionTok{solve}\NormalTok{(}\FunctionTok{ODEProblem}\NormalTok{(lotka!, [}\FloatTok{2.0}\NormalTok{, }\FloatTok{1.0}\NormalTok{], (}\FloatTok{0.0}\NormalTok{, }\FloatTok{20.0}\NormalTok{)), saveat }\OperatorTok{=} \FloatTok{0.05}\NormalTok{)}
+\FunctionTok{plot}\NormalTok{(sol.t, sol[}\FloatTok{1}\NormalTok{, }\OperatorTok{:}\NormalTok{], sol[}\FloatTok{2}\NormalTok{, }\OperatorTok{:}\NormalTok{], lw }\OperatorTok{=} \FloatTok{2}\NormalTok{, label }\OperatorTok{=} \StringTok{"Curva solución"}\NormalTok{,}
+\NormalTok{    xlab }\OperatorTok{=}\NormalTok{ L}\StringTok{"t"}\NormalTok{, ylab }\OperatorTok{=}\NormalTok{ L}\StringTok{"x"}\NormalTok{, zlab }\OperatorTok{=}\NormalTok{ L}\StringTok{"y"}\NormalTok{, camera }\OperatorTok{=}\NormalTok{ (}\FloatTok{50}\NormalTok{, }\FloatTok{30}\NormalTok{))}
+\FunctionTok{plot!}\NormalTok{(}\FunctionTok{fill}\NormalTok{(}\FloatTok{0}\NormalTok{, }\FunctionTok{length}\NormalTok{(sol.t)), sol[}\FloatTok{1}\NormalTok{, }\OperatorTok{:}\NormalTok{], sol[}\FloatTok{2}\NormalTok{, }\OperatorTok{:}\NormalTok{], lw }\OperatorTok{=} \FloatTok{2}\NormalTok{, ls }\OperatorTok{=} \OperatorTok{:}\NormalTok{dash,}
+\NormalTok{    label }\OperatorTok{=} \StringTok{"Órbita (proyección)"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/mediabag/02-geometria-sistemas_files/figure-pdf/cell-19-output-1.pdf}}
+
+La curva solución es una hélice que avanza en el tiempo; su proyección
+sobre el plano \((x, y)\) ---eliminando el tiempo--- es la órbita
+cerrada del diagrama de fases.
 
 \end{tcolorbox}
 
@@ -674,48 +806,30 @@ En cada intersección, una circunferencia azul y una roja se cortan en
 
 \section{Ejercicios propuestos}\label{ejercicios-propuestos}
 
-\begin{exercise}[]\protect\hypertarget{exr-propuesto-forense}{}\label{exr-propuesto-forense}
+\begin{exercise}[]\protect\hypertarget{exr-propuesto-sir-fases}{}\label{exr-propuesto-sir-fases}
 
-\textbf{Medicina forense.} Un cadáver se encuentra a 30 °C en una
-habitación a 21 °C; una hora más tarde su temperatura es de 28 °C.
-Suponiendo la ley de enfriamiento de Newton y temperatura corporal
-normal de 36.5 °C, estimar la hora de la muerte.
-
-\end{exercise}
-
-\begin{exercise}[]\protect\hypertarget{exr-propuesto-mezclas}{}\label{exr-propuesto-mezclas}
-
-\textbf{Ingeniería química.} Un tanque contiene 500 L de salmuera con 5
-kg de sal. Entra agua con 0.02 kg/L de sal a 10 L/min y la mezcla sale
-al mismo ritmo. Plantear y resolver la EDO de la cantidad de sal
-\(y(t)\), y calcular la concentración a largo plazo.
+\textbf{Epidemiología.} Para el modelo SIR sin demografía
+\(S' = -0.3 SI\), \(I' = 0.3SI - 0.1I\) (con \(S+I+R=1\)), dibujar el
+campo vectorial y varias órbitas en el triángulo \(S, I \ge 0\),
+\(S + I \le 1\), y determinar el umbral de \(S\) por debajo del cual la
+epidemia remite.
 
 \end{exercise}
 
-\begin{exercise}[]\protect\hypertarget{exr-propuesto-hipoteca}{}\label{exr-propuesto-hipoteca}
+\begin{exercise}[]\protect\hypertarget{exr-propuesto-oscilador-fases}{}\label{exr-propuesto-oscilador-fases}
 
-\textbf{Finanzas.} Una hipoteca de 250 000 € a tipo continuo del 3.5 \%
-se amortiza con pagos continuos de \(p\) €/año: \(D' = 0.035D - p\).
-Calcular el pago \(p\) necesario para cancelar la deuda en 25 años y el
-interés total pagado.
-
-\end{exercise}
-
-\begin{exercise}[]\protect\hypertarget{exr-propuesto-paracaidista}{}\label{exr-propuesto-paracaidista}
-
-\textbf{Física.} Un paracaidista de 80 kg cae con rozamiento
-proporcional al cuadrado de la velocidad, \(mv' = mg - kv^2\) con
-\(k=0.27\) kg/m. Calcular la velocidad límite, resolver la ecuación
-(separable) y dibujar la línea de fases.
+\textbf{Física.} Dibujar el diagrama de fases del oscilador de Duffing
+sin forzamiento \(x' = v\), \(v' = x - x^3 - 0.2v\), calcular sus tres
+puntos de equilibrio y describir las cuencas de atracción.
 
 \end{exercise}
 
-\begin{exercise}[]\protect\hypertarget{exr-propuesto-bifurcacion}{}\label{exr-propuesto-bifurcacion}
+\begin{exercise}[]\protect\hypertarget{exr-propuesto-romeo}{}\label{exr-propuesto-romeo}
 
-\textbf{Ecología.} Estudiar las bifurcaciones del modelo de un insecto
-plaga \(y' = ry\left(1-\frac{y}{K}\right) - \frac{y^2}{1+y^2}\) con
-\(K=10\) fijo, en función de \(r>0\), localizando numéricamente los
-valores de \(r\) donde cambia el número de equilibrios.
+\textbf{Dinámica social.} En el modelo de Strogatz de una relación
+sentimental, \(R' = aR + bJ\), \(J' = cR + dJ\). Para
+\(a = 0, b = 1, c = -1, d = 0\) dibujar el diagrama de fases e
+interpretar el resultado.
 
 \end{exercise}
 

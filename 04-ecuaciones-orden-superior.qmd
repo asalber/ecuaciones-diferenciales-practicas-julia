@@ -1,7 +1,7 @@
 ---
 title: Ecuaciones lineales de orden superior al primero
 lang: es
-#jupyter: julia-1.11
+jupyter: julia-1.12
 ---
 
 Una ecuación diferencial lineal de orden $n$ con coeficientes constantes,

@@ -1,7 +1,7 @@
 ---
 title: Sistemas de ecuaciones diferenciales no lineales
 lang: es
-#jupyter: julia-1.11
+jupyter: julia-1.12
 ---
 
 En un sistema autónomo no lineal $\mathbf{x}' = F(\mathbf{x})$ el comportamiento cualitativo se estudia **linealizando** en torno a cada punto de equilibrio $\mathbf{x}^*$: cerca de él el sistema se comporta como $\mathbf{u}' = J(\mathbf{x}^*)\,\mathbf{u}$, donde $J$ es la **matriz jacobiana** de $F$. Los autovalores de $J(\mathbf{x}^*)$ clasifican el equilibrio (nodo, silla, foco, centro), siempre que ninguno tenga parte real nula (teorema de Hartman–Grobman). Además pueden aparecer fenómenos ausentes en los sistemas lineales: **ciclos límite**, órbitas homoclinas y bifurcaciones.

@@ -1,7 +1,7 @@
 ---
 title: Sistemas de ecuaciones diferenciales lineales
 lang: es
-#jupyter: julia-1.11
+jupyter: julia-1.12
 ---
 
 Un sistema lineal de primer orden puede escribirse en **forma matricial** como
