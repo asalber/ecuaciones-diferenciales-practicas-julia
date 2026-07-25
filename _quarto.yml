@@ -41,7 +41,7 @@ book:
     - index.qmd
     - 01-edos-primer-orden.qmd
     - 02-geometria-sistemas.qmd
-    # - 03-sistemas-lineales.qmd
+    - 03-sistemas-lineales.qmd
     # - 04-ecuaciones-orden-superior.qmd
     # - 05-sistemas-no-lineales.qmd
     # - 06-sistemas-dinamicos-discretos.qmd

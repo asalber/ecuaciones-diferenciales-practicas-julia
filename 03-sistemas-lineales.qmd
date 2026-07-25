@@ -23,8 +23,8 @@ Para el sistema completo, $\mathbf{x}(t) = e^{At}\mathbf{x}_0 + \int_0^t e^{A(t-
 
 Para la realización de esta práctica se requieren los siguientes paquetes:
 
-```{julia}
-using SymPy                  # Cálculo simbólico.
+```julia
+using SymPyPythonCall        # Cálculo simbólico.
 using LinearAlgebra          # Autovalores, autovectores y exponencial de matrices.
 using Plots                  # Dibujo de gráficas.
 using DifferentialEquations  # Resolución numérica.
@@ -51,12 +51,21 @@ a.  Calcular los autovalores y autovectores de $A$ y escribir la solución gener
     :::{.callout-tip collapse="true"}
     ## Solución
     ```{julia}
+    using LinearAlgebra
     A = [-0.04 0.01; 0.04 -0.04]
     λ = eigvals(A)
     ```
 
     ```{julia}
     V = eigvecs(A)
+    ```
+
+    Comprobación simbólica con `A.eigenvects()` de `SymPy`, que además de los autovalores da su multiplicidad y una base de autovectores para cada uno:
+
+    ```{julia}
+    using SymPyPythonCall
+    As = Sym[-4 1; 4 -4] / 100  # -0.04, 0.01, 0.04, -0.04
+    As.eigenvects()
     ```
 
     Los autovalores son $\lambda_1 = -0.06$ y $\lambda_2 = -0.02$, ambos negativos, con autovectores $\mathbf{v}_1 = (1, -2)$ y $\mathbf{v}_2 = (1, 2)$ (salvo normalización). La solución general es
@@ -79,12 +88,13 @@ a.  Resolver el problema de valores iniciales con la matriz exponencial y dibuja
     :::{.callout-tip collapse="true"}
     ## Solución
     ```{julia}
+    using Plots, LaTeXStrings
     x0 = [10.0, 0.0]
     x(t) = exp(A * t) * x0
     ts = 0:0.5:200
     X = hcat(x.(ts)...)
     plot(ts, X', lw = 2, label = [L"x_1" L"x_2"],
-        xlab = L"t \; (min)", ylab = "Sal (kg)")
+        xlab = "Tiempo (min)", ylab = "Sal (kg)")
     ```
 
     ```{julia}
@@ -95,6 +105,7 @@ a.  Resolver el problema de valores iniciales con la matriz exponencial y dibuja
     Comprobación simbólica de la exponencial matricial:
 
     ```{julia}
+    using SymPyPythonCall
     @syms t
     As = Sym[-1//25//4 1//100; 1//25 -1//25//1]  # -0.04, 0.01, 0.04, -0.04
     As = Sym[-4 1; 4 -4] / 100
@@ -136,6 +147,7 @@ a.  Justificar mediante los autovalores que el fármaco se elimina completamente
     :::{.callout-tip collapse="true"}
     ## Solución
     ```{julia}
+    using LinearAlgebra
     A = [-0.7 0.2; 0.5 -0.2]
     λ = eigvals(A)
     ```
@@ -143,10 +155,10 @@ a.  Justificar mediante los autovalores que el fármaco se elimina completamente
     Ambos autovalores son reales y negativos ($\lambda \approx -0.842$ y $\lambda \approx -0.0584$), luego $\mathbf{x}(t)\to\mathbf{0}$. A tiempos largos domina el autovalor de menor módulo, y la semivida terminal es
 
     ```{julia}
-    t12 = log(2) / abs(maximum(λ))
+    t12 = log(2) / minimum(abs.(λ))
     ```
 
-    unas **11.9 horas**: la fase lenta de eliminación está controlada por la redistribución desde los tejidos.
+    unas 14.78 horas. La fase lenta de eliminación está controlada por la redistribución desde los tejidos.
     :::
 
 a.  Resolver el sistema, dibujar ambas curvas en escala logarítmica (donde las fases de distribución y eliminación se ven como dos rectas) y calcular cuándo la concentración plasmática cae por debajo del umbral terapéutico de 50 mg.
@@ -154,11 +166,12 @@ a.  Resolver el sistema, dibujar ambas curvas en escala logarítmica (donde las 
     :::{.callout-tip collapse="true"}
     ## Solución
     ```{julia}
+    using Plots, LaTeXStrings
     x(t) = exp(A * t) * [500.0, 0.0]
     ts = 0.01:0.05:48
     X = hcat(x.(ts)...)
     plot(ts, X', yscale = :log10, lw = 2, label = ["Sangre" "Tejidos"],
-        xlab = L"t \; (h)", ylab = "Cantidad (mg)")
+        xlab = "Tiempo (h)", ylab = "Cantidad (mg)")
     hline!([50], ls = :dash, color = :black, label = "Umbral terapéutico")
     ```
 
@@ -188,6 +201,7 @@ La clasificación depende de los autovalores: reales del mismo signo → nodo; r
 :::{.callout-tip collapse="true"}
 ## Solución
 ```{julia}
+using LinearAlgebra
 matrices = [[-2.0 0; 0 -1], [1.0 2; 2 1], [-1.0 2; -2 -1], [0.0 2; -2 0]]
 titulos = ["Nodo estable", "Punto de silla", "Foco estable", "Centro"]
 [eigvals(A) for A in matrices]
@@ -196,6 +210,7 @@ titulos = ["Nodo estable", "Punto de silla", "Foco estable", "Centro"]
 Los autovalores son, respectivamente: $\{-2,-1\}$ (nodo estable), $\{-1, 3\}$ (silla), $\{-1\pm 2i\}$ (foco estable) y $\{\pm 2i\}$ (centro). Dibujamos los cuatro diagramas de fases:
 
 ```{julia}
+using Plots, LaTeXStrings, DifferentialEquations
 plots = []
 for (A, tit) in zip(matrices, titulos)
     plt = plot(title = tit, legend = false, xlims = (-3, 3), ylims = (-3, 3),
@@ -234,6 +249,7 @@ a.  Resolver numéricamente el sistema durante 5 días y dibujar las temperatura
     :::{.callout-tip collapse="true"}
     ## Solución
     ```{julia}
+    using Plots, LaTeXStrings, DifferentialEquations
     A = [-0.3 0.1; 0.1 -0.2]
     Te(t) = 10 + 8sin(2π * t / 24)
     b(t) = [2 + 0.2 * Te(t), 0.1 * Te(t)]
@@ -277,6 +293,7 @@ Para el sistema del foco estable $A_3$ del @exr-clasificacion-fases, resolver ha
 :::{.callout-tip collapse="true"}
 ## Solución
 ```{julia}
+using Plots, LaTeXStrings, DifferentialEquations
 A = [-1.0 2; -2 -1]
 sol_fwd = solve(ODEProblem((u, p, t) -> A * u, [1.0, 1.0], (0.0, 5.0)), saveat = 0.01)
 sol_bwd = solve(ODEProblem((u, p, t) -> A * u, [1.0, 1.0], (0.0, -1.5)), saveat = 0.01)
