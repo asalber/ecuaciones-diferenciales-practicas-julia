@@ -1,5 +1,5 @@
 ---
-title: "Ecuaciones en derivadas parciales de segundo orden. Método de separación de variables"
+title: "Ecuaciones en derivadas parciales de segundo orden"
 lang: es
 jupyter: julia-1.12
 ---

@@ -70,7 +70,7 @@ a.  Construir la función de Green $G(x, \xi)$ resolviendo $-G'' = \delta(x-\xi)
     @syms x xi a b
     # Continuidad en x = xi:  a*xi = b*(1 - xi)
     # Salto de la derivada:   (-b) - a = -1
-    coef = solve([a*xi - b*(1 - xi), -b - a + 1], [a, b])
+    coef = solve([a*xi - b*(1 - xi), -b - a + 1], [a, b]);
     ```
 
     De donde $a = 1-\xi$, $b = \xi$, y la función de Green es

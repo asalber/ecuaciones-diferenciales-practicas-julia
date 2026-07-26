@@ -49,7 +49,7 @@ book:
     - 08-edp-segundo-orden.qmd
     - 09-funcion-green.qmd
     - 10-caos.qmd
-    # - 11-aplicaciones.qmd
+    - 11-aplicaciones.qmd
 
 format:
   html:
@@ -65,6 +65,7 @@ format:
   pdf:
     documentclass: scrreport
     papersize: a4
+    code-overflow: wrap
     template-partials:
       - before-body.tex
     titlegraphic: img/logos/sticker.png

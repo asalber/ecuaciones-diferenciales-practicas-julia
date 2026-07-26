@@ -10,15 +10,34 @@ Este capítulo final reúne problemas **integradores** que combinan las técnica
 
 Para la realización de esta práctica se requieren los siguientes paquetes:
 
-```{julia}
-using DifferentialEquations  # Resolución numérica de EDO y sistemas.
+```julia
 using Plots                  # Dibujo de gráficas.
-using SymPy                  # Cálculo simbólico.
+using LaTeXStrings           # Código LaTeX en los gráficos.
+using SymPyPythonCall        # Cálculo simbólico.
 using LinearAlgebra          # Álgebra matricial.
+using DifferentialEquations  # Resolución numérica de EDO y sistemas.
+using DiffEqCallbacks        # Callbacks para discontinuidades en EDO.
 using SpecialFunctions       # Función de error (erf).
 using Statistics             # Medias y desviaciones.
-using LaTeXStrings           # Código LaTeX en los gráficos.
 ```
+
+```{julia}
+#| echo: false
+#| include: false
+packages = ["SymPyPythonCall", "Plots", "LaTeXStrings", "LinearAlgebra", "DifferentialEquations", "DiffEqCallbacks", "SpecialFunctions", "Statistics",]
+```
+
+```{julia}
+#| echo: false
+#| include: false
+using Plots
+# Plots y Makie generan además una representación text/html con la imagen en base64
+# en una sola línea; con figuras grandes esa línea desborda la pila del conversor
+# de Quarto a Markdown. La desactivamos y dejamos solo image/png.
+Base.showable(::MIME"text/html", ::Plots.Plot) = false
+```
+
+{{< include _versiones-paquetes.qmd >}}
 
 :::{#exr-sir-vacunacion}
 **Epidemiología: modelo SIR con vacunación.** La propagación de una enfermedad infecciosa en una población cerrada de tamaño $N$ se describe con el modelo SIR, donde $S$, $I$ y $R$ son las fracciones de población susceptible, infectada y recuperada:
@@ -53,6 +72,8 @@ a.  Simular el brote partiendo de un único infectado ($I_0 = 10^{-3}$) sin vacu
     :::{.callout-tip collapse="true"}
     ## Solución
     ```{julia}
+    using Plots, LaTeXStrings, DifferentialEquations
+
     function sir!(du, u, p, t)
         S, I, R = u
         β, γ = p
@@ -104,6 +125,7 @@ a.  Simular 5 días de tratamiento y observar la acumulación hasta el estado es
     :::{.callout-tip collapse="true"}
     ## Solución
     ```{julia}
+    using Plots, LaTeXStrings, DifferentialEquations, DiffEqCallbacks
     t_medio = 6.0
     k = log(2) / t_medio
     C_D, τ = 10.0, 8.0
@@ -158,6 +180,7 @@ a.  Obtener la solución analítica y verificarla simbólicamente.
     :::{.callout-tip collapse="true"}
     ## Solución
     ```{julia}
+    using SymPyPythonCall
     @syms x m L θb
     θ = θb * cosh(m*(L - x)) / cosh(m*L)
     residuo = simplify(diff(θ, x, 2) - m^2 * θ)
@@ -172,6 +195,8 @@ a.  Para una aleta rectangular delgada de espesor $t = 2$ mm y anchura $w = 3$ c
     :::{.callout-tip collapse="true"}
     ## Solución
     ```{julia}
+    using Plots, LaTeXStrings
+
     kal, h = 200.0, 25.0
     Lf, tf, wf = 0.05, 0.002, 0.03
     Ac = wf * tf                     # área de sección
@@ -207,6 +232,7 @@ a.  Estimar el precio de la opción simulando $10^6$ trayectorias y descontando 
     :::{.callout-tip collapse="true"}
     ## Solución
     ```{julia}
+    using Statistics
     S0, K, r, σ, T = 100.0, 105.0, 0.03, 0.25, 1.0
     Nsim = 1_000_000
 
@@ -226,6 +252,7 @@ a.  Comparar con la fórmula cerrada de Black–Scholes.
     :::{.callout-tip collapse="true"}
     ## Solución
     ```{julia}
+    using SpecialFunctions
     Φ(z) = 0.5 * (1 + erf(z / sqrt(2)))     # función de distribución normal
     d1 = (log(S0/K) + (r + σ^2/2)*T) / (σ*sqrt(T))
     d2 = d1 - σ*sqrt(T)
@@ -264,6 +291,7 @@ a.  Con expectativas adaptativas $q' = \mu(p - q)$ y demanda que depende de la t
     :::{.callout-tip collapse="true"}
     ## Solución
     ```{julia}
+    using LinearAlgebra, Plots, LaTeXStrings, DifferentialEquations
     μ = 0.8
     function mercado!(du, u, pr, t)
         p, q = u

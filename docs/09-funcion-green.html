@@ -418,7 +418,7 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./08-edp-segundo-orden.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Ecuaciones en derivadas parciales de segundo orden. Método de separación de variables</span></span></a>
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Ecuaciones en derivadas parciales de segundo orden</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -431,6 +431,12 @@ window.Quarto = {
   <div class="sidebar-item-container"> 
   <a href="./10-caos.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Introducción a la Teoría del caos</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11-aplicaciones.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Aplicaciones en Ciencias e Ingeniería</span></span></a>
   </div>
 </li>
     </ul>
@@ -490,7 +496,7 @@ y(x) = \int G(x, \xi)\,f(\xi)\,d\xi.
 </div>
 <div id="callout-1" class="callout-1-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<div id="04474d72" class="cell" data-execution_count="4">
+<div id="da025036" class="cell" data-execution_count="3">
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="4">
 <div>
 <figure class="figure">
@@ -499,7 +505,7 @@ y(x) = \int G(x, \xi)\,f(\xi)\,d\xi.
 </div>
 </div>
 </div>
-<div id="c56e7e6c" class="cell" data-execution_count="7">
+<div id="db3d6616" class="cell" data-execution_count="6">
 <div class="cell-output cell-output-stdout">
 <div class="ansi-escaped-output">
 <pre><span class="ansi-green-fg ansi-bold">Status</span> `~/.julia/environments/v1.12/Project.toml`
@@ -554,21 +560,18 @@ y(x) = \int G(x, \xi)\,f(\xi)\,d\xi.
 <div id="callout-3" class="callout-3-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>Buscamos <span class="math inline">\(G\)</span> lineal a cada lado de <span class="math inline">\(\xi\)</span>: <span class="math inline">\(G = a x\)</span> para <span class="math inline">\(x&lt;\xi\)</span> (cumple <span class="math inline">\(G(0)=0\)</span>) y <span class="math inline">\(G = b(1-x)\)</span> para <span class="math inline">\(x&gt;\xi\)</span> (cumple <span class="math inline">\(G(1)=0\)</span>). Continuidad y salto de la derivada:</p>
-<div id="8a481903" class="cell" data-execution_count="9">
+<div id="baa5193a" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">SymPyPythonCall</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="pp">@syms</span> x xi a b</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Continuidad en x = xi:  a*xi = b*(1 - xi)</span></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Salto de la derivada:   (-b) - a = -1</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>coef <span class="op">=</span> <span class="fu">solve</span>([a<span class="op">*</span>xi <span class="op">-</span> <span class="fu">b*</span>(<span class="fl">1</span> <span class="op">-</span> xi), <span class="op">-</span>b <span class="op">-</span> a <span class="op">+</span> <span class="fl">1</span>], [a, b])</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="9">
-<p><span class="math display">\[\begin{equation*}\begin{cases}b &amp; \text{=&gt;} &amp;\xi\\a &amp; \text{=&gt;} &amp;1 - \xi\\\end{cases}\end{equation*}\]</span></p>
-</div>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>coef <span class="op">=</span> <span class="fu">solve</span>([a<span class="op">*</span>xi <span class="op">-</span> <span class="fu">b*</span>(<span class="fl">1</span> <span class="op">-</span> xi), <span class="op">-</span>b <span class="op">-</span> a <span class="op">+</span> <span class="fl">1</span>], [a, b]);</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>De donde <span class="math inline">\(a = 1-\xi\)</span>, <span class="math inline">\(b = \xi\)</span>, y la función de Green es</p>
 <p><span class="math display">\[
 G(x, \xi) = \begin{cases} x(1-\xi) &amp; 0\le x \le \xi \\ \xi(1-x) &amp; \xi \le x \le 1.\end{cases}
 \]</span></p>
-<div id="813e3c66" class="cell" data-execution_count="10">
+<div id="92c9b8a4" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Plots</span>, <span class="bu">LaTeXStrings</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">G</span>(x, ξ) <span class="op">=</span> x <span class="op">&lt;=</span> ξ ? <span class="fu">x*</span>(<span class="fl">1</span><span class="op">-</span>ξ) <span class="op">:</span> <span class="fu">ξ*</span>(<span class="fl">1</span><span class="op">-</span>x)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>ξs <span class="op">=</span> [<span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>]</span>
@@ -602,7 +605,7 @@ G(x, \xi) = \begin{cases} x(1-\xi) &amp; 0\le x \le \xi \\ \xi(1-x) &amp; \xi \l
 </div>
 <div id="callout-4" class="callout-4-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<div id="93fa433d" class="cell" data-execution_count="11">
+<div id="851e4250" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">QuadGK</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">y</span>(x) <span class="op">=</span> <span class="fu">quadgk</span>(ξ <span class="op">-&gt;</span> <span class="fu">G</span>(x, ξ) <span class="op">*</span> <span class="fl">1.0</span>, <span class="fl">0</span>, <span class="fl">1</span>)[<span class="fl">1</span>]</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">yexacta</span>(x) <span class="op">=</span> <span class="fu">x*</span>(<span class="fl">1</span><span class="op">-</span>x)<span class="op">/</span><span class="fl">2</span></span>
@@ -634,7 +637,7 @@ G(x, \xi) = \begin{cases} x(1-\xi) &amp; 0\le x \le \xi \\ \xi(1-x) &amp; \xi \l
 </div>
 <div id="callout-5" class="callout-5-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<div id="fa9d6a0e" class="cell" data-execution_count="12">
+<div id="2bc8991d" class="cell" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">f</span>(x) <span class="op">=</span> <span class="fu">exp</span>(<span class="fu">-50*</span>(x <span class="op">-</span> <span class="fl">0.2</span>)<span class="op">^</span><span class="fl">2</span>)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">yG</span>(x) <span class="op">=</span> <span class="fu">quadgk</span>(ξ <span class="op">-&gt;</span> <span class="fu">G</span>(x, ξ) <span class="op">*</span> <span class="fu">f</span>(ξ), <span class="fl">0</span>, <span class="fl">1</span>)[<span class="fl">1</span>]</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(yG, <span class="fl">0</span>, <span class="fl">1</span>, lw <span class="op">=</span> <span class="fl">2</span>, label <span class="op">=</span> <span class="st">"Deflexión"</span>, xlab <span class="op">=</span> L<span class="st">"x"</span>, ylab <span class="op">=</span> L<span class="st">"y"</span>)</span>
@@ -674,7 +677,7 @@ G(x, \xi) = \begin{cases}
 </div>
 <div id="callout-6" class="callout-6-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<div id="86f6749d" class="cell" data-execution_count="13">
+<div id="ad84e16f" class="cell" data-execution_count="12">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">QuadGK</span>, <span class="bu">Plots</span>, <span class="bu">LaTeXStrings</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">Gviga</span>(x, ξ)</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> x <span class="op">&lt;=</span> ξ</span>
@@ -736,7 +739,7 @@ G(x, \xi) = \sum_{n=1}^{\infty} \frac{\phi_n(x)\,\phi_n(\xi)}{\lambda_n}
 </div>
 <div id="callout-8" class="callout-8-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<div id="18e0f9ca" class="cell" data-execution_count="14">
+<div id="492a68a8" class="cell" data-execution_count="13">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Plots</span>, <span class="bu">LaTeXStrings</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">Gserie</span>(x, ξ; N <span class="op">=</span> <span class="fl">100</span>) <span class="op">=</span> <span class="fu">sum</span>(<span class="fl">2</span><span class="fu">*sin</span>(n<span class="op">*</span><span class="cn">π</span><span class="op">*</span>x)<span class="fu">*sin</span>(n<span class="op">*</span><span class="cn">π</span><span class="op">*</span>ξ)<span class="op">/</span>(n<span class="op">*</span><span class="cn">π</span>)<span class="op">^</span><span class="fl">2</span> <span class="cf">for</span> n <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span>N)</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">Gexacta</span>(x, ξ) <span class="op">=</span> x <span class="op">&lt;=</span> ξ ? <span class="fu">x*</span>(<span class="fl">1</span><span class="op">-</span>ξ) <span class="op">:</span> <span class="fu">ξ*</span>(<span class="fl">1</span><span class="op">-</span>x)</span>
@@ -772,7 +775,7 @@ G(x, \xi) = \sum_{n=1}^{\infty} \frac{\phi_n(x)\,\phi_n(\xi)}{\lambda_n}
 </div>
 <div id="callout-9" class="callout-9-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<div id="eb9d2f4d" class="cell" data-execution_count="15">
+<div id="2cd8e824" class="cell" data-execution_count="14">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">QuadGK</span>, <span class="bu">Plots</span>, <span class="bu">LaTeXStrings</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">G</span>(x, ξ) <span class="op">=</span> x <span class="op">&lt;=</span> ξ ? <span class="fu">x*</span>(<span class="fl">1</span><span class="op">-</span>ξ) <span class="op">:</span> <span class="fu">ξ*</span>(<span class="fl">1</span><span class="op">-</span>x)</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">f</span>(x) <span class="op">=</span> <span class="fl">3</span><span class="fu">*exp</span>(<span class="fu">-100*</span>(x <span class="op">-</span> <span class="fl">0.7</span>)<span class="op">^</span><span class="fl">2</span>)</span>
@@ -1230,8 +1233,8 @@ G(x, \xi) = \sum_{n=1}^{\infty} \frac{\phi_n(x)\,\phi_n(\xi)}{\lambda_n}
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./08-edp-segundo-orden.html" class="pagination-link" aria-label="Ecuaciones en derivadas parciales de segundo orden. Método de separación de variables">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Ecuaciones en derivadas parciales de segundo orden. Método de separación de variables</span></span>
+      <a href="./08-edp-segundo-orden.html" class="pagination-link" aria-label="Ecuaciones en derivadas parciales de segundo orden">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Ecuaciones en derivadas parciales de segundo orden</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
