@@ -22,6 +22,24 @@ using Plots             # Dibujo de gráficas y animaciones.
 using LaTeXStrings      # Código LaTeX en los gráficos.
 ```
 
+```{julia}
+#| echo: false
+#| include: false
+packages = ["SymPyPythonCall", "Plots", "LaTeXStrings"]
+```
+
+```{julia}
+#| echo: false
+#| include: false
+using Plots
+# Plots y Makie generan además una representación text/html con la imagen en base64
+# en una sola línea; con figuras grandes esa línea desborda la pila del conversor
+# de Quarto a Markdown. La desactivamos y dejamos solo image/png.
+Base.showable(::MIME"text/html", ::Plots.Plot) = false
+```
+
+{{< include _versiones-paquetes.qmd >}}
+
 :::{#exr-transporte-contaminante}
 **Transporte de un contaminante en un río (ingeniería ambiental).** Un vertido de contaminante en un río de corriente uniforme $c = 2$ m/s satisface la ecuación de transporte
 

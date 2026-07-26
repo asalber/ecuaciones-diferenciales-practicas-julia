@@ -16,13 +16,31 @@ El **método de separación de variables** busca soluciones de la forma $u(x,t) 
 
 Para la realización de esta práctica se requieren los siguientes paquetes:
 
-```{julia}
-using SymPy                  # Cálculo simbólico y coeficientes de Fourier.
+```julia
+using SymPyPythonCall        # Cálculo simbólico y coeficientes de Fourier.
 using Plots                  # Dibujo de gráficas.
-using DifferentialEquations  # Resolución numérica (método de líneas).
 using LaTeXStrings           # Código LaTeX en los gráficos.
+using DifferentialEquations  # Resolución numérica (método de líneas).
 using SpecialFunctions       # Función de error (erf) para Black–Scholes.
 ```
+
+```{julia}
+#| echo: false
+#| include: false
+packages = ["SymPyPythonCall", "Plots", "LaTeXStrings", "DifferentialEquations", "SpecialFunctions"]
+```
+
+```{julia}
+#| echo: false
+#| include: false
+using Plots
+# Plots y Makie generan además una representación text/html con la imagen en base64
+# en una sola línea; con figuras grandes esa línea desborda la pila del conversor
+# de Quarto a Markdown. La desactivamos y dejamos solo image/png.
+Base.showable(::MIME"text/html", ::Plots.Plot) = false
+```
+
+{{< include _versiones-paquetes.qmd >}}
 
 :::{#exr-calor-barra}
 **Ecuación del calor: enfriamiento de una barra metálica.** Una barra de aluminio de longitud $L = 1$ m, con difusividad térmica $\alpha = 0.01$ m²/s, tiene sus extremos en contacto con hielo ($u(0,t) = u(L,t) = 0$ °C) y una temperatura inicial $u(x, 0) = 100\sin(\pi x)$ °C.
@@ -45,6 +63,7 @@ a.  Aplicar separación de variables para hallar la solución analítica.
     Verificación simbólica:
 
     ```{julia}
+    using SymPyPythonCall
     @syms x t
     α = Sym(1)/100
     u = 100 * sin(PI * x) * exp(-α * PI^2 * t)
@@ -59,6 +78,7 @@ a.  Dibujar la evolución de la temperatura y calcular la constante de tiempo de
     :::{.callout-tip collapse="true"}
     ## Solución
     ```{julia}
+    using Plots, LaTeXStrings
     usol(x, t) = 100 * sin(π * x) * exp(-0.01 * π^2 * t)
     plt = plot(xlab = L"x \; (m)", ylab = "Temperatura (°C)")
     for τ in (0, 5, 15, 30, 60)
@@ -88,6 +108,7 @@ a.  Calcular los coeficientes de Fourier $b_n$ del desarrollo en senos del dato 
     :::{.callout-tip collapse="true"}
     ## Solución
     ```{julia}
+    using SymPyPythonCall
     @syms x n::(positive, integer)
     b(n) = 2 * (integrate(2x * sin(n*PI*x), (x, 0, Sym(1)/2)) +
                 integrate(2*(1-x) * sin(n*PI*x), (x, Sym(1)/2, 1)))
@@ -110,6 +131,7 @@ a.  Dibujar la solución truncada a 20 términos en varios instantes y observar 
     :::{.callout-tip collapse="true"}
     ## Solución
     ```{julia}
+    using Plots, LaTeXStrings
     bnf(k) = 8 * sin(k*π/2) / (k^2 * π^2)
     usol(x, t; N = 20) = sum(bnf(k) * sin(k*π*x) * exp(-0.01*(k*π)^2*t) for k in 1:2:N)
     plt = plot(xlab = L"x", ylab = "Temperatura")
@@ -134,6 +156,7 @@ El *método de líneas* aproxima $u_{xx}$ con diferencias finitas centradas, $u_
 :::{.callout-tip collapse="true"}
 ## Solución
 ```{julia}
+using Plots, LaTeXStrings, DifferentialEquations
 N = 50
 xs = range(0, 1, length = N)
 dx = step(xs)
@@ -186,6 +209,7 @@ a.  Escribir la solución por separación de variables (serie de Fourier de seno
     $$
 
     ```{julia}
+    using Plots, LaTeXStrings
     bnf(k) = 8 * sin(k*π/2) / (k^2 * π^2)
     ucuerda(x, t; N = 40) = sum(bnf(k)*sin(k*π*x)*cos(k*π*t) for k in 1:2:N)
     plt = plot(xlab = L"x", ylab = L"u", ylims = (-1, 1))
@@ -225,6 +249,7 @@ a.  Resolver por separación de variables.
     La solución es $u(x, y) = 100\,\dfrac{\sinh(\pi y)}{\sinh(\pi)}\,\sin(\pi x)$. Verificación:
 
     ```{julia}
+    using SymPyPythonCall
     @syms x y
     u = 100 * sinh(PI*y) / sinh(PI) * sin(PI*x)
     simplify(diff(u, x, 2) + diff(u, y, 2))
@@ -238,6 +263,7 @@ a.  Dibujar la temperatura de la placa como mapa de color y como superficie.
     :::{.callout-tip collapse="true"}
     ## Solución
     ```{julia}
+    using Plots, LaTeXStrings
     usol(x, y) = 100 * sinh(π*y) / sinh(π) * sin(π*x)
     xs = ys = range(0, 1, length = 100)
     heatmap(xs, ys, (x, y) -> usol(x, y), xlab = L"x", ylab = L"y",
@@ -272,6 +298,7 @@ a.  Implementar la fórmula de Black–Scholes y valorar una opción call con $S
     :::{.callout-tip collapse="true"}
     ## Solución
     ```{julia}
+    using SymPyPythonCall, SpecialFunctions
     Φ(x) = (1 + erf(x / sqrt(2))) / 2   # erf disponible vía SymPy
     function black_scholes_call(S, K, r, σ, T)
         d1 = (log(S/K) + (r + σ^2/2)*T) / (σ*sqrt(T))
