@@ -29,7 +29,6 @@ using LaTeXStrings     # Código LaTeX en los gráficos.
 using QuadGK           # Integración numérica.
 ```
 
-
 ```{julia}
 #| echo: false
 #| include: false

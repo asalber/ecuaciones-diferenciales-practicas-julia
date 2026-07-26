@@ -1,5 +1,5 @@
 ---
-title: "Dependencia de los datos. Introducción a la Teoría del caos"
+title: "Introducción a la Teoría del caos"
 lang: es
 jupyter: julia-1.12
 ---
@@ -10,11 +10,11 @@ Los sistemas dinámicos pueden presentar **dependencia sensible de las condicion
 
 Para la realización de esta práctica se requieren los siguientes paquetes:
 
-```{julia}
+```julia
 using Plots                  # Dibujo de gráficas.
-using DifferentialEquations  # Resolución numérica.
 using LinearAlgebra          # Normas de vectores.
 using LaTeXStrings           # Código LaTeX en los gráficos.
+using DifferentialEquations  # Resolución numérica.
 using Statistics             # Medias y ajustes.
 ```
 
@@ -36,12 +36,15 @@ a.  Resolver el sistema y dibujar el atractor de Lorenz en el espacio de fases t
     :::{.callout-tip collapse="true"}
     ## Solución
     ```{julia}
+    using Plots, LaTeXStrings, DifferentialEquations
+
     function lorenz!(du, u, p, t)
         σ, ρ, β = p
         du[1] = σ*(u[2] - u[1])
         du[2] = u[1]*(ρ - u[3]) - u[2]
         du[3] = u[1]*u[2] - β*u[3]
     end
+
     p = (10.0, 28.0, 8/3)
     sol = solve(ODEProblem(lorenz!, [1.0, 1.0, 1.0], (0.0, 60.0), p),
                 saveat = 0.005)
@@ -82,6 +85,7 @@ a.  Estimar el **exponente de Lyapunov** dominante midiendo cómo crece la separ
     :::{.callout-tip collapse="true"}
     ## Solución
     ```{julia}
+    using LinearAlgebra
     δ = [norm(sol2.u[i] - sol1.u[i]) for i in eachindex(sol1.t)]
     ventana = findall(t -> 2 < t < 20, sol1.t)   # fase de crecimiento exponencial
     ts = sol1.t[ventana]; logδ = log.(δ[ventana])
@@ -107,6 +111,8 @@ Para cada $r$, iterar descartando el transitorio y acumular $\ln|f'(x_n)| = \ln|
 :::{.callout-tip collapse="true"}
 ## Solución
 ```{julia}
+using Plots, LaTeXStrings
+
 function lyapunov_log(r; ntrans = 1000, n = 10000)
     x = 0.5
     for _ in 1:ntrans; x = r*x*(1-x); end
@@ -117,6 +123,7 @@ function lyapunov_log(r; ntrans = 1000, n = 10000)
     end
     s / n
 end
+
 rs = range(2.8, 4.0, length = 1000)
 λs = lyapunov_log.(rs)
 plot(rs, λs, lw = 1, legend = false, xlab = L"r", ylab = L"\lambda",
@@ -134,6 +141,7 @@ El exponente es negativo mientras la órbita es periódica y toca el cero en cad
 :::{.callout-tip collapse="true"}
 ## Solución
 ```{julia}
+using Plots, LaTeXStrings, DifferentialEquations
 # Sistema lineal estable: las trayectorias vecinas se juntan.
 A = [-0.5 1.0; -1.0 -0.5]
 sol_a = solve(ODEProblem((u,p,t)->A*u, [1.0, 0.0], (0.0, 20.0)), saveat=0.05)
@@ -164,12 +172,15 @@ Para la sección de Poincaré, recorrer la solución densamente muestreada y reg
 :::{.callout-tip collapse="true"}
 ## Solución
 ```{julia}
+using Plots, LaTeXStrings, DifferentialEquations
+
 function rossler!(du, u, p, t)
     a, b, c = p
     du[1] = -u[2] - u[3]
     du[2] = u[1] + a*u[2]
     du[3] = b + u[3]*(u[1] - c)
 end
+
 sol = solve(ODEProblem(rossler!, [1.0, 1.0, 1.0], (0.0, 400.0), (0.2, 0.2, 5.7)),
             saveat = 0.02)
 p1 = plot(sol[1, :], sol[2, :], sol[3, :], lw = 0.4, legend = false,

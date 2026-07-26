@@ -48,7 +48,7 @@ book:
     - 07-edp-primer-orden.qmd
     - 08-edp-segundo-orden.qmd
     - 09-funcion-green.qmd
-    # - 10-caos.qmd
+    - 10-caos.qmd
     # - 11-aplicaciones.qmd
 
 format:
