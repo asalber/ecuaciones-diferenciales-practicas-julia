@@ -10,16 +10,16 @@ $$
 u_t + c\,u_x = 0,
 $$
 
-cuya solución es $u(x,t) = u_0(x - ct)$: el perfil inicial $u_0$ se propaga sin deformarse con velocidad $c$. El **método de las características** reduce una EDP de primer orden a un sistema de EDOs a lo largo de curvas privilegiadas del plano $(x, t)$.
+cuya solución es $u(x,t) = u_0(x - ct)$. El perfil inicial $u_0$ se propaga sin deformarse con velocidad $c$. El **método de las características** reduce una EDP de primer orden a un sistema de EDOs a lo largo de curvas privilegiadas del plano $(x, t)$.
 
 ## Ejercicios resueltos
 
 Para la realización de esta práctica se requieren los siguientes paquetes:
 
-```{julia}
-using SymPy         # Cálculo simbólico y resolución de EDPs.
-using Plots         # Dibujo de gráficas y animaciones.
-using LaTeXStrings  # Código LaTeX en los gráficos.
+```julia
+using SymPyPythonCall   # Cálculo simbólico y resolución de EDPs.
+using Plots             # Dibujo de gráficas y animaciones.
+using LaTeXStrings      # Código LaTeX en los gráficos.
 ```
 
 :::{#exr-transporte-contaminante}
@@ -41,19 +41,22 @@ a.  Verificar simbólicamente que $u(x,t) = u_0(x - 2t)$ es solución.
     :::{.callout-tip collapse="true"}
     ## Solución
     ```{julia}
+    using SymPyPythonCall
     @syms x t
     u = exp(-(x - 2t - 5)^2)
     simplify(diff(u, t) + 2 * diff(u, x))
     ```
 
-    El resultado es 0: la onda viajera $u_0(x - ct)$ resuelve la ecuación de transporte, como predice el método de las características (las rectas $x - 2t = \text{cte}$).
+    El resultado es 0. La onda viajera $u_0(x - ct)$ resuelve la ecuación de transporte, como predice el método de las características (las rectas $x - 2t = \text{cte}$).
     :::
 
 a.  Dibujar el perfil de concentración en los instantes $t = 0, 2, 4$ s y una animación del transporte.
 
     :::{.callout-tip collapse="true"}
     ## Solución
+    
     ```{julia}
+    using Plots, LaTeXStrings
     u0(ξ) = exp(-(ξ - 5)^2)
     usol(x, t) = u0(x - 2t)
     plt = plot(xlab = L"x \; (m)", ylab = "Concentración")
@@ -95,6 +98,7 @@ a.  Escribir las ecuaciones de las características y resolverlas para hallar la
     A lo largo de las características $\frac{dx}{dt} = x$, es decir $x(t) = x_0 e^{t}$, la solución es constante: $u = u_0(x_0) = u_0(x e^{-t})$. Verificamos:
 
     ```{julia}
+    using SymPyPythonCall
     @syms x t
     u = 1 / (1 + (x * exp(-t))^2)
     simplify(diff(u, t) + x * diff(u, x))
@@ -108,6 +112,7 @@ a.  Dibujar las curvas características en el plano $(x, t)$ y el perfil de $u$ 
     :::{.callout-tip collapse="true"}
     ## Solución
     ```{julia}
+    using Plots, LaTeXStrings
     plt1 = plot(xlab = L"x", ylab = L"t", title = "Características  x = x_0 e^t",
                 legend = false, ylims = (0, 2))
     for x0 in -3:0.5:3
@@ -148,6 +153,7 @@ a.  Para el dato inicial decreciente $u_0(x) = \begin{cases} 1 & x < 0 \\ 1 - x 
     :::{.callout-tip collapse="true"}
     ## Solución
     ```{julia}
+    using Plots, LaTeXStrings
     u0(x) = x < 0 ? 1.0 : (x <= 1 ? 1 - x : 0.0)
     plt = plot(xlab = L"x", ylab = L"t", legend = false, ylims = (0, 2),
                title = "Características de Burgers")
@@ -171,6 +177,7 @@ a.  Resolver numéricamente la ecuación de Burgers con un esquema conservativo 
     ## Solución
     ```{julia}
     f(u) = 0.5u^2
+
     # Flujo de Godunov para la ecuación de Burgers (f convexa).
     function flujo(uL, uR)
         if uL <= uR                    # onda de rarefacción
@@ -179,6 +186,7 @@ a.  Resolver numéricamente la ecuación de Burgers con un esquema conservativo 
             max(f(uL), f(uR))
         end
     end
+    
     function godunov_burgers(u0f, xs, T; cfl = 0.4)
         dx = xs[2] - xs[1]
         u = u0f.(xs)
@@ -192,6 +200,7 @@ a.  Resolver numéricamente la ecuación de Burgers con un esquema conservativo 
         end
         u
     end
+
     xs = range(-1, 3, length = 400)
     plt = plot(xlab = L"x", ylab = L"u", title = "Onda de choque")
     for T in (0.0, 0.5, 1.0, 1.5)
@@ -230,12 +239,14 @@ $$
 Verificación:
 
 ```{julia}
+using SymPyPythonCall
 @syms x t
 u = exp(-t) * cos(x - 3t)
 simplify(diff(u, t) + 3 * diff(u, x) + u)
 ```
 
 ```{julia}
+using Plots, LaTeXStrings
 usol(x, t) = exp(-t) * cos(x - 3t)
 plt = plot(xlab = L"x", ylab = L"u")
 for τ in (0, 0.5, 1, 2)

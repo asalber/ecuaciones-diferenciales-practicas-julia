@@ -45,7 +45,7 @@ book:
     - 04-ecuaciones-orden-superior.qmd
     - 05-sistemas-no-lineales.qmd
     - 06-sistemas-dinamicos-discretos.qmd
-    # - 07-edp-primer-orden.qmd
+    - 07-edp-primer-orden.qmd
     # - 08-edp-segundo-orden.qmd
     # - 09-funcion-green.qmd
     # - 10-caos.qmd
