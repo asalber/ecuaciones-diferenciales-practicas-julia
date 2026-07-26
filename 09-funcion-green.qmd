@@ -22,12 +22,31 @@ La función de Green codifica toda la información del operador y las condicione
 
 Para la realización de esta práctica se requieren los siguientes paquetes:
 
-```{julia}
-using SymPy         # Cálculo simbólico e integración.
-using Plots         # Dibujo de gráficas.
-using LaTeXStrings  # Código LaTeX en los gráficos.
-using QuadGK        # Integración numérica.
+```julia
+using SymPyPythonCall  # Cálculo simbólico e integración.
+using Plots            # Dibujo de gráficas.
+using LaTeXStrings     # Código LaTeX en los gráficos.
+using QuadGK           # Integración numérica.
 ```
+
+
+```{julia}
+#| echo: false
+#| include: false
+packages = ["SymPyPythonCall", "Plots", "LaTeXStrings", "QuadGK"]
+```
+
+```{julia}
+#| echo: false
+#| include: false
+using Plots
+# Plots y Makie generan además una representación text/html con la imagen en base64
+# en una sola línea; con figuras grandes esa línea desborda la pila del conversor
+# de Quarto a Markdown. La desactivamos y dejamos solo image/png.
+Base.showable(::MIME"text/html", ::Plots.Plot) = false
+```
+
+{{< include _versiones-paquetes.qmd >}}
 
 :::{#exr-green-cuerda}
 **Función de Green de una cuerda elástica.** La deflexión $y(x)$ de una cuerda tensa de longitud 1, fija en los extremos y sometida a una densidad de carga $f(x)$, satisface
@@ -48,6 +67,7 @@ a.  Construir la función de Green $G(x, \xi)$ resolviendo $-G'' = \delta(x-\xi)
     Buscamos $G$ lineal a cada lado de $\xi$: $G = a x$ para $x<\xi$ (cumple $G(0)=0$) y $G = b(1-x)$ para $x>\xi$ (cumple $G(1)=0$). Continuidad y salto de la derivada:
 
     ```{julia}
+    using SymPyPythonCall
     @syms x xi a b
     # Continuidad en x = xi:  a*xi = b*(1 - xi)
     # Salto de la derivada:   (-b) - a = -1
@@ -61,6 +81,7 @@ a.  Construir la función de Green $G(x, \xi)$ resolviendo $-G'' = \delta(x-\xi)
     $$
 
     ```{julia}
+    using Plots, LaTeXStrings
     G(x, ξ) = x <= ξ ? x*(1-ξ) : ξ*(1-x)
     ξs = [0.25, 0.5, 0.75]
     plt = plot(xlab = L"x", ylab = L"G(x,\xi)")
@@ -78,6 +99,7 @@ a.  Usar $G$ para resolver el problema con carga uniforme $f(x) = 1$ (peso propi
     :::{.callout-tip collapse="true"}
     ## Solución
     ```{julia}
+    using QuadGK
     y(x) = quadgk(ξ -> G(x, ξ) * 1.0, 0, 1)[1]
     yexacta(x) = x*(1-x)/2
     plot(y, 0, 1, lw = 3, label = "Vía función de Green",
@@ -118,6 +140,7 @@ Verificar numéricamente que integrando $G$ contra la carga uniforme $f = 1$ se 
 :::{.callout-tip collapse="true"}
 ## Solución
 ```{julia}
+using QuadGK, Plots, LaTeXStrings
 function Gviga(x, ξ)
     if x <= ξ
         (1-ξ)*x/6 * ((2-ξ)*ξ - x^2)
@@ -125,6 +148,7 @@ function Gviga(x, ξ)
         (1-x)*ξ/6 * ((2-x)*x - ξ^2)
     end
 end
+
 yG(x) = quadgk(ξ -> Gviga(x, ξ), 0, 1)[1]
 yexacta(x) = (x^4 - 2x^3 + x)/24
 plot(yG, 0, 1, lw = 3, label = "Vía función de Green", xlab = L"x", ylab = L"y")
@@ -153,6 +177,7 @@ Truncar la serie a $N$ términos y compararla con la fórmula cerrada $G(x,\xi)$
 :::{.callout-tip collapse="true"}
 ## Solución
 ```{julia}
+using Plots, LaTeXStrings
 Gserie(x, ξ; N = 100) = sum(2*sin(n*π*x)*sin(n*π*ξ)/(n*π)^2 for n in 1:N)
 Gexacta(x, ξ) = x <= ξ ? x*(1-ξ) : ξ*(1-x)
 ξ = 0.35
@@ -173,6 +198,7 @@ Calcular la concentración resultante usando la función de Green y determinar d
 :::{.callout-tip collapse="true"}
 ## Solución
 ```{julia}
+using QuadGK, Plots, LaTeXStrings
 G(x, ξ) = x <= ξ ? x*(1-ξ) : ξ*(1-x)
 f(x) = 3*exp(-100*(x - 0.7)^2)
 u(x) = quadgk(ξ -> G(x, ξ)*f(ξ), 0, 1)[1]
@@ -183,7 +209,7 @@ plot(xs, us, lw = 2, label = "Concentración", xlab = L"x", ylab = L"u")
 vline!([xmax], ls = :dash, label = "Máximo en x=$(round(xmax,digits=2))")
 ```
 
-La concentración máxima se sitúa en torno a $x \approx 0.7$, justo bajo el foco emisor, y decae linealmente hacia los extremos limpios. La función de Green permite estudiar de un vistazo el efecto de mover la fábrica: basta reintegrar $G$ contra el nuevo perfil de emisión.
+La concentración máxima se sitúa en torno a $x \approx 0.66$, justo bajo el foco emisor, y decae linealmente hacia los extremos limpios. La función de Green permite estudiar de un vistazo el efecto de mover la fábrica: basta reintegrar $G$ contra el nuevo perfil de emisión.
 :::
 :::
 

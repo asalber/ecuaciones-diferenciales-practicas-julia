@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>7&nbsp; Ecuaciones en derivadas parciales de primer orden – Prácticas de Ecuaciones Diferenciales y Ecuaciones en Derivadas Parciales con Julia</title>
+<title>9&nbsp; Función de Green – Prácticas de Ecuaciones Diferenciales y Ecuaciones en Derivadas Parciales con Julia</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -68,8 +68,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./08-edp-segundo-orden.html" rel="next">
-<link href="./06-sistemas-dinamicos-discretos.html" rel="prev">
+<link href="./08-edp-segundo-orden.html" rel="prev">
 <link href="./img/logos/favicon.ico" rel="icon">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -141,9 +140,9 @@ window.Quarto = {
 };
 </script>
 
-<meta property="og:title" content="7&nbsp; Ecuaciones en derivadas parciales de primer orden – Prácticas de Ecuaciones Diferenciales y Ecuaciones en Derivadas Parciales con Julia">
+<meta property="og:title" content="9&nbsp; Función de Green – Prácticas de Ecuaciones Diferenciales y Ecuaciones en Derivadas Parciales con Julia">
 <meta property="og:description" content="">
-<meta property="og:image" content="07-edp-primer-orden_files/figure-html/cell-10-output-1.svg">
+<meta property="og:image" content="09-funcion-green_files/figure-html/cell-10-output-1.svg">
 <meta property="og:site_name" content="Prácticas de Ecuaciones Diferenciales y Ecuaciones en Derivadas Parciales con Julia">
 </head>
 
@@ -316,7 +315,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./07-edp-primer-orden.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Ecuaciones en derivadas parciales de primer orden</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./09-funcion-green.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Función de Green</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Buscar" onclick="window.quartoOpenSearch();">
@@ -411,7 +410,7 @@ window.Quarto = {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./07-edp-primer-orden.html" class="sidebar-item-text sidebar-link active">
+  <a href="./07-edp-primer-orden.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Ecuaciones en derivadas parciales de primer orden</span></span></a>
   </div>
 </li>
@@ -423,7 +422,7 @@ window.Quarto = {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./09-funcion-green.html" class="sidebar-item-text sidebar-link">
+  <a href="./09-funcion-green.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Función de Green</span></span></a>
   </div>
 </li>
@@ -439,7 +438,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Ecuaciones en derivadas parciales de primer orden</span></h1>
+<h1 class="title"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Función de Green</span></h1>
 </div>
 
 
@@ -456,17 +455,22 @@ window.Quarto = {
 </header>
 
 
-<p>Una <strong>ecuación en derivadas parciales (EDP) de primer orden</strong> relaciona una función incógnita <span class="math inline">\(u(x, t)\)</span> de varias variables con sus derivadas parciales de primer orden. La EDP lineal de primer orden más importante es la <strong>ecuación de transporte</strong> (o advección)</p>
+<p>La <strong>función de Green</strong> <span class="math inline">\(G(x, \xi)\)</span> de un operador diferencial lineal <span class="math inline">\(L\)</span> con ciertas condiciones de contorno es la respuesta del sistema a una fuente puntual (una delta de Dirac) situada en <span class="math inline">\(\xi\)</span>:</p>
 <p><span class="math display">\[
-u_t + c\,u_x = 0,
+L\,G(x, \xi) = \delta(x - \xi).
 \]</span></p>
-<p>cuya solución es <span class="math inline">\(u(x,t) = u_0(x - ct)\)</span>. El perfil inicial <span class="math inline">\(u_0\)</span> se propaga sin deformarse con velocidad <span class="math inline">\(c\)</span>. El <strong>método de las características</strong> reduce una EDP de primer orden a un sistema de EDOs a lo largo de curvas privilegiadas del plano <span class="math inline">\((x, t)\)</span>.</p>
-<section id="ejercicios-resueltos" class="level2" data-number="7.1">
-<h2 data-number="7.1" class="anchored" data-anchor-id="ejercicios-resueltos"><span class="header-section-number">7.1</span> Ejercicios resueltos</h2>
+<p>Una vez conocida <span class="math inline">\(G\)</span>, la solución del problema <span class="math inline">\(Ly = f(x)\)</span> con las mismas condiciones de contorno se obtiene por <strong>superposición</strong> integrando la respuesta a cada fuente elemental:</p>
+<p><span class="math display">\[
+y(x) = \int G(x, \xi)\,f(\xi)\,d\xi.
+\]</span></p>
+<p>La función de Green codifica toda la información del operador y las condiciones de contorno, y es una herramienta central en Física (electrostática, mecánica cuántica) e Ingeniería (deflexión de vigas, teoría de circuitos).</p>
+<section id="ejercicios-resueltos" class="level2" data-number="9.1">
+<h2 data-number="9.1" class="anchored" data-anchor-id="ejercicios-resueltos"><span class="header-section-number">9.1</span> Ejercicios resueltos</h2>
 <p>Para la realización de esta práctica se requieren los siguientes paquetes:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">SymPyPythonCall</span>   <span class="co"># Cálculo simbólico y resolución de EDPs.</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Plots</span>             <span class="co"># Dibujo de gráficas y animaciones.</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">LaTeXStrings</span>      <span class="co"># Código LaTeX en los gráficos.</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">SymPyPythonCall</span>  <span class="co"># Cálculo simbólico e integración.</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Plots</span>            <span class="co"># Dibujo de gráficas.</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">LaTeXStrings</span>     <span class="co"># Código LaTeX en los gráficos.</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">QuadGK</span>           <span class="co"># Integración numérica.</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
@@ -479,7 +483,7 @@ u_t + c\,u_x = 0,
 </div>
 <div id="callout-1" class="callout-1-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<div id="bac215b3" class="cell" data-execution_count="3">
+<div id="04474d72" class="cell" data-execution_count="4">
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="4">
 <div>
 <figure class="figure">
@@ -488,7 +492,7 @@ u_t + c\,u_x = 0,
 </div>
 </div>
 </div>
-<div id="4f092542" class="cell" data-execution_count="6">
+<div id="c56e7e6c" class="cell" data-execution_count="7">
 <div class="cell-output cell-output-stdout">
 <div class="ansi-escaped-output">
 <pre><span class="ansi-green-fg ansi-bold">Status</span> `~/.julia/environments/v1.12/Project.toml`
@@ -496,6 +500,8 @@ u_t + c\,u_x = 0,
   <span class="ansi-bright-black-fg">[b964fa9f] </span>LaTeXStrings v1.4.0
 
   <span class="ansi-bright-black-fg">[91a5bcdd] </span>Plots v1.41.6
+
+  <span class="ansi-bright-black-fg">[1fd47b50] </span>QuadGK v2.11.3
 
   <span class="ansi-bright-black-fg">[bc8888f7] </span>SymPyPythonCall v0.5.1
 </pre>
@@ -505,14 +511,13 @@ u_t + c\,u_x = 0,
 </div>
 </div>
 </div>
-<div id="exr-transporte-contaminante" class="theorem exercise">
-<p><span class="theorem-title"><strong>Ejercicio 7.1</strong></span> <strong>Transporte de un contaminante en un río (ingeniería ambiental).</strong> Un vertido de contaminante en un río de corriente uniforme <span class="math inline">\(c = 2\)</span> m/s satisface la ecuación de transporte</p>
+<div id="exr-green-cuerda" class="theorem exercise">
+<p><span class="theorem-title"><strong>Ejercicio 9.1</strong></span> <strong>Función de Green de una cuerda elástica.</strong> La deflexión <span class="math inline">\(y(x)\)</span> de una cuerda tensa de longitud 1, fija en los extremos y sometida a una densidad de carga <span class="math inline">\(f(x)\)</span>, satisface</p>
 <p><span class="math display">\[
-u_t + 2\,u_x = 0, \qquad u(x, 0) = e^{-(x-5)^2},
+-y'' = f(x), \qquad y(0) = y(1) = 0.
 \]</span></p>
-<p>donde <span class="math inline">\(u(x,t)\)</span> es la concentración y el perfil inicial es una campana centrada en <span class="math inline">\(x = 5\)</span> m.</p>
 <ol type="a">
-<li><p>Verificar simbólicamente que <span class="math inline">\(u(x,t) = u_0(x - 2t)\)</span> es solución.</p>
+<li><p>Construir la función de Green <span class="math inline">\(G(x, \xi)\)</span> resolviendo <span class="math inline">\(-G'' = \delta(x-\xi)\)</span> con las condiciones de contorno.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
@@ -525,7 +530,7 @@ u_t + 2\,u_x = 0, \qquad u(x, 0) = e^{-(x-5)^2},
 </div>
 <div id="callout-2" class="callout-2-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>Definir <span class="math inline">\(u(x,t) = \exp(-(x - 2t - 5)^2)\)</span> con <code>SymPy</code> y comprobar que <span class="math inline">\(u_t + 2u_x = 0\)</span> con <code>diff</code>.</p>
+<p>Fuera de <span class="math inline">\(x = \xi\)</span>, <span class="math inline">\(G'' = 0\)</span>, luego <span class="math inline">\(G\)</span> es lineal a trozos. Se impone: <span class="math inline">\(G(0,\xi)=G(1,\xi)=0\)</span>, continuidad en <span class="math inline">\(x=\xi\)</span> y un salto unitario en la derivada, <span class="math inline">\(G'(\xi^+) - G'(\xi^-) = -1\)</span>. El resultado es <span class="math inline">\(G(x,\xi) = x(1-\xi)\)</span> si <span class="math inline">\(x&lt;\xi\)</span> y <span class="math inline">\(\xi(1-x)\)</span> si <span class="math inline">\(x&gt;\xi\)</span>.</p>
 </div>
 </div>
 </div>
@@ -541,20 +546,43 @@ u_t + 2\,u_x = 0, \qquad u(x, 0) = e^{-(x-5)^2},
 </div>
 <div id="callout-3" class="callout-3-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<div id="7b91c63b" class="cell" data-execution_count="8">
+<p>Buscamos <span class="math inline">\(G\)</span> lineal a cada lado de <span class="math inline">\(\xi\)</span>: <span class="math inline">\(G = a x\)</span> para <span class="math inline">\(x&lt;\xi\)</span> (cumple <span class="math inline">\(G(0)=0\)</span>) y <span class="math inline">\(G = b(1-x)\)</span> para <span class="math inline">\(x&gt;\xi\)</span> (cumple <span class="math inline">\(G(1)=0\)</span>). Continuidad y salto de la derivada:</p>
+<div id="8a481903" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">SymPyPythonCall</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="pp">@syms</span> x t</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>u <span class="op">=</span> <span class="fu">exp</span>(<span class="fu">-</span>(x <span class="op">-</span> <span class="fl">2</span>t <span class="op">-</span> <span class="fl">5</span>)<span class="op">^</span><span class="fl">2</span>)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">simplify</span>(<span class="fu">diff</span>(u, t) <span class="op">+</span> <span class="fl">2</span> <span class="op">*</span> <span class="fu">diff</span>(u, x))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="pp">@syms</span> x xi a b</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Continuidad en x = xi:  a*xi = b*(1 - xi)</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Salto de la derivada:   (-b) - a = -1</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>coef <span class="op">=</span> <span class="fu">solve</span>([a<span class="op">*</span>xi <span class="op">-</span> <span class="fu">b*</span>(<span class="fl">1</span> <span class="op">-</span> xi), <span class="op">-</span>b <span class="op">-</span> a <span class="op">+</span> <span class="fl">1</span>], [a, b])</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="9">
-<p><span class="math inline">\(0\)</span></p>
+<p><span class="math display">\[\begin{equation*}\begin{cases}b &amp; \text{=&gt;} &amp;\xi\\a &amp; \text{=&gt;} &amp;1 - \xi\\\end{cases}\end{equation*}\]</span></p>
 </div>
 </div>
-<p>El resultado es 0. La onda viajera <span class="math inline">\(u_0(x - ct)\)</span> resuelve la ecuación de transporte, como predice el método de las características (las rectas <span class="math inline">\(x - 2t = \text{cte}\)</span>).</p>
+<p>De donde <span class="math inline">\(a = 1-\xi\)</span>, <span class="math inline">\(b = \xi\)</span>, y la función de Green es</p>
+<p><span class="math display">\[
+G(x, \xi) = \begin{cases} x(1-\xi) &amp; 0\le x \le \xi \\ \xi(1-x) &amp; \xi \le x \le 1.\end{cases}
+\]</span></p>
+<div id="813e3c66" class="cell" data-execution_count="10">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Plots</span>, <span class="bu">LaTeXStrings</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">G</span>(x, ξ) <span class="op">=</span> x <span class="op">&lt;=</span> ξ ? <span class="fu">x*</span>(<span class="fl">1</span><span class="op">-</span>ξ) <span class="op">:</span> <span class="fu">ξ*</span>(<span class="fl">1</span><span class="op">-</span>x)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>ξs <span class="op">=</span> [<span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>]</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>plt <span class="op">=</span> <span class="fu">plot</span>(xlab <span class="op">=</span> L<span class="st">"x"</span>, ylab <span class="op">=</span> L<span class="st">"G(x,\xi)"</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ξ <span class="kw">in</span> ξs</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">plot!</span>(plt, xx <span class="op">-&gt;</span> <span class="fu">G</span>(xx, ξ), <span class="fl">0</span>, <span class="fl">1</span>, lw <span class="op">=</span> <span class="fl">2</span>, label <span class="op">=</span> L<span class="st">"\xi=%</span><span class="sc">$</span><span class="st">ξ")</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>end</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>plt</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="10">
+<div>
+<figure class="figure">
+<p><img src="09-funcion-green_files/figure-html/cell-10-output-1.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Cada <span class="math inline">\(G(\cdot,\xi)\)</span> es la deformación de la cuerda bajo una carga puntual en <span class="math inline">\(\xi\)</span>: dos segmentos rectos que forman un pico en <span class="math inline">\(\xi\)</span>, como una cuerda de la que se tira en un punto.</p>
 </div>
 </div>
 </div></li>
-<li><p>Dibujar el perfil de concentración en los instantes <span class="math inline">\(t = 0, 2, 4\)</span> s y una animación del transporte.</p>
+<li><p>Usar <span class="math inline">\(G\)</span> para resolver el problema con carga uniforme <span class="math inline">\(f(x) = 1\)</span> (peso propio) y comparar con la solución exacta <span class="math inline">\(y(x) = \frac{x(1-x)}{2}\)</span>.</p>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
@@ -567,59 +595,66 @@ u_t + 2\,u_x = 0, \qquad u(x, 0) = e^{-(x-5)^2},
 </div>
 <div id="callout-4" class="callout-4-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<div id="2a4470f9" class="cell" data-execution_count="9">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Plots</span>, <span class="bu">LaTeXStrings</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">u0</span>(ξ) <span class="op">=</span> <span class="fu">exp</span>(<span class="fu">-</span>(ξ <span class="op">-</span> <span class="fl">5</span>)<span class="op">^</span><span class="fl">2</span>)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">usol</span>(x, t) <span class="op">=</span> <span class="fu">u0</span>(x <span class="op">-</span> <span class="fl">2</span>t)</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>plt <span class="op">=</span> <span class="fu">plot</span>(xlab <span class="op">=</span> L<span class="st">"x \; (m)"</span>, ylab <span class="op">=</span> <span class="st">"Concentración"</span>)</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> τ <span class="kw">in</span> (<span class="fl">0</span>, <span class="fl">2</span>, <span class="fl">4</span>)</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">plot!</span>(plt, x <span class="op">-&gt;</span> <span class="fu">usol</span>(x, τ), <span class="fl">0</span>, <span class="fl">20</span>, lw <span class="op">=</span> <span class="fl">2</span>, label <span class="op">=</span> L<span class="st">"t=%</span><span class="sc">$</span><span class="st">τ")</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>end</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>plt</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="10">
+<div id="93fa433d" class="cell" data-execution_count="11">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">QuadGK</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">y</span>(x) <span class="op">=</span> <span class="fu">quadgk</span>(ξ <span class="op">-&gt;</span> <span class="fu">G</span>(x, ξ) <span class="op">*</span> <span class="fl">1.0</span>, <span class="fl">0</span>, <span class="fl">1</span>)[<span class="fl">1</span>]</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">yexacta</span>(x) <span class="op">=</span> <span class="fu">x*</span>(<span class="fl">1</span><span class="op">-</span>x)<span class="op">/</span><span class="fl">2</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(y, <span class="fl">0</span>, <span class="fl">1</span>, lw <span class="op">=</span> <span class="fl">3</span>, label <span class="op">=</span> <span class="st">"Vía función de Green"</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    xlab <span class="op">=</span> L<span class="st">"x"</span>, ylab <span class="op">=</span> L<span class="st">"y"</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot!</span>(yexacta, <span class="fl">0</span>, <span class="fl">1</span>, lw <span class="op">=</span> <span class="fl">2</span>, ls <span class="op">=</span> <span class="op">:</span>dash, label <span class="op">=</span> <span class="st">"Exacta  x(1-x)/2"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="11">
 <div>
 <figure class="figure">
-<p><img src="07-edp-primer-orden_files/figure-html/cell-10-output-1.svg" class="img-fluid figure-img"></p>
+<p><img src="09-funcion-green_files/figure-html/cell-11-output-1.svg" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
 </div>
-<div id="7adca4f8" class="cell" data-execution_count="10">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>anim <span class="op">=</span> <span class="pp">@animate</span> <span class="cf">for</span> τ <span class="kw">in</span> <span class="fl">0</span><span class="op">:</span><span class="fl">0.1</span><span class="op">:</span><span class="fl">6</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">plot</span>(x <span class="op">-&gt;</span> <span class="fu">usol</span>(x, τ), <span class="fl">0</span>, <span class="fl">20</span>, lw <span class="op">=</span> <span class="fl">2</span>, ylims <span class="op">=</span> (<span class="fl">0</span>, <span class="fl">1.1</span>), legend <span class="op">=</span> <span class="cn">false</span>,</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>         xlab <span class="op">=</span> L<span class="st">"x"</span>, ylab <span class="op">=</span> <span class="st">"Concentración"</span>, title <span class="op">=</span> <span class="st">"t = </span><span class="sc">$</span>(<span class="fu">round</span>(τ,digits<span class="op">=</span><span class="fl">1</span>))<span class="st"> s"</span>)</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">gif</span>(anim, <span class="st">"transporte.gif"</span>, fps <span class="op">=</span> <span class="fl">15</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<p>La campana viaja aguas abajo sin cambiar de forma ni de altura: la advección pura solo traslada el contaminante. (Para que además se disperse habría que añadir un término difusivo <span class="math inline">\(D u_{xx}\)</span>, que se estudia en el capítulo siguiente.)</p>
+<p>Ambas curvas coinciden: integrar la función de Green contra la carga reproduce la parábola de deflexión. La ventaja es que, con la misma <span class="math inline">\(G\)</span>, se resuelve <strong>cualquier</strong> carga <span class="math inline">\(f\)</span> sin volver a integrar la EDO.</p>
 </div>
 </div>
 </div></li>
-</ol>
-</div>
-<div id="exr-caracteristicas" class="theorem exercise">
-<p><span class="theorem-title"><strong>Ejercicio 7.2</strong></span> <strong>Método de las características.</strong> Resolver el problema de valores iniciales</p>
-<p><span class="math display">\[
-u_t + x\,u_x = 0, \qquad u(x, 0) = \frac{1}{1 + x^2}.
-\]</span></p>
-<ol type="a">
-<li><p>Escribir las ecuaciones de las características y resolverlas para hallar la solución.</p>
-<div class="callout callout-style-default callout-note callout-titled">
+<li><p>Resolver con una carga concentrada cerca de un extremo, <span class="math inline">\(f(x) = e^{-50(x - 0.2)^2}\)</span>, integrando la función de Green.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Nota</span>Ayuda
+<span class="screen-reader-only">Tip</span>Solución
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
 <div id="callout-5" class="callout-5-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>Las características cumplen <span class="math inline">\(\dfrac{dx}{dt} = x\)</span>, a lo largo de las cuales <span class="math inline">\(u\)</span> es constante. Resolver la EDO de <span class="math inline">\(x(t)\)</span> e invertir para expresar la constante en función de <span class="math inline">\((x, t)\)</span>.</p>
+<div id="fa9d6a0e" class="cell" data-execution_count="12">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">f</span>(x) <span class="op">=</span> <span class="fu">exp</span>(<span class="fu">-50*</span>(x <span class="op">-</span> <span class="fl">0.2</span>)<span class="op">^</span><span class="fl">2</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">yG</span>(x) <span class="op">=</span> <span class="fu">quadgk</span>(ξ <span class="op">-&gt;</span> <span class="fu">G</span>(x, ξ) <span class="op">*</span> <span class="fu">f</span>(ξ), <span class="fl">0</span>, <span class="fl">1</span>)[<span class="fl">1</span>]</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(yG, <span class="fl">0</span>, <span class="fl">1</span>, lw <span class="op">=</span> <span class="fl">2</span>, label <span class="op">=</span> <span class="st">"Deflexión"</span>, xlab <span class="op">=</span> L<span class="st">"x"</span>, ylab <span class="op">=</span> L<span class="st">"y"</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot!</span>(f, <span class="fl">0</span>, <span class="fl">1</span>, lw <span class="op">=</span> <span class="fl">2</span>, ls <span class="op">=</span> <span class="op">:</span>dash, label <span class="op">=</span> <span class="st">"Carga f(x)"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="12">
+<div>
+<figure class="figure">
+<p><img src="09-funcion-green_files/figure-html/cell-12-output-1.svg" class="img-fluid figure-img"></p>
+</figure>
 </div>
 </div>
 </div>
+<p>La deflexión máxima se desplaza hacia el punto de aplicación de la carga (cerca de <span class="math inline">\(x = 0.2\)</span>), como cabe esperar físicamente.</p>
+</div>
+</div>
+</div></li>
+</ol>
+</div>
+<div id="exr-green-viga" class="theorem exercise">
+<p><span class="theorem-title"><strong>Ejercicio 9.2</strong></span> <strong>Función de Green de una viga (respuesta a carga puntual).</strong> La deflexión de una viga biapoyada de longitud 1 satisface <span class="math inline">\(y^{(4)} = f(x)\)</span> con <span class="math inline">\(y(0)=y(1)=0\)</span>, <span class="math inline">\(y''(0)=y''(1)=0\)</span>. Su función de Green, la deflexión bajo una carga puntual unidad en <span class="math inline">\(\xi\)</span>, es</p>
+<p><span class="math display">\[
+G(x, \xi) = \begin{cases}
+\dfrac{(1-\xi)x}{6}\left[(2-\xi)\xi - x^2\right] &amp; x \le \xi \\[2mm]
+\dfrac{(1-x)\xi}{6}\left[(2-x)x - \xi^2\right] &amp; x \ge \xi.
+\end{cases}
+\]</span></p>
+<p>Verificar numéricamente que integrando <span class="math inline">\(G\)</span> contra la carga uniforme <span class="math inline">\(f = 1\)</span> se recupera la deformada de la viga del capítulo 4, <span class="math inline">\(y(x) = \frac{1}{24}(x^4 - 2x^3 + x)\)</span>.</p>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
@@ -632,80 +667,42 @@ u_t + x\,u_x = 0, \qquad u(x, 0) = \frac{1}{1 + x^2}.
 </div>
 <div id="callout-6" class="callout-6-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>A lo largo de las características <span class="math inline">\(\frac{dx}{dt} = x\)</span>, es decir <span class="math inline">\(x(t) = x_0 e^{t}\)</span>, la solución es constante: <span class="math inline">\(u = u_0(x_0) = u_0(x e^{-t})\)</span>. Verificamos:</p>
-<div id="a0d7621b" class="cell" data-execution_count="11">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">SymPyPythonCall</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="pp">@syms</span> x t</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>u <span class="op">=</span> <span class="fl">1</span> <span class="op">/</span> (<span class="fl">1</span> <span class="op">+</span> (x <span class="op">*</span> <span class="fu">exp</span>(<span class="op">-</span>t))<span class="op">^</span><span class="fl">2</span>)</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">simplify</span>(<span class="fu">diff</span>(u, t) <span class="op">+</span> x <span class="op">*</span> <span class="fu">diff</span>(u, x))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="11">
-<p><span class="math inline">\(0\)</span></p>
-</div>
-</div>
-<p>La solución es <span class="math inline">\(u(x, t) = \dfrac{1}{1 + x^2 e^{-2t}}\)</span>.</p>
-</div>
-</div>
-</div></li>
-<li><p>Dibujar las curvas características en el plano <span class="math inline">\((x, t)\)</span> y el perfil de <span class="math inline">\(u\)</span> en varios instantes.</p>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Solución
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-7" class="callout-7-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<div id="ef861484" class="cell" data-execution_count="12">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Plots</span>, <span class="bu">LaTeXStrings</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>plt1 <span class="op">=</span> <span class="fu">plot</span>(xlab <span class="op">=</span> L<span class="st">"x"</span>, ylab <span class="op">=</span> L<span class="st">"t"</span>, title <span class="op">=</span> <span class="st">"Características  x = x_0 e^t"</span>,</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>            legend <span class="op">=</span> <span class="cn">false</span>, ylims <span class="op">=</span> (<span class="fl">0</span>, <span class="fl">2</span>))</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> x0 <span class="kw">in</span> <span class="op">-</span><span class="fl">3</span><span class="op">:</span><span class="fl">0.5</span><span class="op">:</span><span class="fl">3</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">plot!</span>(plt1, τ <span class="op">-&gt;</span> x0 <span class="op">*</span> <span class="fu">exp</span>(τ), <span class="fl">0</span>, <span class="fl">2</span>, color <span class="op">=</span> <span class="op">:</span>steelblue)</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>plt1</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="12">
-<div>
-<figure class="figure">
-<p><img src="07-edp-primer-orden_files/figure-html/cell-13-output-1.svg" class="img-fluid figure-img"></p>
-</figure>
-</div>
-</div>
-</div>
-<div id="8c9e5ab1" class="cell" data-execution_count="13">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">usol</span>(x, t) <span class="op">=</span> <span class="fl">1</span> <span class="op">/</span> (<span class="fl">1</span> <span class="op">+</span> x<span class="op">^</span><span class="fl">2</span> <span class="op">*</span> <span class="fu">exp</span>(<span class="op">-</span><span class="fl">2</span>t))</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>plt2 <span class="op">=</span> <span class="fu">plot</span>(xlab <span class="op">=</span> L<span class="st">"x"</span>, ylab <span class="op">=</span> L<span class="st">"u"</span>)</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> τ <span class="kw">in</span> (<span class="fl">0</span>, <span class="fl">0.5</span>, <span class="fl">1</span>, <span class="fl">2</span>)</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">plot!</span>(plt2, x <span class="op">-&gt;</span> <span class="fu">usol</span>(x, τ), <span class="op">-</span><span class="fl">6</span>, <span class="fl">6</span>, lw <span class="op">=</span> <span class="fl">2</span>, label <span class="op">=</span> L<span class="st">"t=%</span><span class="sc">$</span><span class="st">τ")</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>end</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>plt2</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="86f6749d" class="cell" data-execution_count="13">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">QuadGK</span>, <span class="bu">Plots</span>, <span class="bu">LaTeXStrings</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">Gviga</span>(x, ξ)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> x <span class="op">&lt;=</span> ξ</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>        (<span class="fl">1</span><span class="op">-</span>ξ)<span class="op">*</span>x<span class="op">/</span><span class="fl">6</span> <span class="op">*</span> ((<span class="fl">2</span><span class="op">-</span>ξ)<span class="op">*</span>ξ <span class="op">-</span> x<span class="op">^</span><span class="fl">2</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>        (<span class="fl">1</span><span class="op">-</span>x)<span class="op">*</span>ξ<span class="op">/</span><span class="fl">6</span> <span class="op">*</span> ((<span class="fl">2</span><span class="op">-</span>x)<span class="op">*</span>x <span class="op">-</span> ξ<span class="op">^</span><span class="fl">2</span>)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="fu">yG</span>(x) <span class="op">=</span> <span class="fu">quadgk</span>(ξ <span class="op">-&gt;</span> <span class="fu">Gviga</span>(x, ξ), <span class="fl">0</span>, <span class="fl">1</span>)[<span class="fl">1</span>]</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="fu">yexacta</span>(x) <span class="op">=</span> (x<span class="op">^</span><span class="fl">4</span> <span class="op">-</span> <span class="fl">2</span>x<span class="op">^</span><span class="fl">3</span> <span class="op">+</span> x)<span class="op">/</span><span class="fl">24</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(yG, <span class="fl">0</span>, <span class="fl">1</span>, lw <span class="op">=</span> <span class="fl">3</span>, label <span class="op">=</span> <span class="st">"Vía función de Green"</span>, xlab <span class="op">=</span> L<span class="st">"x"</span>, ylab <span class="op">=</span> L<span class="st">"y"</span>)</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="fu">plot!</span>(yexacta, <span class="fl">0</span>, <span class="fl">1</span>, lw <span class="op">=</span> <span class="fl">2</span>, ls <span class="op">=</span> <span class="op">:</span>dash, label <span class="op">=</span> <span class="st">"Exacta"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="13">
 <div>
 <figure class="figure">
-<p><img src="07-edp-primer-orden_files/figure-html/cell-14-output-1.svg" class="img-fluid figure-img"></p>
+<p><img src="09-funcion-green_files/figure-html/cell-13-output-1.svg" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
 </div>
-<p>Las características divergen exponencialmente desde el origen, y el perfil inicial se “estira” ensanchándose con el tiempo, aunque conservando su valor máximo.</p>
+<p>Las dos curvas coinciden. La función de Green de la viga es más suave (de clase <span class="math inline">\(C^2\)</span>) que la de la cuerda, reflejo del mayor orden del operador.</p>
 </div>
 </div>
-</div></li>
-</ol>
 </div>
-<div id="exr-burgers-choque" class="theorem exercise">
-<p><span class="theorem-title"><strong>Ejercicio 7.3</strong></span> <strong>Formación de ondas de choque: tráfico rodado.</strong> El modelo de tráfico de Lighthill–Whitham lleva a la ecuación de Burgers no lineal</p>
+</div>
+<div id="exr-green-autofunciones" class="theorem exercise">
+<p><span class="theorem-title"><strong>Ejercicio 9.3</strong></span> <strong>Función de Green por desarrollo en autofunciones.</strong> Para el operador <span class="math inline">\(L = -\frac{d^2}{dx^2}\)</span> con <span class="math inline">\(y(0)=y(1)=0\)</span>, las autofunciones son <span class="math inline">\(\phi_n(x) = \sqrt2\sin(n\pi x)\)</span> con autovalores <span class="math inline">\(\lambda_n = (n\pi)^2\)</span>. La función de Green admite el desarrollo espectral</p>
 <p><span class="math display">\[
-u_t + u\,u_x = 0, \qquad u(x, 0) = u_0(x),
+G(x, \xi) = \sum_{n=1}^{\infty} \frac{\phi_n(x)\,\phi_n(\xi)}{\lambda_n}
+= \sum_{n=1}^{\infty} \frac{2\sin(n\pi x)\sin(n\pi \xi)}{(n\pi)^2}.
 \]</span></p>
-<p>donde <span class="math inline">\(u\)</span> es (proporcional a) la velocidad del flujo. Cuando las características se cruzan aparece una <strong>onda de choque</strong> (un atasco).</p>
-<ol type="a">
-<li><p>Para el dato inicial decreciente <span class="math inline">\(u_0(x) = \begin{cases} 1 &amp; x &lt; 0 \\ 1 - x &amp; 0 \le x \le 1 \\ 0 &amp; x &gt; 1\end{cases}\)</span>, dibujar las características <span class="math inline">\(x = x_0 + u_0(x_0)\,t\)</span> y determinar el instante en que se cruzan por primera vez (formación del choque).</p>
+<p>Comprobar que esta serie converge a la función de Green triangular del <a href="#exr-green-cuerda" class="quarto-xref">Ejercicio&nbsp;<span>9.1</span></a>.</p>
 <div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -714,12 +711,48 @@ u_t + u\,u_x = 0, \qquad u(x, 0) = u_0(x),
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Truncar la serie a <span class="math inline">\(N\)</span> términos y compararla con la fórmula cerrada <span class="math inline">\(G(x,\xi)\)</span> para un <span class="math inline">\(\xi\)</span> fijo.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
 <div id="callout-8" class="callout-8-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>En la ecuación de Burgers cada característica es una recta de pendiente dada por el valor inicial: <span class="math inline">\(x = x_0 + u_0(x_0)\,t\)</span>. Las que salen de la rampa decreciente se cruzan; el tiempo de choque es <span class="math inline">\(t^* = -1/\min u_0'(x)\)</span>.</p>
+<div id="18e0f9ca" class="cell" data-execution_count="14">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Plots</span>, <span class="bu">LaTeXStrings</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">Gserie</span>(x, ξ; N <span class="op">=</span> <span class="fl">100</span>) <span class="op">=</span> <span class="fu">sum</span>(<span class="fl">2</span><span class="fu">*sin</span>(n<span class="op">*</span><span class="cn">π</span><span class="op">*</span>x)<span class="fu">*sin</span>(n<span class="op">*</span><span class="cn">π</span><span class="op">*</span>ξ)<span class="op">/</span>(n<span class="op">*</span><span class="cn">π</span>)<span class="op">^</span><span class="fl">2</span> <span class="cf">for</span> n <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span>N)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">Gexacta</span>(x, ξ) <span class="op">=</span> x <span class="op">&lt;=</span> ξ ? <span class="fu">x*</span>(<span class="fl">1</span><span class="op">-</span>ξ) <span class="op">:</span> <span class="fu">ξ*</span>(<span class="fl">1</span><span class="op">-</span>x)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>ξ <span class="op">=</span> <span class="fl">0.35</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(x <span class="op">-&gt;</span> <span class="fu">Gserie</span>(x, ξ), <span class="fl">0</span>, <span class="fl">1</span>, lw <span class="op">=</span> <span class="fl">3</span>, label <span class="op">=</span> <span class="st">"Serie (100 términos)"</span>,</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    xlab <span class="op">=</span> L<span class="st">"x"</span>, ylab <span class="op">=</span> L<span class="st">"G(x,0.35)"</span>)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="fu">plot!</span>(x <span class="op">-&gt;</span> <span class="fu">Gexacta</span>(x, ξ), <span class="fl">0</span>, <span class="fl">1</span>, lw <span class="op">=</span> <span class="fl">2</span>, ls <span class="op">=</span> <span class="op">:</span>dash, label <span class="op">=</span> <span class="st">"Fórmula cerrada"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="14">
+<div>
+<figure class="figure">
+<p><img src="09-funcion-green_files/figure-html/cell-14-output-1.svg" class="img-fluid figure-img"></p>
+</figure>
 </div>
 </div>
 </div>
+<p>La serie espectral reproduce el pico triangular. Este enfoque (desarrollar la función de Green en las autofunciones del operador) es la base del método de Fourier y conecta la función de Green con la resolución por separación de variables del capítulo anterior.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="exr-green-difusion-fuente" class="theorem exercise">
+<p><span class="theorem-title"><strong>Ejercicio 9.4</strong></span> <strong>Aplicación: contaminación con fuente distribuida (estado estacionario).</strong> En un canal de longitud 1 con extremos limpios (<span class="math inline">\(u(0)=u(1)=0\)</span>), la concentración estacionaria de un contaminante que se difunde y se genera a un ritmo <span class="math inline">\(f(x)\)</span> satisface <span class="math inline">\(-u'' = f(x)\)</span>. Una fábrica vierte según <span class="math inline">\(f(x) = 3\,e^{-100(x-0.7)^2}\)</span> (un foco intenso cerca de <span class="math inline">\(x = 0.7\)</span>).</p>
+<p>Calcular la concentración resultante usando la función de Green y determinar dónde es máxima.</p>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
@@ -732,186 +765,43 @@ u_t + u\,u_x = 0, \qquad u(x, 0) = u_0(x),
 </div>
 <div id="callout-9" class="callout-9-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<div id="34dc0f8e" class="cell" data-execution_count="14">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Plots</span>, <span class="bu">LaTeXStrings</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">u0</span>(x) <span class="op">=</span> x <span class="op">&lt;</span> <span class="fl">0</span> ? <span class="fl">1.0</span> <span class="op">:</span> (x <span class="op">&lt;=</span> <span class="fl">1</span> ? <span class="fl">1</span> <span class="op">-</span> x <span class="op">:</span> <span class="fl">0.0</span>)</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>plt <span class="op">=</span> <span class="fu">plot</span>(xlab <span class="op">=</span> L<span class="st">"x"</span>, ylab <span class="op">=</span> L<span class="st">"t"</span>, legend <span class="op">=</span> <span class="cn">false</span>, ylims <span class="op">=</span> (<span class="fl">0</span>, <span class="fl">2</span>),</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>           title <span class="op">=</span> <span class="st">"Características de Burgers"</span>)</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> x0 <span class="kw">in</span> <span class="op">-</span><span class="fl">2</span><span class="op">:</span><span class="fl">0.15</span><span class="op">:</span><span class="fl">3</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">plot!</span>(plt, [x0, x0 <span class="op">+</span> <span class="fu">u0</span>(x0)<span class="op">*</span><span class="fl">2</span>], [<span class="fl">0</span>, <span class="fl">2</span>], color <span class="op">=</span> <span class="op">:</span>steelblue, alpha <span class="op">=</span> <span class="fl">0.7</span>)</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>plt</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="14">
-<div>
-<figure class="figure">
-<p><img src="07-edp-primer-orden_files/figure-html/cell-15-output-1.svg" class="img-fluid figure-img"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>En la rampa <span class="math inline">\(0\le x_0\le 1\)</span> se tiene <span class="math inline">\(u_0'(x_0) = -1\)</span>, luego el tiempo de choque es <span class="math inline">\(t^* = -1/(-1) = 1\)</span>: todas esas características se cruzan simultáneamente en <span class="math inline">\(t = 1\)</span>, formando el frente del atasco.</p>
-</div>
-</div>
-</div></li>
-<li><p>Resolver numéricamente la ecuación de Burgers con un esquema conservativo y dibujar cómo la rampa suave se convierte en una discontinuidad (el choque).</p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Nota</span>Ayuda
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-10" class="callout-10-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>Usar un esquema <em>upwind</em> (Godunov) de volúmenes finitos: <span class="math inline">\(u_i^{n+1} = u_i^n - \frac{\Delta t}{\Delta x}(F_{i+1/2} - F_{i-1/2})\)</span> con el flujo numérico <span class="math inline">\(F = \frac12 u^2\)</span> resuelto según el signo de la velocidad.</p>
-</div>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-11-contents" aria-controls="callout-11" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Solución
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-11" class="callout-11-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<div id="b38bd3da" class="cell" data-execution_count="15">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">f</span>(u) <span class="op">=</span> <span class="fl">0.5</span>u<span class="op">^</span><span class="fl">2</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Flujo de Godunov para la ecuación de Burgers (f convexa).</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">flujo</span>(uL, uR)</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> uL <span class="op">&lt;=</span> uR                    <span class="co"># onda de rarefacción</span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>        uL <span class="op">&lt;=</span> <span class="fl">0</span> <span class="op">&lt;=</span> uR ? <span class="fu">f</span>(<span class="fl">0.0</span>) <span class="op">:</span> <span class="fu">min</span>(<span class="fu">f</span>(uL), <span class="fu">f</span>(uR))</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>                           <span class="co"># onda de choque</span></span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>        <span class="fu">max</span>(<span class="fu">f</span>(uL), <span class="fu">f</span>(uR))</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">godunov_burgers</span>(u0f, xs, T; cfl <span class="op">=</span> <span class="fl">0.4</span>)</span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    dx <span class="op">=</span> xs[<span class="fl">2</span>] <span class="op">-</span> xs[<span class="fl">1</span>]</span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>    u <span class="op">=</span> <span class="fu">u0f</span>.(xs)</span>
-<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>    t <span class="op">=</span> <span class="fl">0.0</span></span>
-<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> t <span class="op">&lt;</span> T</span>
-<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>        dt <span class="op">=</span> cfl <span class="op">*</span> dx <span class="op">/</span> <span class="fu">maximum</span>(<span class="fu">abs</span>.(u) <span class="op">.+</span> <span class="fl">1e-9</span>)</span>
-<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>        dt <span class="op">=</span> <span class="fu">min</span>(dt, T <span class="op">-</span> t)</span>
-<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>        F <span class="op">=</span> [<span class="fu">flujo</span>(u[i], u[i<span class="op">+</span><span class="fl">1</span>]) for i <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fu">length</span>(u)<span class="op">-</span><span class="fl">1</span>]</span>
-<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>        u[<span class="fl">2</span><span class="op">:</span><span class="kw">end</span><span class="op">-</span><span class="fl">1</span>] <span class="op">.-=</span> dt<span class="op">/</span>dx <span class="op">.*</span> (F[<span class="fl">2</span><span class="op">:</span><span class="kw">end</span>] <span class="op">.-</span> F[<span class="fl">1</span><span class="op">:</span><span class="kw">end</span><span class="op">-</span><span class="fl">1</span>])</span>
-<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>        t <span class="op">+=</span> dt</span>
-<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
-<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>    u</span>
-<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
-<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> <span class="fu">range</span>(<span class="op">-</span><span class="fl">1</span>, <span class="fl">3</span>, length <span class="op">=</span> <span class="fl">400</span>)</span>
-<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>plt <span class="op">=</span> <span class="fu">plot</span>(xlab <span class="op">=</span> L<span class="st">"x"</span>, ylab <span class="op">=</span> L<span class="st">"u"</span>, title <span class="op">=</span> <span class="st">"Onda de choque"</span>)</span>
-<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> T <span class="kw">in</span> (<span class="fl">0.0</span>, <span class="fl">0.5</span>, <span class="fl">1.0</span>, <span class="fl">1.5</span>)</span>
-<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>    u <span class="op">=</span> <span class="fu">godunov_burgers</span>(u0, xs, T)</span>
-<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>    <span class="fu">plot!</span>(plt, xs, u, lw <span class="op">=</span> <span class="fl">2</span>, label <span class="op">=</span> L<span class="st">"t=%</span><span class="sc">$</span>T<span class="st">"</span>)</span>
-<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
-<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>plt</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="eb9d2f4d" class="cell" data-execution_count="15">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">QuadGK</span>, <span class="bu">Plots</span>, <span class="bu">LaTeXStrings</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">G</span>(x, ξ) <span class="op">=</span> x <span class="op">&lt;=</span> ξ ? <span class="fu">x*</span>(<span class="fl">1</span><span class="op">-</span>ξ) <span class="op">:</span> <span class="fu">ξ*</span>(<span class="fl">1</span><span class="op">-</span>x)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">f</span>(x) <span class="op">=</span> <span class="fl">3</span><span class="fu">*exp</span>(<span class="fu">-100*</span>(x <span class="op">-</span> <span class="fl">0.7</span>)<span class="op">^</span><span class="fl">2</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">u</span>(x) <span class="op">=</span> <span class="fu">quadgk</span>(ξ <span class="op">-&gt;</span> <span class="fu">G</span>(x, ξ)<span class="fu">*f</span>(ξ), <span class="fl">0</span>, <span class="fl">1</span>)[<span class="fl">1</span>]</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> <span class="fu">range</span>(<span class="fl">0</span>, <span class="fl">1</span>, length <span class="op">=</span> <span class="fl">300</span>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>us <span class="op">=</span> <span class="fu">u</span>.(xs)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>xmax <span class="op">=</span> xs[<span class="fu">argmax</span>(us)]</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(xs, us, lw <span class="op">=</span> <span class="fl">2</span>, label <span class="op">=</span> <span class="st">"Concentración"</span>, xlab <span class="op">=</span> L<span class="st">"x"</span>, ylab <span class="op">=</span> L<span class="st">"u"</span>)</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="fu">vline!</span>([xmax], ls <span class="op">=</span> <span class="op">:</span>dash, label <span class="op">=</span> <span class="st">"Máximo en x=</span><span class="sc">$</span>(<span class="fu">round</span>(xmax,digits<span class="op">=</span><span class="fl">2</span>))<span class="st">"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="15">
 <div>
 <figure class="figure">
-<p><img src="07-edp-primer-orden_files/figure-html/cell-16-output-1.svg" class="img-fluid figure-img"></p>
+<p><img src="09-funcion-green_files/figure-html/cell-15-output-1.svg" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
 </div>
-<p>La rampa inicial se va inclinando hasta hacerse vertical en <span class="math inline">\(t = 1\)</span> y a partir de ahí se propaga como una <strong>discontinuidad</strong> (el frente de un atasco) que avanza a la velocidad del choque dada por la condición de Rankine–Hugoniot.</p>
-</div>
-</div>
-</div></li>
-</ol>
-</div>
-<div id="exr-lineal-fuente" class="theorem exercise">
-<p><span class="theorem-title"><strong>Ejercicio 7.4</strong></span> <strong>EDP lineal con término fuente.</strong> Resolver</p>
-<p><span class="math display">\[
-u_t + 3\,u_x = -u, \qquad u(x, 0) = \cos x,
-\]</span></p>
-<p>que modela un contaminante transportado con velocidad 3 que además se degrada exponencialmente.</p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-12-contents" aria-controls="callout-12" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Nota</span>Ayuda
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-12" class="callout-12-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>A lo largo de las características <span class="math inline">\(x = x_0 + 3t\)</span>, la EDP se reduce a la EDO <span class="math inline">\(\frac{du}{dt} = -u\)</span>, cuya solución es <span class="math inline">\(u = u_0(x_0)e^{-t}\)</span>. Sustituir <span class="math inline">\(x_0 = x - 3t\)</span>.</p>
-</div>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-13-contents" aria-controls="callout-13" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Solución
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-13" class="callout-13-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>Sobre la característica <span class="math inline">\(x = x_0 + 3t\)</span>, <span class="math inline">\(\frac{du}{dt} = -u\)</span> da <span class="math inline">\(u = u_0(x_0)e^{-t}\)</span>, luego</p>
-<p><span class="math display">\[
-u(x, t) = e^{-t}\cos(x - 3t).
-\]</span></p>
-<p>Verificación:</p>
-<div id="02e8d58c" class="cell" data-execution_count="16">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">SymPyPythonCall</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="pp">@syms</span> x t</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>u <span class="op">=</span> <span class="fu">exp</span>(<span class="op">-</span>t) <span class="op">*</span> <span class="fu">cos</span>(x <span class="op">-</span> <span class="fl">3</span>t)</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="fu">simplify</span>(<span class="fu">diff</span>(u, t) <span class="op">+</span> <span class="fl">3</span> <span class="op">*</span> <span class="fu">diff</span>(u, x) <span class="op">+</span> u)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="16">
-<p><span class="math inline">\(0\)</span></p>
-</div>
-</div>
-<div id="7249f57a" class="cell" data-execution_count="17">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Plots</span>, <span class="bu">LaTeXStrings</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">usol</span>(x, t) <span class="op">=</span> <span class="fu">exp</span>(<span class="op">-</span>t) <span class="op">*</span> <span class="fu">cos</span>(x <span class="op">-</span> <span class="fl">3</span>t)</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>plt <span class="op">=</span> <span class="fu">plot</span>(xlab <span class="op">=</span> L<span class="st">"x"</span>, ylab <span class="op">=</span> L<span class="st">"u"</span>)</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> τ <span class="kw">in</span> (<span class="fl">0</span>, <span class="fl">0.5</span>, <span class="fl">1</span>, <span class="fl">2</span>)</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">plot!</span>(plt, x <span class="op">-&gt;</span> <span class="fu">usol</span>(x, τ), <span class="fl">0</span>, <span class="fl">4</span>π, lw <span class="op">=</span> <span class="fl">2</span>, label <span class="op">=</span> L<span class="st">"t=%</span><span class="sc">$</span><span class="st">τ")</span></span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>end</span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>plt</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="17">
-<div>
-<figure class="figure">
-<p><img src="07-edp-primer-orden_files/figure-html/cell-18-output-1.svg" class="img-fluid figure-img"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>La onda coseno viaja a la derecha con velocidad 3 mientras su amplitud decae como <span class="math inline">\(e^{-t}\)</span>: transporte con degradación.</p>
+<p>La concentración máxima se sitúa en torno a <span class="math inline">\(x \approx 0.66\)</span>, justo bajo el foco emisor, y decae linealmente hacia los extremos limpios. La función de Green permite estudiar de un vistazo el efecto de mover la fábrica: basta reintegrar <span class="math inline">\(G\)</span> contra el nuevo perfil de emisión.</p>
 </div>
 </div>
 </div>
 </div>
 </section>
-<section id="ejercicios-propuestos" class="level2" data-number="7.2">
-<h2 data-number="7.2" class="anchored" data-anchor-id="ejercicios-propuestos"><span class="header-section-number">7.2</span> Ejercicios propuestos</h2>
-<div id="exr-propuesto-transporte-var" class="theorem exercise">
-<p><span class="theorem-title"><strong>Ejercicio 7.5</strong></span> Resolver <span class="math inline">\(u_t + (1 + x^2)u_x = 0\)</span> con <span class="math inline">\(u(x,0) = e^{-x^2}\)</span> por el método de las características y dibujar las curvas características.</p>
+<section id="ejercicios-propuestos" class="level2" data-number="9.2">
+<h2 data-number="9.2" class="anchored" data-anchor-id="ejercicios-propuestos"><span class="header-section-number">9.2</span> Ejercicios propuestos</h2>
+<div id="exr-propuesto-green-robin" class="theorem exercise">
+<p><span class="theorem-title"><strong>Ejercicio 9.5</strong></span> Construir la función de Green del operador <span class="math inline">\(-y''\)</span> con condiciones de contorno mixtas <span class="math inline">\(y(0)=0\)</span>, <span class="math inline">\(y'(1)=0\)</span> y usarla para resolver <span class="math inline">\(-y''=x\)</span>.</p>
 </div>
-<div id="exr-propuesto-poblacion-edad" class="theorem exercise">
-<p><span class="theorem-title"><strong>Ejercicio 7.6</strong></span> <strong>Demografía.</strong> La ecuación de McKendrick <span class="math inline">\(n_t + n_a = -\mu\, n\)</span> describe una población estructurada por edad <span class="math inline">\(a\)</span>. Resolverla por características para <span class="math inline">\(\mu\)</span> constante y <span class="math inline">\(n(a, 0) = n_0(a)\)</span> dado.</p>
+<div id="exr-propuesto-green-helmholtz" class="theorem exercise">
+<p><span class="theorem-title"><strong>Ejercicio 9.6</strong></span> <strong>Física.</strong> Hallar la función de Green del operador de Helmholtz <span class="math inline">\(-y'' - k^2 y\)</span> con <span class="math inline">\(y(0)=y(1)=0\)</span> (relevante en acústica) y estudiar qué ocurre cuando <span class="math inline">\(k^2\)</span> se aproxima a un autovalor <span class="math inline">\(\lambda_n\)</span> (resonancia).</p>
 </div>
-<div id="exr-propuesto-rarefaccion" class="theorem exercise">
-<p><span class="theorem-title"><strong>Ejercicio 7.7</strong></span> Para la ecuación de Burgers con dato inicial creciente <span class="math inline">\(u_0(x) = 0\)</span> si <span class="math inline">\(x&lt;0\)</span>, <span class="math inline">\(u_0(x)=1\)</span> si <span class="math inline">\(x&gt;0\)</span>, dibujar las características y comprobar que se forma una <strong>onda de rarefacción</strong> (abanico) en lugar de un choque.</p>
+<div id="exr-propuesto-green-numerica" class="theorem exercise">
+<p><span class="theorem-title"><strong>Ejercicio 9.7</strong></span> Obtener numéricamente la función de Green discreta de <span class="math inline">\(-y''\)</span> como la inversa de la matriz de diferencias finitas del laplaciano y comparar sus columnas con la <span class="math inline">\(G\)</span> analítica.</p>
 </div>
-<div id="exr-propuesto-precios" class="theorem exercise">
-<p><span class="theorem-title"><strong>Ejercicio 7.8</strong></span> <strong>Finanzas.</strong> La EDP de primer orden <span class="math inline">\(V_t + rS\,V_S = rV\)</span> (versión sin difusión, de transporte) modela la evolución de un activo con crecimiento a tasa <span class="math inline">\(r\)</span>. Resolverla por características con dato final <span class="math inline">\(V(S, T) = \max(S - K, 0)\)</span>.</p>
+<div id="exr-propuesto-green-voladizo" class="theorem exercise">
+<p><span class="theorem-title"><strong>Ejercicio 9.8</strong></span> <strong>Ingeniería.</strong> Construir la función de Green de una viga en voladizo y calcular la deflexión del extremo libre bajo una carga puntual aplicada en su punto medio.</p>
 </div>
 
 
@@ -1333,14 +1223,11 @@ u(x, t) = e^{-t}\cos(x - 3t).
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./06-sistemas-dinamicos-discretos.html" class="pagination-link" aria-label="Iniciación al estudio de sistemas dinámicos discretos">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Iniciación al estudio de sistemas dinámicos discretos</span></span>
+      <a href="./08-edp-segundo-orden.html" class="pagination-link" aria-label="Ecuaciones en derivadas parciales de segundo orden. Método de separación de variables">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Ecuaciones en derivadas parciales de segundo orden. Método de separación de variables</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./08-edp-segundo-orden.html" class="pagination-link" aria-label="Ecuaciones en derivadas parciales de segundo orden. Método de separación de variables">
-        <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Ecuaciones en derivadas parciales de segundo orden. Método de separación de variables</span></span> <i class="bi bi-arrow-right-short"></i>
-      </a>
   </div>
 </nav>
 </div> <!-- /content -->
